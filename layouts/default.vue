@@ -53,6 +53,14 @@
         <nuxt />
       </v-container>
     </v-content>
+    <v-overlay
+      :value="
+        !this.$store.state.gebruiker.user.isLoggedIn &&
+          this.$store.state.gebruiker.user.data
+      "
+    >
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
   </v-app>
 </template>
 
