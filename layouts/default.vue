@@ -23,6 +23,15 @@
             <v-list-item-title v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
+        <v-list-item @click="swapTheme()">
+          <v-list-item-icon
+            ><v-icon v-if="!this.$vuetify.theme.dark">mdi-lightbulb</v-icon
+            ><v-icon v-else>mdi-lightbulb-outline</v-icon></v-list-item-icon
+          >
+          <v-list-item-content>
+            <v-list-item-title>Donkere modus</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app>
@@ -70,6 +79,16 @@ export default {
     firebase.auth().onAuthStateChanged((user) => {
       this.$store.dispatch('gebruiker/fetchUser', user)
     })
+    if (localStorage.getItem('dark') === 'false') this.setTheme(false)
+  },
+  methods: {
+    swapTheme() {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark
+      localStorage.setItem('dark', this.$vuetify.theme.dark)
+    },
+    setTheme(dark) {
+      this.$vuetify.theme.dark = dark
+    }
   }
 }
 </script>
