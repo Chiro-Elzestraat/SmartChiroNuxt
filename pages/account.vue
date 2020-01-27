@@ -21,11 +21,11 @@
         </div>
       </div>
     </div>
-    <div v-else>
+    <div v-else class="loggedIn">
       <h1 class="display-1">
         Welkom terug, {{ this.$store.state.gebruiker.user.data.displayName }}
-        <v-btn @click="loguit()">Log uit</v-btn>
       </h1>
+      <v-btn @click="loguit()" id="loguit">Log uit</v-btn>
     </div>
   </div>
 </template>
@@ -129,5 +129,15 @@ span.buttonText {
   #loginButtons {
     flex-direction: column;
   }
+}
+.loggedIn {
+  display: flex;
+  height: calc(100vh - 86px);
+  flex-direction: column;
+  justify-content: space-between;
+}
+#loguit {
+  width: 100%;
+  align-self: bottom;
 }
 </style>
