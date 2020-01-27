@@ -1,17 +1,23 @@
 <template>
   <div class="text-center">
-    <div v-if="!this.$store.state.gebruiker.user.isLoggedIn">
+    <div v-if="!this.$store.state.gebruiker.user.isLoggedIn" id="loginButtons">
       <!-- <v-btn @click="login('google')">Login met Google</v-btn>
       <v-btn @click="login('facebook')">Login met Facebook</v-btn> -->
       <div id="gSignInWrapper">
+        <div @click="login('google')" v-ripple id="customBtn">
+          <span class="icon google"></span>
+          <span class="buttonText">Google</span>
+        </div>
+      </div>
+      <div id="fSignInWrapper">
         <div
-          @click="login('google')"
+          @click="login('facebook')"
           v-ripple
           id="customBtn"
-          class="customGPlusSignIn"
+          class="facebook"
         >
-          <span class="icon"></span>
-          <span class="buttonText">Google</span>
+          <span class="icon facebook"></span>
+          <span class="buttonText">Facebook</span>
         </div>
       </div>
     </div>
@@ -66,15 +72,16 @@ export default {
 
 <style>
 #customBtn {
+  margin: 16px;
   display: inline-block;
   background: white;
   color: #444;
   width: 190px;
   border-radius: 5px;
-  border: thin solid #aaa;
-  box-shadow: 1px 1px 1px grey;
+  border: 1px solid #eee;
   white-space: nowrap;
 }
+
 #customBtn:hover {
   cursor: pointer;
 }
@@ -83,7 +90,22 @@ span.label {
   font-weight: normal;
 }
 span.icon {
-  background: url('../static/google.svg') transparent 5px 50% no-repeat;
+  background-size: 36px;
+  margin-left: 8px;
+  display: inline-block;
+  vertical-align: middle;
+  width: 42px;
+  height: 42px;
+}
+.google {
+  background: url('../static/google.svg') center no-repeat;
+}
+.facebook {
+  background: url('../static/facebook.svg') center no-repeat;
+}
+span.icon {
+  background-size: 36px;
+  margin-left: 8px;
   display: inline-block;
   vertical-align: middle;
   width: 42px;
@@ -98,5 +120,14 @@ span.buttonText {
   font-weight: bold;
   /* Use the Roboto font that is loaded in the <head> */
   font-family: 'Roboto', sans-serif;
+}
+#loginButtons {
+  display: flex;
+  justify-content: center;
+}
+@media (orientation: portrait) {
+  #loginButtons {
+    flex-direction: column;
+  }
 }
 </style>
