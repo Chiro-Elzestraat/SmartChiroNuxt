@@ -10,7 +10,7 @@
     >
       <v-list>
         <v-list-item
-          v-for="(item, i) in items"
+          v-for="(item, i) in this.$store.state.menu.items"
           :key="i"
           :to="item.to"
           router
@@ -72,11 +72,6 @@ export default {
       clipped: false,
       drawer: false,
       fixed: false,
-      items: [
-        { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
-        { title: 'Mijn account', icon: 'mdi-account', to: '/account' },
-        { title: 'Instellingen', icon: 'mdi-settings', to: '/instellingen' }
-      ],
       miniVariant: false,
       right: true,
       rightDrawer: false,
@@ -90,11 +85,10 @@ export default {
     if (localStorage.getItem('dark') === 'false') this.setTheme(false)
   },
   mounted() {
-    console.log(this.items)
     const getMenu = firebase.functions().httpsCallable('getMenu')
     getMenu().then((result) => {
       console.log(result.data)
-      if (result.data) this.addMenuItems(result.data)
+      if (result.data) this.$store.commit('menu/addItem', result.data)
     })
   },
   methods: {
@@ -104,9 +98,6 @@ export default {
     },
     setTheme(dark) {
       this.$vuetify.theme.dark = dark
-    },
-    addMenuItems(data) {
-      this.items = [data, ...this.items]
     }
   }
 }
