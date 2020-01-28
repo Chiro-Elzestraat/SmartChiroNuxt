@@ -53,9 +53,9 @@ export default {
       const groepen = [
         { naam: 'Speelclub', leden: [], minLeeftijd: 4, maxLeeftijd: 8 },
         { naam: 'Rakkers', leden: [], minLeeftijd: 8, maxLeeftijd: 10 },
-        { naam: 'Toppers', leden: [], minLeeftijd: 10, maxLeeftijd: 13 },
-        { naam: 'Kerels', leden: [], minLeeftijd: 13, maxLeeftijd: 14 },
-        { naam: `Aspi's`, leden: [], minLeeftijd: 14, maxLeeftijd: 18 }
+        { naam: 'Toppers', leden: [], minLeeftijd: 10, maxLeeftijd: 14 },
+        { naam: 'Kerels', leden: [], minLeeftijd: 14, maxLeeftijd: 16 },
+        { naam: `Aspi's`, leden: [], minLeeftijd: 16, maxLeeftijd: 18 }
       ]
       const vandaag = new Date()
       const maand = vandaag.getMonth()
