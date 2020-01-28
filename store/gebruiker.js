@@ -1,7 +1,7 @@
 export const state = () => ({
   user: {
     isLoggedIn: false,
-    data: {}
+    data: {} // nog een extra property maken voor het bijhouden van welke menutjes zichtbaar zijn voor de gebruiker
   }
 })
 

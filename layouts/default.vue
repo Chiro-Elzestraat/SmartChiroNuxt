@@ -88,6 +88,16 @@ export default {
       this.$store.dispatch('gebruiker/fetchUser', user)
     })
     if (localStorage.getItem('dark') === 'false') this.setTheme(false)
+    const getAlleLeden = firebase.functions().httpsCallable('getAlleLeden')
+    getAlleLeden().then((result) => console.log(result.data))
+  },
+  mounted() {
+    console.log(this.items)
+    const getMenu = firebase.functions().httpsCallable('getMenu')
+    getMenu().then((result) => {
+      console.log(result.data)
+      if (result.data) this.addMenuItems(result.data)
+    })
   },
   methods: {
     swapTheme() {
@@ -96,6 +106,9 @@ export default {
     },
     setTheme(dark) {
       this.$vuetify.theme.dark = dark
+    },
+    addMenuItems(data) {
+      this.items = [data, ...this.items]
     }
   }
 }
