@@ -20,8 +20,14 @@
             <v-expansion-panels focusable>
               <v-expansion-panel v-for="(lid, i) in groep.leden || 0" :key="i">
                 <v-expansion-panel-header
-                  >{{ lid.naam }} |
-                  {{ lid.geboortedatum }}</v-expansion-panel-header
+                  >{{ lid.naam }} <v-spacer />
+                  {{
+                    new Date(lid.geboortedatum).toLocaleDateString('nl-NL', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })
+                  }}</v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
                   <LidInfo :lid="lid" />
@@ -100,9 +106,6 @@ export default {
 .contact {
   display: flex;
   flex-wrap: wrap;
-}
-.contactpersoon {
-  margin: 16px auto;
 }
 @media (orientation: landscape) {
   .vtab {
