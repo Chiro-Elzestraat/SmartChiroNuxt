@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar flat color="primary">
+    <v-toolbar flat color="primary" dark>
       <v-toolbar-title>Overzicht leden</v-toolbar-title>
     </v-toolbar>
     <v-tabs
