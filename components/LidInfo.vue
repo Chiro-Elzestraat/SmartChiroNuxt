@@ -43,7 +43,21 @@
         </div>
       </div>
     </v-tab-item>
-    <v-tab-item> </v-tab-item>
+    <v-tab-item>
+      <div>
+        <h1
+          class="headline text-center"
+          :class="{
+            goed: lid.medischeInfo.medischeHandelingen,
+            belangrijk: !lid.medischeInfo.medischeHandelingen
+          }"
+        >
+          Leiding mag
+          {{ lid.medischeInfo.medischeHandelingen ? '' : 'geen' }} medische
+          handelingen uitvoeren.
+        </h1>
+      </div>
+    </v-tab-item>
   </v-tabs>
 </template>
 
@@ -55,4 +69,11 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.goed {
+  color: #8bc34a;
+}
+.belangrijk {
+  color: #f44336;
+}
+</style>
