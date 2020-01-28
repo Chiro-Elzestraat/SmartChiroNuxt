@@ -1,9 +1,12 @@
 <template>
   <div>
-    <v-toolbar flat color="primary" dark>
+    <v-toolbar flat color="primary">
       <v-toolbar-title>Overzicht leden</v-toolbar-title>
     </v-toolbar>
-    <v-tabs :vertical="!this.$device.isMobile">
+    <v-tabs
+      :vertical="!this.$device.isMobile"
+      :show-arrows="this.$device.isMobile"
+    >
       <v-tab v-for="(groep, i) in groepen" :key="i" class="vtab">
         <!-- <v-icon left>mdi-account</v-icon> -->
         {{ groep.naam }}
@@ -104,16 +107,14 @@ export default {
 <style>
 .contact {
   display: flex;
+  flex-wrap: wrap;
 }
 .contactpersoon {
   margin: 16px auto;
 }
-.vtab {
-  width: 200px;
-}
-@media (orientation: portrait) {
+@media (orientation: landscape) {
   .vtab {
-    width: auto;
+    width: 200px;
   }
 }
 </style>
