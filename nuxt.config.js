@@ -1,5 +1,25 @@
 import colors from 'vuetify/es5/util/colors'
 
+let vuetify = {
+  customVariables: ['~/assets/variables.scss'],
+  theme: {
+    dark: true,
+    themes: {
+      dark: {
+        primary: colors.red.darken2,
+        accent: colors.grey.darken3,
+        secondary: colors.amber.darken3,
+        info: colors.teal.lighten1,
+        warning: colors.amber.base,
+        error: colors.deepOrange.accent4,
+        success: colors.green.accent3
+      },
+      light: {
+        primary: colors.red.darken2
+      }
+    }
+  }
+}
 export default {
   mode: 'spa',
   /*
@@ -23,7 +43,8 @@ export default {
     manifest: {
       name: 'SmartChiro',
       short_name: 'SmartChiro',
-      lang: 'nl'
+      lang: 'nl',
+      theme_color: vuetify.theme.dark ? colors.grey.darken4 : colors.white // TODO: dit moet nog dynamisch, dus als het thema verandert, moet ook die bovenste balk van kleur veranderen
     }
   },
   /*
@@ -66,26 +87,7 @@ export default {
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
    */
-  vuetify: {
-    customVariables: ['~/assets/variables.scss'],
-    theme: {
-      dark: true,
-      themes: {
-        dark: {
-          primary: colors.red.darken2,
-          accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3
-        },
-        light: {
-          primary: colors.red.darken2
-        }
-      }
-    }
-  },
+  vuetify,
   /*
    ** Build configuration
    */
