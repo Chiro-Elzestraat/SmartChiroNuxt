@@ -89,7 +89,10 @@ export default {
   mounted() {
     const getAlleLeden = firebase.functions().httpsCallable('getAlleLeden')
     getAlleLeden().then((result) => {
-      if (result.data.error === 'unauthorized') {
+      if (
+        result.data.error === 'unauthorized' &&
+        this.$store.state.gebruiker.user.isLoggedIn
+      ) {
         this.$router.push('/')
       }
       this.leden = result.data
