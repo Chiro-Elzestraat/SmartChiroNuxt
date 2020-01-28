@@ -88,8 +88,6 @@ export default {
       this.$store.dispatch('gebruiker/fetchUser', user)
     })
     if (localStorage.getItem('dark') === 'false') this.setTheme(false)
-    const getAlleLeden = firebase.functions().httpsCallable('getAlleLeden')
-    getAlleLeden().then((result) => console.log(result.data))
   },
   mounted() {
     console.log(this.items)
