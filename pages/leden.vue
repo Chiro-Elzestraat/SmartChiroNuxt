@@ -3,16 +3,18 @@
     <v-toolbar flat color="primary" dark>
       <v-toolbar-title>Overzicht leden</v-toolbar-title>
     </v-toolbar>
-    <v-tabs vertical>
-      <v-tab v-for="(groep, i) in groepen" :key="i">
+    <v-tabs :vertical="!this.$device.isMobile">
+      <v-tab v-for="(groep, i) in groepen" :key="i" class="vtab">
         <!-- <v-icon left>mdi-account</v-icon> -->
         {{ groep.naam }}
+        <v-spacer />
+        {{ groep.leden.length }}
       </v-tab>
 
       <v-tab-item v-for="(groep, i) in groepen" :key="i">
         <v-card flat>
           <v-card-text>
-            <v-expansion-panels>
+            <v-expansion-panels focusable>
               <v-expansion-panel v-for="(lid, i) in groep.leden || 0" :key="i">
                 <v-expansion-panel-header
                   >{{ lid.naam }} |
@@ -25,7 +27,8 @@
                       :key="i"
                       class="contactpersoon"
                     >
-                      <h1>Ouder {{ i + 1 }}</h1>
+                      <h1 class="headline">Ouder {{ i + 1 }}</h1>
+                      {{ ouder.naam }}<br />
                       <a :href="'tel:' + ouder.gsm">{{ ouder.gsm }}</a
                       ><br />
                       <a :href="'mailto:' + ouder.mail">{{ ouder.mail }}</a>
@@ -100,6 +103,14 @@ export default {
   display: flex;
 }
 .contactpersoon {
-  margin: 0 auto;
+  margin: 16px auto;
+}
+.vtab {
+  width: 200px;
+}
+@media (orientation: portrait) {
+  .vtab {
+    width: auto;
+  }
 }
 </style>
