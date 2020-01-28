@@ -44,18 +44,40 @@
       </div>
     </v-tab-item>
     <v-tab-item>
-      <div>
-        <h1
-          class="headline text-center"
-          :class="{
-            goed: lid.medischeInfo.medischeHandelingen,
-            belangrijk: !lid.medischeInfo.medischeHandelingen
-          }"
-        >
-          Leiding mag
-          {{ lid.medischeInfo.medischeHandelingen ? '' : 'geen' }} medische
-          handelingen uitvoeren.
-        </h1>
+      <div class="medischeInfo">
+        <v-card class="medischeKaart" outlined>
+          <v-card-title
+            class="headline text-center"
+            :class="{
+              goed: lid.medischeInfo.medischeHandelingen,
+              belangrijk: !lid.medischeInfo.medischeHandelingen
+            }"
+          >
+            Medische handelingen
+          </v-card-title>
+          <v-card-subtitle
+            >mogen
+            {{ lid.medischeInfo.medischeHandelingen ? '' : 'niet' }} worden
+            uitgevoerd</v-card-subtitle
+          >
+        </v-card>
+        <v-card class="medischeKaart" outlined>
+          <v-card-title
+            :class="{
+              goed:
+                lid.medischeInfo.tetanus.gevaccineerd &&
+                lid.medischeInfo.tetanus.jaar,
+              belangrijk: !lid.medischeInfo.tetanus.gevaccineerd,
+              waarschuwing: lid.medischeInfo.tetanus.gevaccineerd
+            }"
+            >Is
+            {{ lid.medischeInfo.tetanus.gevaccineerd ? '' : 'niet' }}
+            gevaccineerd tegen tetanus</v-card-title
+          >
+          <v-card-subtitle
+            >In het jaar {{ lid.medischeInfo.tetanus.jaar }}</v-card-subtitle
+          >
+        </v-card>
       </div>
     </v-tab-item>
   </v-tabs>
@@ -75,5 +97,14 @@ export default {
 }
 .belangrijk {
   color: #f44336;
+}
+.medischeInfo {
+  display: flex;
+  flex-wrap: wrap;
+  /* row-gap: 2rem;
+  column-gap: 2rem; */
+}
+.medischeKaart {
+  margin: 8px;
 }
 </style>
