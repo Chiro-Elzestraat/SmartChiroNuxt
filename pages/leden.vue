@@ -88,6 +88,10 @@ export default {
           }
         })
       })
+      .catch((err) => {
+        console.log(err)
+        this.$router.push('/')
+      })
     // const getAlleLeden = functions.httpsCallable('getAlleLeden') // TODO: rechtsreekse call naar database, zodat offline functionaliteit van firestore kan worden benut
     // getAlleLeden().then((result) => {
     //   if (
