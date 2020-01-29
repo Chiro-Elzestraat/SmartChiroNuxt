@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { functions } from '../plugins/firebase'
+import { db } from '../plugins/firebase'
 import LidInfo from '../components/LidInfo'
 export default {
   components: {
@@ -61,14 +61,11 @@ export default {
     }
   },
   mounted() {
-    const getAlleLeden = functions.httpsCallable('getAlleLeden') // TODO: rechtsreekse call naar database, zodat offline functionaliteit van firestore kan worden benut
-    getAlleLeden().then((result) => {
-      if (
-        result.data.error === 'unauthorized' &&
-        this.$store.state.gebruiker.user.isLoggedIn
-      ) {
-        this.$router.push('/')
-      } else {
+    db.collection('leden')
+      .get()
+      .then((snapshot) => {
+        const leden = []
+        snapshot.forEach((doc) => leden.push(doc.data()))
         const vandaag = new Date()
         const maand = vandaag.getMonth()
         const vergelijkDatum =
@@ -79,7 +76,7 @@ export default {
           /* misschien deze loop omdraaien, dat eerst over de leden wordt geloopt, en daarna
           pas over de groepen om deze in de juiste groep te plaatsen, ik denk dat dat
           efficiënter is, maar nog niet zeker */
-          for (const lid of result.data) {
+          for (const lid of leden) {
             const leeftijd =
               (vergelijkDatum - new Date(lid.geboortedatum)) /
               (1000 * 3600 * 24 * 365)
@@ -90,8 +87,38 @@ export default {
             }
           }
         })
-      }
-    })
+      })
+    // const getAlleLeden = functions.httpsCallable('getAlleLeden') // TODO: rechtsreekse call naar database, zodat offline functionaliteit van firestore kan worden benut
+    // getAlleLeden().then((result) => {
+    //   if (
+    //     result.data.error === 'unauthorized' &&
+    //     this.$store.state.gebruiker.user.isLoggedIn
+    //   ) {
+    //     this.$router.push('/')
+    //   } else {
+    //     const vandaag = new Date()
+    //     const maand = vandaag.getMonth()
+    //     const vergelijkDatum =
+    //       maand < 9
+    //         ? new Date(vandaag.getFullYear() - 1, 9, 0)
+    //         : new Date(vandaag.getFullYear(), 9, 0)
+    //     this.groepen.forEach((groep) => {
+    //       /* misschien deze loop omdraaien, dat eerst over de leden wordt geloopt, en daarna
+    //       pas over de groepen om deze in de juiste groep te plaatsen, ik denk dat dat
+    //       efficiënter is, maar nog niet zeker */
+    //       for (const lid of result.data) {
+    //         const leeftijd =
+    //           (vergelijkDatum - new Date(lid.geboortedatum)) /
+    //           (1000 * 3600 * 24 * 365)
+    //         console.log(leeftijd)
+    //         if (leeftijd <= groep.maxLeeftijd && leeftijd > groep.minLeeftijd) {
+    //           groep.leden.push(lid)
+    //           continue
+    //         }
+    //       }
+    //     })
+    //   }
+    // })
   }
 }
 </script>
