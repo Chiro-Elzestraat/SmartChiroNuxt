@@ -66,6 +66,7 @@
 
 <script>
 import firebase from 'firebase'
+import { functions } from '../plugins/firebase'
 export default {
   data() {
     return {
@@ -85,7 +86,7 @@ export default {
     if (localStorage.getItem('dark') === 'false') this.setTheme(false)
   },
   mounted() {
-    const getMenu = firebase.functions().httpsCallable('getMenu')
+    const getMenu = functions.httpsCallable('getMenu')
     getMenu().then((result) => {
       console.log(result.data)
       if (result.data) this.$store.commit('menu/addItem', result.data)

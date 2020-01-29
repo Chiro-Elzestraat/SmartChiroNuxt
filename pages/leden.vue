@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import firebase from 'firebase'
+import { functions } from '../plugins/firebase'
 import LidInfo from '../components/LidInfo'
 export default {
   components: {
@@ -88,7 +88,7 @@ export default {
     }
   },
   mounted() {
-    const getAlleLeden = firebase.functions().httpsCallable('getAlleLeden') // TODO: rechtsreekse call naar database, zodat offline functionaliteit van firestore kan worden benut
+    const getAlleLeden = functions.httpsCallable('getAlleLeden') // TODO: rechtsreekse call naar database, zodat offline functionaliteit van firestore kan worden benut
     getAlleLeden().then((result) => {
       if (
         result.data.error === 'unauthorized' &&

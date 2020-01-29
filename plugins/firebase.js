@@ -17,5 +17,6 @@ const firebaseConfig = {
 }
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig)
+export const functions = firebase.app().functions('europe-west1')
 export const auth = app.auth()
 // firebase.analytics();

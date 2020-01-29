@@ -32,6 +32,7 @@
 
 <script>
 import firebase from 'firebase'
+import { functions } from '../plugins/firebase'
 export default {
   methods: {
     login(provider) {
@@ -49,7 +50,7 @@ export default {
           // The signed-in user info.
           const user = result.user
           this.$store.commit('gebruiker/setUserData', user.toJSON())
-          const getMenu = firebase.functions().httpsCallable('getMenu')
+          const getMenu = functions.httpsCallable('getMenu')
           getMenu().then((result) => {
             console.log(result.data)
             if (result.data) this.$store.commit('menu/addItem', result.data)
