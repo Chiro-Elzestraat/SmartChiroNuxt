@@ -50,41 +50,14 @@ export default {
   },
   data() {
     return {
-      leden: []
-    }
-  },
-  computed: {
-    groepen() {
       // TODO: deze groepen kunnen ook opgehaald worden van server
-      const groepen = [
+      groepen: [
         { naam: 'Speelclub', leden: [], minLeeftijd: 4, maxLeeftijd: 8 },
         { naam: 'Rakkers', leden: [], minLeeftijd: 8, maxLeeftijd: 10 },
         { naam: 'Toppers', leden: [], minLeeftijd: 10, maxLeeftijd: 14 },
         { naam: 'Kerels', leden: [], minLeeftijd: 14, maxLeeftijd: 16 },
         { naam: `Aspi's`, leden: [], minLeeftijd: 16, maxLeeftijd: 18 }
       ]
-      const vandaag = new Date()
-      const maand = vandaag.getMonth()
-      const vergelijkDatum =
-        maand < 9
-          ? new Date(vandaag.getFullYear() - 1, 9, 0)
-          : new Date(vandaag.getFullYear(), 9, 0)
-      groepen.forEach((groep) => {
-        /* nog wel zoeken ofdat dit niet kan geoptimaliseerd worden, momenteel loopt die 
-        voor elke groep over élk lid, ook al is die al in de juiste groep geplaatst,
-        dus mss een tweede lijstje ofzo maken? */
-        this.leden.forEach((lid) => {
-          const leeftijd =
-            (vergelijkDatum - new Date(lid.geboortedatum)) /
-            (1000 * 3600 * 24 * 365)
-          console.log(leeftijd)
-          if (leeftijd <= groep.maxLeeftijd && leeftijd > groep.minLeeftijd) {
-            console.log(lid)
-            groep.leden.push(lid)
-          }
-        })
-      })
-      return groepen
     }
   },
   mounted() {
@@ -95,8 +68,29 @@ export default {
         this.$store.state.gebruiker.user.isLoggedIn
       ) {
         this.$router.push('/')
+      } else {
+        const vandaag = new Date()
+        const maand = vandaag.getMonth()
+        const vergelijkDatum =
+          maand < 9
+            ? new Date(vandaag.getFullYear() - 1, 9, 0)
+            : new Date(vandaag.getFullYear(), 9, 0)
+        this.groepen.forEach((groep) => {
+          /* misschien deze loop omdraaien, dat eerst over de leden wordt geloopt, en daarna
+          pas over de groepen om deze in de juiste groep te plaatsen, ik denk dat dat
+          efficiënter is, maar nog niet zeker */
+          for (const lid of result.data) {
+            const leeftijd =
+              (vergelijkDatum - new Date(lid.geboortedatum)) /
+              (1000 * 3600 * 24 * 365)
+            console.log(leeftijd)
+            if (leeftijd <= groep.maxLeeftijd && leeftijd > groep.minLeeftijd) {
+              groep.leden.push(lid)
+              continue
+            }
+          }
+        })
       }
-      this.leden = result.data
     })
   }
 }
