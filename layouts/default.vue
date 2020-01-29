@@ -66,6 +66,7 @@
 
 <script>
 import firebase from 'firebase'
+import { db } from '../plugins/firebase'
 export default {
   data() {
     return {
@@ -81,13 +82,33 @@ export default {
   created() {
     firebase.auth().onAuthStateChanged((user) => {
       this.$store.dispatch('gebruiker/fetchUser', user)
+      firebase
+        .auth()
+        .currentUser.getIdTokenResult()
+        .then((idTokenResult) => {
+          if (idTokenResult.claims.leider) {
+            db.collection('extraMenu')
+              .doc('leider')
+              .get()
+              .then((doc) => {
+                if (doc.exists) {
+                  this.$store.commit(
+                    'menu/setExtraItems',
+                    doc.data().extraMenus
+                  )
+                }
+              })
+          } else {
+            // nog implementeren
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     })
     if (localStorage.getItem('dark') === 'false') this.setTheme(false)
   },
-  mounted() {
-    const extraItems = localStorage.getItem('extraMenu')
-    if (extraItems) this.$store.commit('menu/setExtraItems', extraItems)
-  },
+  mounted() {},
   methods: {
     swapTheme() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark
