@@ -37,6 +37,10 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-card outlined class="help">
+      <v-icon>mdi-help-circle</v-icon> Hulp nodig? Neem contact op met
+      <a href="mailto:smart@chiroelzestraat.be">smart@chiroelzestraat.be</a>
+    </v-card>
   </div>
 </template>
 
@@ -72,5 +76,9 @@ export default {
 }
 .invoer {
   margin: 16px;
+}
+.help {
+  margin: 16px;
+  text-align: left;
 }
 </style>
