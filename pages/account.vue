@@ -59,28 +59,29 @@ export default {
       } else if (provider === 'facebook') {
         provider = new firebase.auth.FacebookAuthProvider()
       }
-      firebase
-        .auth()
-        .signInWithPopup(provider)
-        .then((result) => {
-          // This gives you a Google Access Token. You can use it to access the Google API.
-          // const token = result.credential.accessToken
-          // The signed-in user info.
-          this.checkNieuw()
-          const user = result.user
-          this.$store.commit('gebruiker/setUserData', user.toJSON())
-        })
-        .catch(function(error) {
-          // Handle Errors here.
-          const errorCode = error.code
-          const errorMessage = error.message
-          // The email of the user's account used.
-          const email = error.email
-          // The firebase.auth.AuthCredential type that was used.
-          const credential = error.credential
-          console.log(errorCode + errorMessage + email + credential)
-          // ...
-        })
+      firebase.auth().signInWithRedirect(provider)
+      // firebase
+      //   .auth()
+      //   .signInWithPopup(provider)
+      //   .then((result) => {
+      //     // This gives you a Google Access Token. You can use it to access the Google API.
+      //     // const token = result.credential.accessToken
+      //     // The signed-in user info.
+      //     this.checkNieuw()
+      //     const user = result.user
+      //     this.$store.commit('gebruiker/setUserData', user.toJSON())
+      //   })
+      //   .catch(function(error) {
+      //     // Handle Errors here.
+      //     const errorCode = error.code
+      //     const errorMessage = error.message
+      //     // The email of the user's account used.
+      //     const email = error.email
+      //     // The firebase.auth.AuthCredential type that was used.
+      //     const credential = error.credential
+      //     console.log(errorCode + errorMessage + email + credential)
+      //     // ...
+      //   })
     },
     loguit() {
       firebase.auth().signOut()
@@ -105,6 +106,33 @@ export default {
     }
   },
   mounted() {
+    firebase
+      .auth()
+      .getRedirectResult()
+      .then(function(result) {
+        if (result.credential) {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          // var token = result.credential.accessToken
+          // ...
+        }
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        // const token = result.credential.accessToken
+        // The signed-in user info.
+        this.checkNieuw()
+        const user = result.user
+        this.$store.commit('gebruiker/setUserData', user.toJSON())
+      })
+      .catch(function(error) {
+        // Handle Errors here.
+        const errorCode = error.code
+        const errorMessage = error.message
+        // The email of the user's account used.
+        const email = error.email
+        // The firebase.auth.AuthCredential type that was used.
+        const credential = error.credential
+        // ...
+        console.log(errorCode, errorMessage, email, credential)
+      })
     firebase.auth().onAuthStateChanged((user) => {
       if (user) this.checkNieuw()
     })
