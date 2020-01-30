@@ -103,6 +103,7 @@ export default {
             // nog implementeren
           } else {
             this.nieuweGebruiker = true
+            this.$router.push('/account')
           }
         })
         .catch((error) => {

@@ -15,16 +15,22 @@
       <v-stepper-items>
         <v-stepper-content step="1">
           <div class="invoer">
-            <v-card-text>
-              <v-text-field
-                v-model="gebruiker.gsm"
-                v-mask="mask"
-                label="Gsm"
-                hint="in het formaat +32 123 45 67 89"
-              ></v-text-field>
-            </v-card-text>
+            <v-text-field
+              v-model="gebruiker.naam"
+              label="Naam"
+              hint="voor- en achternaam"
+              :rules="rules.nietLeeg"
+            >
+            </v-text-field>
+            <v-text-field
+              v-model="gebruiker.gsm"
+              v-mask="mask"
+              label="Gsm"
+              hint="in het formaat +32 123 45 67 89"
+              :rules="rules.gsm"
+            ></v-text-field>
           </div>
-          <v-btn color="primary" @click="huidig++" :disabled="!geldigGsm">
+          <v-btn color="primary" @click="huidig++" :disabled="!gegevensInOrde">
             Verder
           </v-btn>
         </v-stepper-content>
@@ -54,17 +60,26 @@ export default {
     return {
       huidig: 1,
       n: 1,
-      rules: [(value) => !!value || 'Vereist.'],
-      gebruiker: {
-        gsm: '32'
+      rules: {
+        nietLeeg: [(value) => !!value || 'Gelieve dit veld in te vullen.'],
+        gsm: [
+          (value) =>
+            this.regexGsm.test(value) ||
+            value === '+32' ||
+            'Ongeldig gsm-nummer. Verwacht formaat: +32 123 45 67 89'
+        ]
       },
-      mask: '+## ### ## ## ##'
+      gebruiker: {
+        gsm: '32',
+        naam: this.$store.state.gebruiker.user.data.displayName
+      },
+      mask: '+## ### ## ## ##',
+      regexGsm: new RegExp('^[+][0-9]{2} [0-9]{3}( [0-9]{2}){3}$')
     }
   },
   computed: {
-    geldigGsm() {
-      const regex = new RegExp('^[+][0-9]{2} [0-9]{3}( [0-9]{2}){3}$')
-      return regex.test(this.gebruiker.gsm)
+    gegevensInOrde() {
+      return this.regexGsm.test(this.gebruiker.gsm) && this.gebruiker.naam
     }
   }
 }
