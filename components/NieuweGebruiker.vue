@@ -135,7 +135,7 @@ export default {
               if (doc.data().rollen_ok) {
                 firebase.auth().currentUser.getIdToken(true)
                 this.laden = false
-                location.reload()
+                this.$store.commit('gebruiker/setNieuweGebruiker', false)
               }
             })
         })
