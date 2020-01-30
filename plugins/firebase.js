@@ -7,7 +7,7 @@ import 'firebase/analytics'
 import 'firebase/auth'
 const firebaseConfig = {
   apiKey: 'AIzaSyCqF9MuNGKCOFaHU1Ozbm_1Hpw2B6WI878',
-  authDomain: 'smartchiro-9f399.firebaseapp.com',
+  authDomain: 'login.chiroelzestraat.be',
   databaseURL: 'https://smartchiro-9f399.firebaseio.com',
   projectId: 'smartchiro-9f399',
   storageBucket: 'smartchiro-9f399.appspot.com',
