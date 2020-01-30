@@ -1,7 +1,10 @@
 <template>
   <v-app dark>
     <v-navigation-drawer
-      v-if="this.$store.state.gebruiker.user.isLoggedIn && !nieuweGebruiker"
+      v-if="
+        this.$store.state.gebruiker.user.isLoggedIn &&
+          !this.$store.state.gebruiker.user.nieuweGebruiker
+      "
       v-model="drawer"
       :mini-variant="miniVariant"
       :clipped="clipped"
@@ -37,7 +40,10 @@
     <v-app-bar :clipped-left="clipped" fixed app>
       <v-app-bar-nav-icon
         @click.stop="drawer = !drawer"
-        v-if="this.$store.state.gebruiker.user.isLoggedIn && !nieuweGebruiker"
+        v-if="
+          this.$store.state.gebruiker.user.isLoggedIn &&
+            !this.$store.state.gebruiker.user.nieuweGebruiker
+        "
       />
       <v-toolbar-title v-text="title" />
       <v-spacer />
@@ -86,8 +92,7 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'SmartChiro',
-      nieuweGebruiker: false
+      title: 'SmartChiro'
     }
   },
   created() {
@@ -112,7 +117,7 @@ export default {
           } else if (idTokenResult.claims.ouder) {
             // nog implementeren
           } else {
-            this.nieuweGebruiker = true
+            this.$store.commit('gebruiker/setNieuweGebruiker', true)
             this.$router.push('/account')
           }
         })

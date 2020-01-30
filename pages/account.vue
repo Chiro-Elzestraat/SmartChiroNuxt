@@ -22,7 +22,7 @@
       </div>
     </div>
     <div v-else class="loggedIn">
-      <div v-if="nieuweGebruiker">
+      <div v-if="this.$store.state.gebruiker.user.nieuweGebruiker">
         <h1 class="display-1">
           Welkom op SmartChiro,
           {{ this.$store.state.gebruiker.user.data.displayName }}!<br />
@@ -47,11 +47,6 @@ export default {
   components: {
     NieuweGebruiker
   },
-  data() {
-    return {
-      nieuweGebruiker: true
-    }
-  },
   methods: {
     login(provider) {
       if (provider === 'google') {
@@ -72,14 +67,14 @@ export default {
         .then((idTokenResult) => {
           if (idTokenResult.claims.leider || idTokenResult.claims.ouder) {
             console.log('test')
-            this.nieuweGebruiker = false
+            this.$store.commit('gebruiker/setNieuweGebruiker', false)
           } else {
-            this.nieuweGebruiker = true
+            this.$store.commit('gebruiker/setNieuweGebruiker', true)
           }
         })
         .catch((error) => {
           console.log(error)
-          this.nieuweGebruiker = true
+          this.$store.commit('gebruiker/setNieuweGebruiker', true)
         })
     }
   },

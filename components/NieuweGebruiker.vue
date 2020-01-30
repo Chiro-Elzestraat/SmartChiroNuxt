@@ -35,8 +35,34 @@
           </v-btn>
         </v-stepper-content>
         <v-stepper-content step="2">
-          <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
-          <v-btn color="primary">
+          <div class="invoer">
+            <v-checkbox v-model="privacy">
+              <template v-slot:label>
+                <div>
+                  Ik ga akkoort met het
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                      <a
+                        target="_blank"
+                        href="https://privacy.chiroelzestraat.be"
+                        @click.stop
+                        v-on="on"
+                      >
+                        privacybeleid
+                      </a>
+                    </template>
+                    Opent in een nieuw tabblad. </v-tooltip
+                  >.
+                </div>
+              </template>
+            </v-checkbox>
+          </div>
+          <v-btn
+            color="primary"
+            :disabled="!privacy"
+            @click="maakProfiel()"
+            :loading="laden"
+          >
             Verder
           </v-btn>
           <v-btn text @click="huidig--">Terug</v-btn>
@@ -44,7 +70,12 @@
       </v-stepper-items>
     </v-stepper>
     <v-card outlined class="help">
-      <v-icon>mdi-help-circle</v-icon> Hulp nodig? Neem contact op met
+      <v-icon>mdi-information-outline</v-icon> Informatie over hoe wij omgaan
+      met jouw data vind je terug in ons
+      <a href="https://privacy.chiroelzestraat.be" target="_blank"
+        >privacybeleid</a
+      >.<br />
+      <v-icon>mdi-help-circle-outline</v-icon> Hulp nodig? Neem contact op met
       <a href="mailto:smart@chiroelzestraat.be">smart@chiroelzestraat.be</a>
     </v-card>
   </div>
@@ -52,12 +83,15 @@
 
 <script>
 import { mask } from 'vue-the-mask'
+import firebase from 'firebase'
+import { db } from '../plugins/firebase'
 export default {
   directives: {
     mask
   },
   data() {
     return {
+      laden: false,
       huidig: 1,
       n: 1,
       rules: {
@@ -74,12 +108,41 @@ export default {
         naam: this.$store.state.gebruiker.user.data.displayName
       },
       mask: '+## ### ## ## ##',
-      regexGsm: new RegExp('^[+][0-9]{2} [0-9]{3}( [0-9]{2}){3}$')
+      regexGsm: new RegExp('^[+][0-9]{2} [0-9]{3}( [0-9]{2}){3}$'),
+      privacy: false
     }
   },
   computed: {
     gegevensInOrde() {
       return this.regexGsm.test(this.gebruiker.gsm) && this.gebruiker.naam
+    }
+  },
+  methods: {
+    maakProfiel() {
+      this.laden = true
+      db.collection('gebruikers')
+        .doc(this.$store.state.gebruiker.user.data.uid)
+        .set({
+          naam: this.gebruiker.naam,
+          gsm: this.gebruiker.gsm,
+          rollen: ['ouder']
+        })
+        .then(() => {
+          db.collection('gebruikers')
+            .doc(this.$store.state.gebruiker.user.data.uid)
+            .onSnapshot((doc) => {
+              console.log(doc.data())
+              if (doc.data().rollen_ok) {
+                firebase.auth().currentUser.getIdToken(true)
+                this.laden = false
+                location.reload()
+              }
+            })
+        })
+        .catch((err) => {
+          console.log(err)
+          this.laden = false
+        })
     }
   }
 }
