@@ -17,7 +17,7 @@
       <v-tab-item v-for="(groep, i) in groepen" :key="i">
         <v-card flat>
           <v-card-text>
-            <v-expansion-panels focusable>
+            <v-expansion-panels focusable popout>
               <v-expansion-panel v-for="(lid, i) in groep.leden || 0" :key="i">
                 <v-expansion-panel-header
                   >{{ lid.naam }} <v-spacer />
