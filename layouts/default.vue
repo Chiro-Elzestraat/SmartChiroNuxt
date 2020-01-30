@@ -47,6 +47,16 @@
         class="profielfoto"
         height="100%"
       />
+      <v-progress-linear
+        :active="
+          !this.$store.state.gebruiker.user.isLoggedIn &&
+            this.$store.state.gebruiker.user.data
+        "
+        indeterminate
+        absolute
+        bottom
+        color="primary"
+      />
     </v-app-bar>
     <v-content>
       <v-container>
