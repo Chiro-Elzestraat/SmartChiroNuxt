@@ -1,4 +1,6 @@
 import colors from 'vuetify/es5/util/colors'
+import path from 'path'
+import fs from 'fs'
 
 let vuetify = {
   customVariables: ['~/assets/variables.scss'],
@@ -21,6 +23,12 @@ let vuetify = {
   }
 }
 export default {
+  server: {
+    https: {
+      key: fs.readFileSync('./server.key'),
+      cert: fs.readFileSync('./server.crt')
+    }
+  },
   mode: 'spa',
   /*
    ** Headers of the page
