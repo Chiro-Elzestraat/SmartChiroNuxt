@@ -18,7 +18,8 @@
     "@nuxtjs/manifest": "^3.0.0-beta.16",
     "@nuxtjs/pwa": "^3.0.0-beta.19",
     "firebase": "^7.7.0",
-    "nuxt": "^2.0.0"
+    "nuxt": "^2.0.0",
+    "vue-the-mask": "^0.11.1"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.0.0",

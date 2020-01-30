@@ -22,9 +22,19 @@
       </div>
     </div>
     <div v-else class="loggedIn">
-      <h1 class="display-1">
-        Welkom terug, {{ this.$store.state.gebruiker.user.data.displayName }}
-      </h1>
+      <div v-if="nieuweGebruiker">
+        <h1 class="display-1">
+          Welkom op SmartChiro,
+          {{ this.$store.state.gebruiker.user.data.displayName }}!<br />
+          Vervolledig je profiel om verder te gaan.
+        </h1>
+        <NieuweGebruiker />
+      </div>
+      <div v-else>
+        <h1 class="display-1">
+          Welkom terug, {{ this.$store.state.gebruiker.user.data.displayName }}
+        </h1>
+      </div>
       <v-btn @click="loguit()" id="loguit">Log uit</v-btn>
     </div>
   </div>
@@ -32,7 +42,16 @@
 
 <script>
 import firebase from 'firebase'
+import NieuweGebruiker from '../components/NieuweGebruiker'
 export default {
+  components: {
+    NieuweGebruiker
+  },
+  data() {
+    return {
+      nieuweGebruiker: true
+    }
+  },
   methods: {
     login(provider) {
       if (provider === 'google') {
@@ -47,6 +66,7 @@ export default {
           // This gives you a Google Access Token. You can use it to access the Google API.
           // const token = result.credential.accessToken
           // The signed-in user info.
+          this.checkNieuw()
           const user = result.user
           this.$store.commit('gebruiker/setUserData', user.toJSON())
         })
@@ -65,7 +85,29 @@ export default {
     loguit() {
       firebase.auth().signOut()
       this.$store.commit('menu/resetState')
+    },
+    checkNieuw() {
+      firebase
+        .auth()
+        .currentUser.getIdTokenResult()
+        .then((idTokenResult) => {
+          if (idTokenResult.claims.leider || idTokenResult.claims.ouder) {
+            console.log('test')
+            this.nieuweGebruiker = false
+          } else {
+            this.nieuweGebruiker = true
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          this.nieuweGebruiker = true
+        })
     }
+  },
+  mounted() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) this.checkNieuw()
+    })
   }
 }
 </script>

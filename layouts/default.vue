@@ -1,7 +1,7 @@
 <template>
   <v-app dark>
     <v-navigation-drawer
-      v-if="this.$store.state.gebruiker.user.isLoggedIn"
+      v-if="this.$store.state.gebruiker.user.isLoggedIn && !nieuweGebruiker"
       v-model="drawer"
       :mini-variant="miniVariant"
       :clipped="clipped"
@@ -37,7 +37,7 @@
     <v-app-bar :clipped-left="clipped" fixed app>
       <v-app-bar-nav-icon
         @click.stop="drawer = !drawer"
-        v-if="this.$store.state.gebruiker.user.isLoggedIn"
+        v-if="this.$store.state.gebruiker.user.isLoggedIn && !nieuweGebruiker"
       />
       <v-toolbar-title v-text="title" />
       <v-spacer />
@@ -76,7 +76,8 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'SmartChiro'
+      title: 'SmartChiro',
+      nieuweGebruiker: false
     }
   },
   created() {
@@ -98,8 +99,10 @@ export default {
                   )
                 }
               })
-          } else {
+          } else if (idTokenResult.claims.ouder) {
             // nog implementeren
+          } else {
+            this.nieuweGebruiker = true
           }
         })
         .catch((error) => {
