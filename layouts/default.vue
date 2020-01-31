@@ -115,7 +115,7 @@ export default {
                 }
               })
           } else if (idTokenResult.claims.ouder) {
-            // nog implementeren
+            this.$store.commit('gebruiker/setOuder', true)
           } else {
             this.$store.commit('gebruiker/setNieuweGebruiker', true)
             this.$router.push('/account')

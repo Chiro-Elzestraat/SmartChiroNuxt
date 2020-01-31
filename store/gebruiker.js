@@ -2,7 +2,8 @@ export const state = () => ({
   user: {
     isLoggedIn: false,
     data: {}, // nog een extra property maken voor het bijhouden van welke menutjes zichtbaar zijn voor de gebruiker
-    nieuweGebruiker: false
+    nieuweGebruiker: false,
+    ouder: false
   }
 })
 
@@ -18,6 +19,9 @@ export const mutations = {
   },
   setNieuweGebruiker(state, isNieuw) {
     state.user.nieuweGebruiker = isNieuw
+  },
+  setOuder(state, ouder) {
+    state.user.ouder = ouder
   }
 }
 
