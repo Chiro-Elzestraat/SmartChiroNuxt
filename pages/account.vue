@@ -35,7 +35,7 @@
           Welkom terug, {{ this.$store.state.gebruiker.user.data.displayName }}
         </h1>
       </div>
-      <v-btn @click="loguit()" id="loguit">Log uit</v-btn>
+      <v-btn id="loguit" @click="loguit()">Log uit</v-btn>
     </div>
   </div>
 </template>

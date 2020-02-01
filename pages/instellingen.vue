@@ -1,9 +1,19 @@
 <template>
-  <div></div>
+  <div>
+    <OptieDivider text="Rollenbeheer" icon="mdi-account-multiple" />
+  </div>
 </template>
 
 <script>
-export default {}
+import OptieDivider from '@/components/OptieDivider'
+export default {
+  components: {
+    OptieDivider
+  },
+  data() {
+    return {}
+  }
+}
 </script>
 
 <style></style>

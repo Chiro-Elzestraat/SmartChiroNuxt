@@ -54,6 +54,7 @@
                     Opent in een nieuw tabblad. </v-tooltip
                   >.
                 </div>
+                <!--TODO: nog een optie voor leider i.p.v. ouder maken!!!!! -->
               </template>
             </v-checkbox>
           </div>
