@@ -2,7 +2,7 @@
   <div>
     <v-tabs v-model="tab">
       <v-tab v-for="(lid, index) in leden" :key="index">
-        {{ lid.naam ? lid.naam : 'Nieuw lid' }}
+        {{ lid.naam ? lid.naam.split(/\s(.+)/)[0] : 'Nieuw lid' }}
       </v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
@@ -18,16 +18,16 @@
             required
           ></v-text-field>
           <Geboortedatum @date-change="setDatum($event, index)" />
-          <v-card outlined>
+          <!-- <v-card outlined>
             <v-text-field
               v-model="email"
               :rules="emailRules"
               label="E-mail"
               required
             ></v-text-field>
-          </v-card>
+          </v-card> -->
 
-          <v-select
+          <!-- <v-select
             v-model="select"
             :items="items"
             :rules="[(v) => !!v || 'Item is required']"
@@ -40,7 +40,7 @@
             :rules="[(v) => !!v || 'You must agree to continue!']"
             label="Do you agree?"
             required
-          ></v-checkbox>
+          ></v-checkbox> -->
         </v-form>
       </v-tab-item>
     </v-tabs-items>
