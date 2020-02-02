@@ -17,6 +17,7 @@ const firebaseConfig = {
 }
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig)
+firebase.analytics()
 export const functions = firebase.app().functions('europe-west1')
 firebase
   .firestore()
@@ -35,4 +36,3 @@ firebase
 // Subsequent queries will use persistence, if it was enabled successfully;
 export const db = firebase.firestore()
 export const auth = app.auth()
-// firebase.analytics();
