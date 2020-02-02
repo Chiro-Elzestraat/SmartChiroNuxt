@@ -4,6 +4,7 @@
       <v-tab v-for="(lid, index) in leden" :key="index">
         {{ lid.naam ? lid.naam.split(/\s(.+)/)[0] : 'Nieuw lid' }}
       </v-tab>
+      <v-btn @click="voegLidToe" fab small><v-icon>mdi-plus</v-icon></v-btn>
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="(lid, index) in leden" :key="index">
@@ -18,14 +19,6 @@
             required
           ></v-text-field>
           <Geboortedatum @date-change="setDatum($event, index)" />
-          <!-- <v-card outlined>
-            <v-text-field
-              v-model="email"
-              :rules="emailRules"
-              label="E-mail"
-              required
-            ></v-text-field>
-          </v-card> -->
 
           <!-- <v-select
             v-model="select"
@@ -44,8 +37,23 @@
         </v-form>
       </v-tab-item>
     </v-tabs-items>
+
+    <v-tabs v-model="ouderTab">
+      <v-tab v-for="(ouder, ouderIndex) in ouders" :key="ouderIndex">{{
+        ouder.naam ? ouder.naam.split(/\s(.+)/)[0] : 'Nieuwe ouder'
+      }}</v-tab>
+      <v-btn @click="voegOuderToe" fab small><v-icon>mdi-plus</v-icon></v-btn>
+    </v-tabs>
+
+    <v-tabs-items v-model="ouderTab">
+      <v-tab-item v-for="(ouder, ouderIndex) in ouders" :key="ouderIndex">
+        <OuderInfo
+          :ouderProp="ouder"
+          @ouder-updatet="setOuder(ouder, index, ouderIndex)"
+        />
+      </v-tab-item>
+    </v-tabs-items>
     <v-btn color="primary">Inschrijven</v-btn>
-    <v-btn @click="voegLidToe" color="accent">Voeg nog een lid toe</v-btn>
     <!-- <v-btn
         :disabled="!valid"
         color="success"
@@ -67,26 +75,36 @@
 
 <script>
 import Geboortedatum from '@/components/Geboortedatum'
+import OuderInfo from '@/components/OuderInfo'
 export default {
   components: {
-    Geboortedatum
+    Geboortedatum,
+    OuderInfo
   },
-  data: () => ({
-    tab: null,
-    leden: [{}],
-    valid: true,
-    name: '',
-    nameRules: [(v) => !!v || 'Naam is verplicht'],
-    email: '',
-    emailRules: [
-      (v) => !!v || 'E-mail is verplicht',
-      (v) => /.+@.+\..+/.test(v) || 'E-mail is ongeldig'
-    ],
-    select: null,
-    items: ['Item 1', 'Item 2', 'Item 3', 'Item 4'],
-    checkbox: false,
-    picker: new Date().toISOString().substr(0, 10)
-  }),
+  data() {
+    return {
+      tab: null,
+      ouderTab: null,
+      leden: [{}],
+      ouders: [
+        {
+          naam: this.$store.state.gebruiker.user.data.displayName,
+          email: this.$store.state.gebruiker.user.data.email
+        }
+      ],
+      valid: true,
+      name: '',
+      nameRules: [(v) => !!v || 'Naam is verplicht'],
+      email: '',
+      emailRules: [
+        (v) => !!v || 'E-mail is verplicht',
+        (v) => /.+@.+\..+/.test(v) || 'E-mail is ongeldig'
+      ],
+      select: null,
+      checkbox: false,
+      picker: new Date().toISOString().substr(0, 10)
+    }
+  },
   watch: {
     menu(val) {
       val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
@@ -109,6 +127,10 @@ export default {
       this.leden.push({})
       this.tab = this.leden.length - 1
     },
+    voegOuderToe() {
+      this.ouders.push({})
+      this.ouderTab = this.ouders.length - 1
+    },
     verwijderLid(index) {
       this.leden.splice(index, 1)
     },
@@ -117,6 +139,9 @@ export default {
     },
     setDatum(date, index) {
       this.leden[index].geboortedatum = date
+    },
+    setOuder(ouder, lidIndex, ouderIndex) {
+      this.leden[lidIndex].test = ouder.naam
     }
   }
 }
