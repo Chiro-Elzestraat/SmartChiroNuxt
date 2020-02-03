@@ -4,11 +4,11 @@
       <v-stepper-header>
         <template>
           <v-stepper-step :complete="huidig > 1" step="1">
-            Stap 1
+            Aanvullen gegevens
           </v-stepper-step>
           <v-divider />
           <v-stepper-step :complete="huidig > 2" step="2">
-            Stap 2
+            Voorwaarden
           </v-stepper-step>
         </template>
       </v-stepper-header>
@@ -66,7 +66,7 @@
           >
             Verder
           </v-btn>
-          <v-btn text @click="huidig--">Terug</v-btn>
+          <v-btn text @click="huidig--" :disabled="laden">Terug</v-btn>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
