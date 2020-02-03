@@ -28,6 +28,7 @@
               label="Gsm"
               hint="in het formaat +32 123 45 67 89"
               :rules="rules.gsm"
+              @keyup.enter="huidig++"
             ></v-text-field>
           </div>
           <v-btn color="primary" @click="huidig++" :disabled="!gegevensInOrde">
@@ -137,6 +138,7 @@ export default {
                 firebase.auth().currentUser.getIdToken(true)
                 this.laden = false
                 this.$store.commit('gebruiker/setNieuweGebruiker', false)
+                this.$store.commit('gebruiker/setOuder', true)
               }
             })
         })
