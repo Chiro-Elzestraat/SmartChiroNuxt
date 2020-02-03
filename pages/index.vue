@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Welkom op SmartChiro!</h1>
+    <!-- <h1>Welkom op SmartChiro!</h1> -->
     <Inschrijven v-if="this.$store.state.gebruiker.user.ouder" />
   </div>
 </template>
