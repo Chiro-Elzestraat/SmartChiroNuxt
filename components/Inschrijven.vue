@@ -1,34 +1,35 @@
 <template>
   <div>
-    <v-tabs v-model="tab">
-      <v-tab v-for="(lid, index) in leden" :key="index">
-        {{ lid.naam ? lid.naam.split(/\s(.+)/)[0] : 'Nieuw lid' }}
-      </v-tab>
-      <v-btn @click="voegLidToe" class="plusknop"
-        ><v-icon>mdi-plus</v-icon></v-btn
-      >
-    </v-tabs>
-    <v-tabs-items v-model="tab">
-      <v-tab-item v-for="(lid, index) in leden" :key="index">
-        <v-form :ref="'form' + index" v-model="valid" lazy-validation>
-          <v-btn v-if="index > 0" @click="verwijderLid(index)"
-            >Verwijder dit lid</v-btn
-          >
-          <v-row>
-            <v-col
-              ><v-text-field
-                v-model="lid.naam"
-                :rules="nameRules"
-                label="Naam"
-                required
-              ></v-text-field
-            ></v-col>
-            <v-col
-              ><Geboortedatum @date-change="setDatum($event, index)"
-            /></v-col>
-          </v-row>
+    <v-card outlined>
+      <v-tabs v-model="tab">
+        <v-tab v-for="(lid, index) in leden" :key="index">
+          {{ lid.naam ? lid.naam.split(/\s(.+)/)[0] : 'Nieuw lid' }}
+        </v-tab>
+        <v-btn @click="voegLidToe" class="plusknop"
+          ><v-icon>mdi-plus</v-icon></v-btn
+        >
+      </v-tabs>
+      <v-tabs-items v-model="tab" class="lidInfo">
+        <v-tab-item v-for="(lid, index) in leden" :key="index">
+          <v-form :ref="'form' + index" v-model="valid" lazy-validation>
+            <v-btn v-if="index > 0" @click="verwijderLid(index)"
+              >Verwijder dit lid</v-btn
+            >
+            <v-row>
+              <v-col
+                ><v-text-field
+                  v-model="lid.naam"
+                  :rules="nameRules"
+                  label="Naam"
+                  required
+                ></v-text-field
+              ></v-col>
+              <v-col
+                ><Geboortedatum @date-change="setDatum($event, index)"
+              /></v-col>
+            </v-row>
 
-          <!-- <v-select
+            <!-- <v-select
             v-model="select"
             :items="items"
             :rules="[(v) => !!v || 'Item is required']"
@@ -42,9 +43,10 @@
             label="Do you agree?"
             required
           ></v-checkbox> -->
-        </v-form>
-      </v-tab-item>
-    </v-tabs-items>
+          </v-form>
+        </v-tab-item>
+      </v-tabs-items>
+    </v-card>
     <v-card outlined class="ouders">
       <v-card-title>Ouders</v-card-title>
       <v-tabs v-model="ouderTab">
@@ -177,6 +179,9 @@ export default {
   margin: 16px auto;
   display: block;
   max-width: 60%;
+}
+.lidInfo {
+  padding: 16px;
 }
 .ouders {
   margin: 16px 0;
