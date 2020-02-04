@@ -2,8 +2,11 @@
   <div>
     <!-- <h1>Welkom op SmartChiro!</h1> -->
 
-    <Inschrijven v-if="inschrijven" />
-    <div v-else class="text-center">
+    <Inschrijven v-if="inschrijven && this.$store.state.gebruiker.user.ouder" />
+    <div
+      v-else-if="!inschrijven && this.$store.state.gebruiker.user.ouder"
+      class="text-center"
+    >
       <img src="../assets/geenleden.svg" alt="Geen leden" class="geenleden" />
       <h1 class="headline">Hier is niets te zien</h1>
       <p>Ingeschreven leden verschijnen hier.</p>
