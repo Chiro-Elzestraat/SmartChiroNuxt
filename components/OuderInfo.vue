@@ -2,7 +2,11 @@
   <v-card class="ouderinfo">
     <v-row>
       <v-col
-        ><v-text-field v-model="ouder.naam" label="Naam"></v-text-field
+        ><v-text-field
+          v-model="ouder.naam"
+          label="Naam"
+          :rules="rules.nietLeeg"
+        ></v-text-field
       ></v-col>
       <v-col
         ><v-text-field
@@ -57,7 +61,7 @@ export default {
     ouderProp: {
       type: Object,
       default: () => {
-        return { naam: '', email: '', gsm: '' }
+        return { naam: '', email: '', gsm: '+32' }
       }
     }
   },
