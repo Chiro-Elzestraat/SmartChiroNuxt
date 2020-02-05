@@ -47,28 +47,40 @@
         </v-tab-item>
       </v-tabs-items>
     </v-card>
-    <v-card outlined class="ouders">
-      <v-card-title>Ouders</v-card-title>
-      <v-tabs v-model="ouderTab">
-        <v-tab v-for="(ouder, ouderIndex) in ouders" :key="ouderIndex">{{
-          ouder.naam ? ouder.naam.split(/\s(.+)/)[0] : 'Nieuwe ouder'
-        }}</v-tab>
-        <v-btn @click="voegOuderToe" class="plusknop"
-          ><v-icon>mdi-plus</v-icon></v-btn
-        >
-      </v-tabs>
-
-      <v-tabs-items v-model="ouderTab">
-        <v-tab-item v-for="(ouder, ouderIndex) in ouders" :key="ouderIndex">
-          <v-btn v-if="ouderIndex > 0" @click="verwijderOuder(ouderIndex)"
-            >Verwijder deze ouder</v-btn
+    <v-card outlined style="padding: 16px;margin: 16px 0;">
+      <v-card-title>Contactgegevens</v-card-title>
+      <v-card-subtitle
+        >Deze contactgegevens zijn hetzelfde voor alle leden die u
+        inschrijft.</v-card-subtitle
+      >
+      <v-card outlined class="ouders">
+        <v-card-title>Ouders</v-card-title>
+        <v-tabs v-model="ouderTab">
+          <v-tab v-for="(ouder, ouderIndex) in ouders" :key="ouderIndex">{{
+            ouder.naam ? ouder.naam.split(/\s(.+)/)[0] : 'Nieuwe ouder'
+          }}</v-tab>
+          <v-btn @click="voegOuderToe" class="plusknop"
+            ><v-icon>mdi-plus</v-icon></v-btn
           >
-          <OuderInfo
-            :ouderProp="ouder"
-            @ouder-updatet="setOuder(ouder, index, ouderIndex)"
-          />
-        </v-tab-item>
-      </v-tabs-items>
+        </v-tabs>
+
+        <v-tabs-items v-model="ouderTab">
+          <v-tab-item v-for="(ouder, ouderIndex) in ouders" :key="ouderIndex">
+            <v-btn v-if="ouderIndex > 0" @click="verwijderOuder(ouderIndex)"
+              >Verwijder deze ouder</v-btn
+            >
+            <OuderInfo
+              :ouderProp="ouder"
+              @ouder-updatet="setOuder(ouder, index, ouderIndex)"
+            />
+          </v-tab-item>
+        </v-tabs-items>
+      </v-card>
+      <v-card outlined>
+        <v-card-title>Extra contactpersonen</v-card-title>
+        <v-card-subtitle>Voor als ouders niet bereikbaar zijn</v-card-subtitle>
+        <ExtraInfo />
+      </v-card>
     </v-card>
     <v-btn color="primary" class="inschrijfknop">Inschrijven</v-btn>
     <!-- <v-btn
@@ -93,11 +105,13 @@
 <script>
 import Geboortedatum from '@/components/Geboortedatum'
 import OuderInfo from '@/components/OuderInfo'
+import ExtraInfo from '@/components/ExtraInfo'
 import { db } from '@/plugins/firebase'
 export default {
   components: {
     Geboortedatum,
-    OuderInfo
+    OuderInfo,
+    ExtraInfo
   },
   data() {
     return {
@@ -152,7 +166,7 @@ export default {
       this.tab = this.leden.length - 1
     },
     voegOuderToe() {
-      this.ouders.push({})
+      this.ouders.push({ naam: '', email: '', gsm: '+32' })
       this.ouderTab = this.ouders.length - 1
     },
     verwijderLid(index) {
