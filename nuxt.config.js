@@ -1,15 +1,15 @@
-import colors from 'vuetify/es5/util/colors'
-import path from 'path'
+// import path from 'path'
 import fs from 'fs'
+import colors from 'vuetify/es5/util/colors'
 
-let vuetify = {
+const vuetify = {
   customVariables: ['~/assets/variables.scss'],
   theme: {
     dark: true,
     themes: {
       dark: {
         primary: colors.red.darken2,
-        accent: colors.grey.darken3,
+        accent: colors.red.darken3,
         secondary: colors.amber.darken3,
         info: colors.teal.lighten1,
         warning: colors.amber.base,
