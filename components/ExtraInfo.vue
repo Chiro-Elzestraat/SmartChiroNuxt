@@ -6,6 +6,7 @@
           v-model="extra.naam"
           label="Naam"
           :rules="rules.nietLeeg"
+          hint="Eerst voornaam, daarna achternaam"
         ></v-text-field
       ></v-col>
       <v-col>
@@ -29,7 +30,7 @@ export default {
     mask
   },
   props: {
-    extra: {
+    extraProp: {
       type: Object,
       default: () => ({ naam: '', gsm: '+32' })
     }
@@ -46,6 +47,13 @@ export default {
             value === '+32' ||
             'Ongeldig gsm-nummer. Verwacht formaat: +32 123 45 67 89'
         ]
+      }
+    }
+  },
+  computed: {
+    extra: {
+      get() {
+        return this.extraProp
       }
     }
   }

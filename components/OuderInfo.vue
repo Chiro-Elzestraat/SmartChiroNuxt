@@ -6,6 +6,7 @@
           v-model="ouder.naam"
           label="Naam"
           :rules="rules.nietLeeg"
+          hint="Eerst voornaam, daarna achternaam"
         ></v-text-field
       ></v-col>
       <v-col
@@ -69,9 +70,6 @@ export default {
     ouder: {
       get() {
         return this.ouderProp
-      },
-      set(ouder) {
-        this.$emit('ouder-updatet', ouder)
       }
     }
   }

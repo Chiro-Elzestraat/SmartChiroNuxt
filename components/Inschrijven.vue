@@ -21,12 +21,22 @@
                   v-model="lid.naam"
                   :rules="nameRules"
                   label="Naam"
+                  hint="Eerst voornaam, daarna achternaam"
                   required
                 ></v-text-field
               ></v-col>
               <v-col
                 ><Geboortedatum @date-change="setDatum($event, index)"
               /></v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-text-field
+                  v-model="lid.email"
+                  label="E-mail zoon (optioneel)"
+                />
+              </v-col>
+              <v-col> </v-col>
             </v-row>
 
             <!-- <v-select
@@ -46,6 +56,36 @@
           </v-form>
         </v-tab-item>
       </v-tabs-items>
+    </v-card>
+    <v-card outlined style="padding: 16px;margin: 16px 0;">
+      <v-card-title>Adres</v-card-title>
+      <v-card-subtitle
+        >Dit adres is hetzelfde voor alle leden die u
+        inschrijft.</v-card-subtitle
+      >
+      <v-card-text>
+        <v-row>
+          <v-col>
+            <v-text-field v-model="adres.straat" label="Straat" />
+          </v-col>
+          <v-col>
+            <v-text-field v-model="adres.huisnummer" label="Huisnummer" />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-text-field v-model="adres.bus" label="Bus (optioneel)" />
+          </v-col>
+          <v-col>
+            <v-text-field v-model="adres.postcode" label="Postcode" />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-text-field v-model="adres.plaats" label="Plaats" />
+          </v-col>
+        </v-row>
+      </v-card-text>
     </v-card>
     <v-card outlined style="padding: 16px;margin: 16px 0;">
       <v-card-title>Contactgegevens</v-card-title>
@@ -69,17 +109,14 @@
             <v-btn v-if="ouderIndex > 0" @click="verwijderOuder(ouderIndex)"
               >Verwijder deze ouder</v-btn
             >
-            <OuderInfo
-              :ouderProp="ouder"
-              @ouder-updatet="setOuder(ouder, index, ouderIndex)"
-            />
+            <OuderInfo :ouderProp="ouder" />
           </v-tab-item>
         </v-tabs-items>
       </v-card>
       <v-card outlined>
         <v-card-title>Extra contactpersonen</v-card-title>
         <v-card-subtitle>Voor als ouders niet bereikbaar zijn</v-card-subtitle>
-        <ExtraInfo />
+        <ExtraInfo :extraProp="extra[0]" />
       </v-card>
     </v-card>
     <v-btn color="primary" class="inschrijfknop">Inschrijven</v-btn>
@@ -118,10 +155,17 @@ export default {
       tab: null,
       ouderTab: null,
       leden: [{}],
+      adres: {},
       ouders: [
         {
           naam: this.$store.state.gebruiker.user.data.displayName,
           email: this.$store.state.gebruiker.user.data.email,
+          gsm: ''
+        }
+      ],
+      extra: [
+        {
+          naam: '',
           gsm: ''
         }
       ],
@@ -180,9 +224,6 @@ export default {
     },
     setDatum(date, index) {
       this.leden[index].geboortedatum = date
-    },
-    setOuder(ouder, lidIndex, ouderIndex) {
-      this.leden[lidIndex].test = ouder.naam
     }
   }
 }
