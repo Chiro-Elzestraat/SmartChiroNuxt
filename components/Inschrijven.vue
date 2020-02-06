@@ -38,6 +38,29 @@
               </v-col>
               <v-col> </v-col>
             </v-row>
+            <v-card outlined style="padding: 16px;margin: 16px 0;">
+              <v-card-title>Medische fiche</v-card-title>
+              <v-card-subtitle>{{ lid.naam }}</v-card-subtitle>
+              <v-card-text>
+                <v-card outlined style="padding: 16px;margin: 16px 0;">
+                  <v-card-title>Huisarts</v-card-title>
+                  <v-card-subtitle>Contactgegevens</v-card-subtitle>
+                  <v-card-text>
+                    <v-row>
+                      <v-col
+                        ><v-text-field v-model="lid.huisarts.naam" label="Naam"
+                      /></v-col>
+                      <v-col>
+                        <v-text-field
+                          v-mdoel="lid.huisarts.gsm"
+                          label="Gsm"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+              </v-card-text>
+            </v-card>
 
             <!-- <v-select
             v-model="select"
@@ -154,7 +177,11 @@ export default {
     return {
       tab: null,
       ouderTab: null,
-      leden: [{}],
+      leden: [
+        {
+          huisarts: {}
+        }
+      ],
       adres: {},
       ouders: [
         {
@@ -206,7 +233,9 @@ export default {
       this.$refs[ref][0].resetValidation()
     },
     voegLidToe() {
-      this.leden.push({})
+      this.leden.push({
+        huisarts: {}
+      })
       this.tab = this.leden.length - 1
     },
     voegOuderToe() {
