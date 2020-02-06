@@ -48,17 +48,31 @@
                   <v-card-text>
                     <v-row>
                       <v-col
-                        ><v-text-field v-model="lid.huisarts.naam" label="Naam"
+                        ><v-text-field
+                          v-model="lid.medischeFiche.huisarts.naam"
+                          label="Naam"
                       /></v-col>
                       <v-col>
                         <v-text-field
-                          v-mdoel="lid.huisarts.gsm"
+                          v-model="lid.medischeFiche.huisarts.gsm"
                           label="Gsm"
                         ></v-text-field>
                       </v-col>
                     </v-row>
                   </v-card-text>
                 </v-card>
+                <v-row>
+                  <v-checkbox
+                    v-model="lid.medischeFiche.tetanus.gevaccineerd"
+                    :label="`${lid.naam || ''} is gevaccineerd tegen tetanus`"
+                  ></v-checkbox>
+                  &nbsp;
+                  <v-text-field
+                    label="In het jaar (optioneel)"
+                    v-model="lid.medischeFiche.tetanus.jaar"
+                    :disabled="!lid.medischeFiche.tetanus.gevaccineerd"
+                  ></v-text-field>
+                </v-row>
               </v-card-text>
             </v-card>
 
@@ -179,7 +193,10 @@ export default {
       ouderTab: null,
       leden: [
         {
-          huisarts: {}
+          medischeFiche: {
+            huisarts: {},
+            tetanus: {}
+          }
         }
       ],
       adres: {},
@@ -234,7 +251,10 @@ export default {
     },
     voegLidToe() {
       this.leden.push({
-        huisarts: {}
+        medischeFiche: {
+          huisarts: {},
+          tetanus: {}
+        }
       })
       this.tab = this.leden.length - 1
     },
