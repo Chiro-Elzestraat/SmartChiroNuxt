@@ -88,7 +88,19 @@
                       :lidAandoeningen="lid.medischeFiche.aandoeningen"
                     />
                   </v-col>
-                  <v-col> </v-col>
+                  <v-col>
+                    <v-card outlined>
+                      <v-card-title>Allergieën</v-card-title>
+                      <v-card-subtitle
+                        >Voeg hier eventuele allergieën toe.</v-card-subtitle
+                      >
+                      <v-card-text>
+                        <Allergieen
+                          :lidAllergieen="lid.medischeFiche.allergieen"
+                        />
+                      </v-card-text>
+                    </v-card>
+                  </v-col>
                 </v-row>
               </v-card-text>
             </v-card>
@@ -198,13 +210,15 @@ import Geboortedatum from '@/components/Geboortedatum'
 import OuderInfo from '@/components/OuderInfo'
 import ExtraInfo from '@/components/ExtraInfo'
 import Aandoeningen from '@/components/Aandoeningen'
+import Allergieen from '@/components/Allergieen'
 import { db } from '@/plugins/firebase'
 export default {
   components: {
     Geboortedatum,
     OuderInfo,
     ExtraInfo,
-    Aandoeningen
+    Aandoeningen,
+    Allergieen
   },
   data() {
     return {
@@ -215,7 +229,8 @@ export default {
           medischeFiche: {
             huisarts: {},
             tetanus: {},
-            aandoeningen: {}
+            aandoeningen: {},
+            allergieen: []
           }
         }
       ],
@@ -274,7 +289,8 @@ export default {
         medischeFiche: {
           huisarts: {},
           tetanus: {},
-          aandoeningen: {}
+          aandoeningen: {},
+          allergieen: [{}]
         }
       })
       this.tab = this.leden.length - 1
