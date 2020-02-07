@@ -73,6 +73,14 @@
                     :disabled="!lid.medischeFiche.tetanus.gevaccineerd"
                   ></v-text-field>
                 </v-row>
+                <v-row>
+                  <v-textarea
+                    outlined
+                    auto-grow
+                    v-model="lid.medischeFiche.vroegereZiekten"
+                    label="Vroegere ziekten of heelkundige ingrepen"
+                  ></v-textarea>
+                </v-row>
               </v-card-text>
             </v-card>
 

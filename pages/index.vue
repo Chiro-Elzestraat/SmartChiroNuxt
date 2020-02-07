@@ -33,6 +33,22 @@ export default {
     return {
       inschrijven: false
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    // called when the route that renders this component is about to
+    // be navigated away from.
+    // has access to `this` component instance.
+    if (!this.inschrijven) next()
+    else {
+      const answer = window.confirm(
+        'Jouw inschrijving is nog niet opgeslagen. Weet je zeker dat je deze pagina wil verlaten?'
+      )
+      if (answer) {
+        next()
+      } else {
+        next(false)
+      }
+    }
   }
 }
 </script>
