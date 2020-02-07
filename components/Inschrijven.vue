@@ -64,7 +64,11 @@
                 <v-row>
                   <v-checkbox
                     v-model="lid.medischeFiche.tetanus.gevaccineerd"
-                    :label="`${lid.naam || ''} is gevaccineerd tegen tetanus`"
+                    :label="
+                      `${
+                        lid.naam ? lid.naam.split(/\s(.+)/)[0] : ''
+                      } is gevaccineerd tegen tetanus`
+                    "
                   ></v-checkbox>
                   &nbsp;
                   <v-text-field
@@ -83,7 +87,7 @@
                 </v-row>
                 <v-row>
                   <v-col>
-                    {{ lid.naam }} lijdt aan
+                    {{ lid.naam ? lid.naam.split(/\s(.+)/)[0] : '' }} lijdt aan
                     <Aandoeningen
                       :lidAandoeningen="lid.medischeFiche.aandoeningen"
                     />
