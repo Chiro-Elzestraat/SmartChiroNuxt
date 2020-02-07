@@ -81,6 +81,56 @@
                     label="Vroegere ziekten of heelkundige ingrepen"
                   ></v-textarea>
                 </v-row>
+                <v-row>
+                  <v-col>
+                    {{ lid.naam }} lijdt aan
+                    <v-checkbox
+                      v-model="lid.medischeFiche.aandoeningen.astma"
+                      label="astma"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="lid.medischeFiche.aandoeningen.bedwateren"
+                      label="bedwateren"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="lid.medischeFiche.aandoeningen.epilepsie"
+                      label="epilepsie"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="lid.medischeFiche.aandoeningen.hartkwaal"
+                      label="hartkwaal"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="lid.medischeFiche.aandoeningen.hooikoorts"
+                      label="hooikoorts"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="lid.medischeFiche.aandoeningen.huidaandoening"
+                      label="huidaandoening"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="lid.medischeFiche.aandoeningen.reuma"
+                      label="reuma"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="lid.medischeFiche.aandoeningen.slaapwandelen"
+                      label="slaapwandelen"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="lid.medischeFiche.aandoeningen.suikerziekte"
+                      label="suikerziekte"
+                      hide-details
+                    ></v-checkbox>
+                  </v-col>
+                </v-row>
               </v-card-text>
             </v-card>
 
@@ -203,7 +253,8 @@ export default {
         {
           medischeFiche: {
             huisarts: {},
-            tetanus: {}
+            tetanus: {},
+            aandoeningen: {}
           }
         }
       ],
@@ -261,7 +312,8 @@ export default {
       this.leden.push({
         medischeFiche: {
           huisarts: {},
-          tetanus: {}
+          tetanus: {},
+          aandoeningen: {}
         }
       })
       this.tab = this.leden.length - 1
