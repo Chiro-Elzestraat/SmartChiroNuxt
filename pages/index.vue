@@ -2,7 +2,10 @@
   <div>
     <!-- <h1>Welkom op SmartChiro!</h1> -->
 
-    <Inschrijven v-if="inschrijven && this.$store.state.gebruiker.user.ouder" />
+    <Inschrijven
+      v-if="inschrijven && this.$store.state.gebruiker.user.ouder"
+      v-on:ingeschreven="inschrijven = !inschrijven"
+    />
     <div
       v-else-if="!inschrijven && this.$store.state.gebruiker.user.ouder"
       class="text-center"

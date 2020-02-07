@@ -49,12 +49,12 @@
                     <v-row>
                       <v-col
                         ><v-text-field
-                          v-model="lid.medischeFiche.huisarts.naam"
+                          v-model="lid.contact.huisarts.naam"
                           label="Naam"
                       /></v-col>
                       <v-col>
                         <v-text-field
-                          v-model="lid.medischeFiche.huisarts.gsm"
+                          v-model="lid.contact.huisarts.gsm"
                           label="Gsm"
                         ></v-text-field>
                       </v-col>
@@ -273,7 +273,13 @@
         </v-tabs-items>
       </v-card>
     </v-card>
-    <v-btn color="primary" class="inschrijfknop">Inschrijven</v-btn>
+    <v-btn
+      @click="inschrijven"
+      color="primary"
+      class="inschrijfknop"
+      :loading="laden"
+      >Inschrijven</v-btn
+    >
     <!-- <v-btn
         :disabled="!valid"
         color="success"
@@ -290,6 +296,7 @@
       <v-btn color="warning" @click="resetValidation('form' + index)">
         Reset Validation
       </v-btn> -->
+    <!-- <CheckGegevens /> -->
   </div>
 </template>
 
@@ -299,6 +306,7 @@ import OuderInfo from '@/components/OuderInfo'
 import ExtraInfo from '@/components/ExtraInfo'
 import Aandoeningen from '@/components/Aandoeningen'
 import Allergieen from '@/components/Allergieen'
+// import CheckGegevens from '@/components/CheckGegevens'
 import { db } from '@/plugins/firebase'
 export default {
   components: {
@@ -307,19 +315,23 @@ export default {
     ExtraInfo,
     Aandoeningen,
     Allergieen
+    // CheckGegevens
   },
   data() {
     return {
+      laden: false,
       tab: null,
       ouderTab: null,
       extraTab: null,
       leden: [
         {
           medischeFiche: {
-            huisarts: {},
             tetanus: {},
             aandoeningen: {},
             allergieen: []
+          },
+          contact: {
+            huisarts: {}
           }
         }
       ],
@@ -361,6 +373,18 @@ export default {
         console.log(doc.data())
       })
   },
+  computed: {
+    ledenAlles() {
+      let leden = [...this.leden]
+      leden = leden.map((lid) => {
+        lid.contact.ouders = this.ouders
+        lid.contact.extra = this.extra
+        lid.ouderId = this.$store.state.gebruiker.user.data.uid
+        return lid
+      })
+      return leden
+    }
+  },
 
   methods: {
     validate(ref) {
@@ -377,10 +401,12 @@ export default {
     voegLidToe() {
       this.leden.push({
         medischeFiche: {
-          huisarts: {},
           tetanus: {},
           aandoeningen: {},
-          allergieen: [{}]
+          allergieen: []
+        },
+        contact: {
+          huisarts: {}
         }
       })
       this.tab = this.leden.length - 1
@@ -404,6 +430,22 @@ export default {
     },
     setDatum(date, index) {
       this.leden[index].geboortedatum = date
+    },
+    inschrijven() {
+      this.laden = true
+      const batch = db.batch()
+      this.ledenAlles.forEach((lid) => {
+        const doc = db.collection('leden').doc()
+        batch.set(doc, lid)
+      })
+      batch
+        .commit()
+        .then((result) => {
+          this.laden = false
+          this.$emit('ingeschreven')
+          console.log(result)
+        })
+        .catch((err) => console.log(err))
     }
   }
 }

@@ -49,19 +49,19 @@
       </div>
     </v-tab-item>
     <v-tab-item>
-      <div class="medischeInfo">
+      <div class="medischeFiche">
         <v-card class="medischeKaart" outlined>
           <v-card-title
             :class="{
-              goed: lid.medischeInfo.medischeHandelingen,
-              belangrijk: !lid.medischeInfo.medischeHandelingen
+              goed: lid.medischeFiche.medischeHandelingen,
+              belangrijk: !lid.medischeFiche.medischeHandelingen
             }"
           >
             Medische handelingen
           </v-card-title>
           <v-card-subtitle
             >mogen
-            {{ lid.medischeInfo.medischeHandelingen ? '' : 'niet' }} worden
+            {{ lid.medischeFiche.medischeHandelingen ? '' : 'niet' }} worden
             uitgevoerd</v-card-subtitle
           >
         </v-card>
@@ -69,17 +69,17 @@
           <v-card-title
             :class="{
               goed:
-                lid.medischeInfo.tetanus.gevaccineerd &&
-                lid.medischeInfo.tetanus.jaar,
-              belangrijk: !lid.medischeInfo.tetanus.gevaccineerd,
-              waarschuwing: lid.medischeInfo.tetanus.gevaccineerd
+                lid.medischeFiche.tetanus.gevaccineerd &&
+                lid.medischeFiche.tetanus.jaar,
+              belangrijk: !lid.medischeFiche.tetanus.gevaccineerd,
+              waarschuwing: lid.medischeFiche.tetanus.gevaccineerd
             }"
             >Is
-            {{ lid.medischeInfo.tetanus.gevaccineerd ? '' : 'niet' }}
+            {{ lid.medischeFiche.tetanus.gevaccineerd ? '' : 'niet' }}
             gevaccineerd tegen tetanus</v-card-title
           >
           <v-card-subtitle
-            >In het jaar {{ lid.medischeInfo.tetanus.jaar }}</v-card-subtitle
+            >In het jaar {{ lid.medischeFiche.tetanus.jaar }}</v-card-subtitle
           >
         </v-card>
       </div>
@@ -102,7 +102,7 @@ export default {
 .belangrijk {
   color: #f44336;
 }
-.medischeInfo {
+.medischeFiche {
   display: flex;
   flex-wrap: wrap;
   /* row-gap: 2rem;
