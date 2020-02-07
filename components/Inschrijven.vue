@@ -84,52 +84,11 @@
                 <v-row>
                   <v-col>
                     {{ lid.naam }} lijdt aan
-                    <v-checkbox
-                      v-model="lid.medischeFiche.aandoeningen.astma"
-                      label="astma"
-                      hide-details
-                    ></v-checkbox>
-                    <v-checkbox
-                      v-model="lid.medischeFiche.aandoeningen.bedwateren"
-                      label="bedwateren"
-                      hide-details
-                    ></v-checkbox>
-                    <v-checkbox
-                      v-model="lid.medischeFiche.aandoeningen.epilepsie"
-                      label="epilepsie"
-                      hide-details
-                    ></v-checkbox>
-                    <v-checkbox
-                      v-model="lid.medischeFiche.aandoeningen.hartkwaal"
-                      label="hartkwaal"
-                      hide-details
-                    ></v-checkbox>
-                    <v-checkbox
-                      v-model="lid.medischeFiche.aandoeningen.hooikoorts"
-                      label="hooikoorts"
-                      hide-details
-                    ></v-checkbox>
-                    <v-checkbox
-                      v-model="lid.medischeFiche.aandoeningen.huidaandoening"
-                      label="huidaandoening"
-                      hide-details
-                    ></v-checkbox>
-                    <v-checkbox
-                      v-model="lid.medischeFiche.aandoeningen.reuma"
-                      label="reuma"
-                      hide-details
-                    ></v-checkbox>
-                    <v-checkbox
-                      v-model="lid.medischeFiche.aandoeningen.slaapwandelen"
-                      label="slaapwandelen"
-                      hide-details
-                    ></v-checkbox>
-                    <v-checkbox
-                      v-model="lid.medischeFiche.aandoeningen.suikerziekte"
-                      label="suikerziekte"
-                      hide-details
-                    ></v-checkbox>
+                    <Aandoeningen
+                      :lidAandoeningen="lid.medischeFiche.aandoeningen"
+                    />
                   </v-col>
+                  <v-col> </v-col>
                 </v-row>
               </v-card-text>
             </v-card>
@@ -238,12 +197,14 @@
 import Geboortedatum from '@/components/Geboortedatum'
 import OuderInfo from '@/components/OuderInfo'
 import ExtraInfo from '@/components/ExtraInfo'
+import Aandoeningen from '@/components/Aandoeningen'
 import { db } from '@/plugins/firebase'
 export default {
   components: {
     Geboortedatum,
     OuderInfo,
-    ExtraInfo
+    ExtraInfo,
+    Aandoeningen
   },
   data() {
     return {
