@@ -20,6 +20,15 @@
         </v-text-field
       ></v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        <v-text-field
+          v-model="extra.relatie"
+          label="Relatie met deze persoon (oma, nonkel, buur, etc.)"
+          :rules="rules.nietLeeg"
+        ></v-text-field>
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 
@@ -32,7 +41,7 @@ export default {
   props: {
     extraProp: {
       type: Object,
-      default: () => ({ naam: '', gsm: '+32' })
+      default: () => ({ naam: '', gsm: '+32', relatie: '' })
     }
   },
   data() {

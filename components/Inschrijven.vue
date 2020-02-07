@@ -253,7 +253,26 @@
       <v-card outlined>
         <v-card-title>Extra contactpersonen</v-card-title>
         <v-card-subtitle>Voor als ouders niet bereikbaar zijn</v-card-subtitle>
-        <ExtraInfo :extraProp="extra[0]" />
+        <v-tabs v-model="extraTab">
+          <v-tab v-for="(extraContact, extraIndex) in extra" :key="extraIndex">
+            {{
+              extraContact.naam
+                ? extraContact.naam.split(/\s(.+)/)[0]
+                : 'Nieuwe contactpersoon'
+            }}
+          </v-tab>
+          <v-btn @click="voegExtraToe" class="plusknop"
+            ><v-icon>mdi-plus</v-icon></v-btn
+          >
+        </v-tabs>
+        <v-tabs-items v-model="extraTab">
+          <v-tab-item
+            v-for="(extraContact, extraIndex) in extra"
+            :key="extraIndex"
+          >
+            <ExtraInfo :extraProp="extraContact" />
+          </v-tab-item>
+        </v-tabs-items>
       </v-card>
     </v-card>
     <v-btn color="primary" class="inschrijfknop">Inschrijven</v-btn>
@@ -295,6 +314,7 @@ export default {
     return {
       tab: null,
       ouderTab: null,
+      extraTab: null,
       leden: [
         {
           medischeFiche: {
@@ -316,7 +336,8 @@ export default {
       extra: [
         {
           naam: '',
-          gsm: ''
+          gsm: '',
+          relatie: ''
         }
       ],
       valid: true,
@@ -369,6 +390,10 @@ export default {
     voegOuderToe() {
       this.ouders.push({ naam: '', email: '', gsm: '+32' })
       this.ouderTab = this.ouders.length - 1
+    },
+    voegExtraToe() {
+      this.extra.push({ naam: '', gsm: '', relatie: '' })
+      this.extraTab = this.extra.length - 1
     },
     verwijderLid(index) {
       this.leden.splice(index, 1)
