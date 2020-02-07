@@ -106,9 +106,76 @@
                     </v-card>
                   </v-col>
                 </v-row>
+                <v-row>
+                  <v-textarea
+                    v-model="lid.medischeFiche.extraInfo"
+                    outlined
+                    auto-grow
+                    label="Extra informatie in verband met aandoeningen &amp; allergieën."
+                  />
+                </v-row>
+                <v-row>
+                  <v-radio-group v-model="lid.medischeFiche.dieet" row
+                    ><span style="margin: auto 0;"
+                      >Volgt
+                      {{ lid.naam ? lid.naam.split(/\s(.+)/)[0] : '' }} een
+                      dieet?&nbsp;</span
+                    ><v-radio
+                      :value="true"
+                      default
+                      label="Ja, namelijk"/><v-text-field
+                      v-model="lid.medischeFiche.dieetDetails"
+                      :disabled="!lid.medischeFiche.dieet"/>
+                    <v-radio :value="false" label="Nee"
+                  /></v-radio-group>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <v-checkbox
+                      v-model="lid.medischeFiche.kanZwemmen"
+                      label="Kan zwemmen"
+                      hide-details
+                    />
+
+                    <v-checkbox
+                      v-model="lid.medischeFiche.vlugMoe"
+                      label="Is vlug moe"
+                      hide-details
+                    />
+                    <v-checkbox
+                      v-model="lid.medischeFiche.kanDeelnemen"
+                      label="Kan deelnemen aan sport en spel afgestemd op zijn leeftijd"
+                      hide-details
+                    />
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-card outlined>
+                    <v-card-text>
+                      <p>
+                        Leiding mag - behalve EHBO - niet op eigen initiatief
+                        medische handelingen uitvoeren. Zonder toestemming van
+                        de ouders mogen ze zelfs geen pijnstillende of
+                        koortswerende medicatie toedienen, zoals Perdolan,
+                        Dafalgan of aspirines. Hieronder kunt u hen die
+                        toestemming geven zodat ze voor dergelijke zorgen niet
+                        naar een arts moeten.
+                      </p>
+                      <v-checkbox
+                        v-model="lid.medischeFiche.medischeHandelingen"
+                        hide-details
+                        label="Ja, wij geven toestemming aan de leiding om bij hoogdringendheid aan ons kind een dosis via de apotheek vrij verkrijgbare pijnstillende en koortswerende medicatie toe te dienen."
+                      ></v-checkbox>
+                    </v-card-text>
+                  </v-card>
+                </v-row>
               </v-card-text>
             </v-card>
-
+            <v-textarea
+              outlined
+              v-model="lid.AanvullendeInfo"
+              label="Aanvullende opmerkingen (optioneel)"
+            ></v-textarea>
             <!-- <v-select
             v-model="select"
             :items="items"
