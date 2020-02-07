@@ -86,25 +86,23 @@
                   ></v-textarea>
                 </v-row>
                 <v-row>
-                  <v-col>
-                    {{ lid.naam ? lid.naam.split(/\s(.+)/)[0] : '' }} lijdt aan
-                    <Aandoeningen
-                      :lidAandoeningen="lid.medischeFiche.aandoeningen"
-                    />
-                  </v-col>
-                  <v-col>
-                    <v-card outlined>
-                      <v-card-title>Allergieën</v-card-title>
-                      <v-card-subtitle
-                        >Voeg hier eventuele allergieën toe.</v-card-subtitle
-                      >
-                      <v-card-text>
-                        <Allergieen
-                          :lidAllergieen="lid.medischeFiche.allergieen"
-                        />
-                      </v-card-text>
-                    </v-card>
-                  </v-col>
+                  {{ lid.naam ? lid.naam.split(/\s(.+)/)[0] : '' }} lijdt aan
+                  <Aandoeningen
+                    :lidAandoeningen="lid.medischeFiche.aandoeningen"
+                  />
+                </v-row>
+                <v-row>
+                  <v-card outlined class="allergieen">
+                    <v-card-title>Allergieën</v-card-title>
+                    <v-card-subtitle
+                      >Voeg hier eventuele allergieën toe.</v-card-subtitle
+                    >
+                    <v-card-text>
+                      <Allergieen
+                        :lidAllergieen="lid.medischeFiche.allergieen"
+                      />
+                    </v-card-text>
+                  </v-card>
                 </v-row>
                 <v-row>
                   <v-textarea
@@ -164,7 +162,7 @@
                       <v-checkbox
                         v-model="lid.medischeFiche.medischeHandelingen"
                         hide-details
-                        label="Ja, wij geven toestemming aan de leiding om bij hoogdringendheid aan ons kind een dosis via de apotheek vrij verkrijgbare pijnstillende en koortswerende medicatie toe te dienen."
+                        label="Ja, wij geven toestemming"
                       ></v-checkbox>
                     </v-card-text>
                   </v-card>
@@ -425,5 +423,9 @@ export default {
 }
 .plusknop {
   margin: auto 0;
+}
+.allergieen {
+  margin: 16px auto;
+  width: 90%;
 }
 </style>
