@@ -10,32 +10,59 @@
       v-else-if="!inschrijven && this.$store.state.gebruiker.user.ouder"
       class="text-center"
     >
-      <img src="../assets/geenleden.svg" alt="Geen leden" class="geenleden" />
-      <h1 class="headline">Hier is niets te zien</h1>
-      <p>Ingeschreven leden verschijnen hier.</p>
-      <v-btn
-        fab
-        color="primary"
-        class="plusknop"
-        v-if="!inschrijven"
-        @click="inschrijven = !inschrijven"
-      >
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
+      <div v-if="leden.length === 0">
+        <img src="../assets/geenleden.svg" alt="Geen leden" class="geenleden" />
+        <h1 class="headline">Hier is niets te zien</h1>
+        <p>Ingeschreven leden verschijnen hier.</p>
+        <v-btn
+          fab
+          color="primary"
+          class="plusknop"
+          v-if="!inschrijven"
+          @click="inschrijven = !inschrijven"
+        >
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </div>
+      <div v-else>
+        <v-expansion-panels>
+          <v-expansion-panel v-for="(lid, index) in leden" :key="index">
+            <v-expansion-panel-header>{{ lid.naam }}</v-expansion-panel-header>
+            <v-expansion-panel-content
+              ><LidInfo :lid="lid"
+            /></v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import firebase from 'firebase'
 import Inschrijven from '@/components/Inschrijven'
+import LidInfo from '@/components/LidInfo'
+import { db } from '@/plugins/firebase'
 export default {
   components: {
-    Inschrijven
+    Inschrijven,
+    LidInfo
   },
   data() {
     return {
-      inschrijven: false
+      inschrijven: false,
+      leden: []
     }
+  },
+  mounted() {
+    firebase.auth().onAuthStateChanged((user) => {
+      db.collection('leden')
+        .where('ouderId', '==', this.$store.state.gebruiker.user.data.uid)
+        .get()
+        .then((snap) => {
+          this.leden = snap.docs.map((item) => item.data())
+        })
+    })
   },
   beforeRouteLeave(to, from, next) {
     // called when the route that renders this component is about to

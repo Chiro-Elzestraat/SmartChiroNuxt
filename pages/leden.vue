@@ -128,10 +128,6 @@ export default {
 </script>
 
 <style>
-.contact {
-  display: flex;
-  flex-wrap: wrap;
-}
 @media (orientation: landscape) {
   .vtab {
     width: 200px;

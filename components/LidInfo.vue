@@ -115,4 +115,8 @@ export default {
   margin: 16px auto;
   min-width: 200px;
 }
+.contact {
+  display: flex;
+  flex-wrap: wrap;
+}
 </style>
