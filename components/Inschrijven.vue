@@ -174,20 +174,6 @@
               v-model="lid.AanvullendeInfo"
               label="Aanvullende opmerkingen (optioneel)"
             ></v-textarea>
-            <!-- <v-select
-            v-model="select"
-            :items="items"
-            :rules="[(v) => !!v || 'Item is required']"
-            label="Item"
-            required
-          ></v-select>
-
-          <v-checkbox
-            v-model="checkbox"
-            :rules="[(v) => !!v || 'You must agree to continue!']"
-            label="Do you agree?"
-            required
-          ></v-checkbox> -->
           </v-form>
         </v-tab-item>
       </v-tabs-items>
@@ -278,6 +264,7 @@
       color="primary"
       class="inschrijfknop"
       :loading="laden"
+      :disabled="!dataInOrde"
       >Inschrijven</v-btn
     >
     <!-- <v-btn
@@ -331,8 +318,12 @@ export default {
             allergieen: []
           },
           contact: {
-            huisarts: {}
-          }
+            huisarts: {
+              naam: '',
+              gsm: ''
+            }
+          },
+          geboortedatum: ''
         }
       ],
       adres: {},
@@ -383,6 +374,20 @@ export default {
         return lid
       })
       return leden
+    },
+    dataInOrde() {
+      let valid = true
+      this.ledenAlles.forEach((lid) => {
+        if (
+          !lid.naam ||
+          !lid.geboortedatum ||
+          !lid.contact.huisarts.gsm ||
+          !lid.contact.huisarts.naam
+        ) {
+          valid = false
+        }
+      })
+      return valid
     }
   },
 
@@ -406,8 +411,12 @@ export default {
           allergieen: []
         },
         contact: {
-          huisarts: {}
-        }
+          huisarts: {
+            naam: '',
+            gsm: ''
+          }
+        },
+        geboortedatum: ''
       })
       this.tab = this.leden.length - 1
     },
