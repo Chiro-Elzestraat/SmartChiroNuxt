@@ -52,10 +52,10 @@ export default {
     return {
       // TODO: deze groepen kunnen ook opgehaald worden van server
       groepen: [
-        { naam: 'Speelclub', leden: [], minLeeftijd: 4, maxLeeftijd: 8 },
-        { naam: 'Rakkers', leden: [], minLeeftijd: 8, maxLeeftijd: 10 },
-        { naam: 'Toppers', leden: [], minLeeftijd: 10, maxLeeftijd: 14 },
-        { naam: 'Kerels', leden: [], minLeeftijd: 14, maxLeeftijd: 16 },
+        { naam: 'Speelclub', leden: [], minLeeftijd: -2, maxLeeftijd: 8 },
+        { naam: 'Rakkers', leden: [], minLeeftijd: 8, maxLeeftijd: 12 },
+        { naam: 'Toppers', leden: [], minLeeftijd: 12, maxLeeftijd: 15 },
+        { naam: 'Kerels', leden: [], minLeeftijd: 15, maxLeeftijd: 16 },
         { naam: `Aspi's`, leden: [], minLeeftijd: 16, maxLeeftijd: 18 }
       ]
     }
@@ -69,9 +69,9 @@ export default {
         const vandaag = new Date()
         const maand = vandaag.getMonth()
         const vergelijkDatum =
-          maand < 9
-            ? new Date(vandaag.getFullYear() - 1, 9, 0)
-            : new Date(vandaag.getFullYear(), 9, 0)
+          maand < 0
+            ? new Date(vandaag.getFullYear() - 1, 0, 0)
+            : new Date(vandaag.getFullYear(), 0, 0)
         this.groepen.forEach((groep) => {
           /* misschien deze loop omdraaien, dat eerst over de leden wordt geloopt, en daarna
           pas over de groepen om deze in de juiste groep te plaatsen, ik denk dat dat
