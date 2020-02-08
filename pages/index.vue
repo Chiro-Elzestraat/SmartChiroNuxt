@@ -14,15 +14,6 @@
         <img src="../assets/geenleden.svg" alt="Geen leden" class="geenleden" />
         <h1 class="headline">Hier is niets te zien</h1>
         <p>Ingeschreven leden verschijnen hier.</p>
-        <v-btn
-          fab
-          color="primary"
-          class="plusknop"
-          v-if="!inschrijven"
-          @click="inschrijven = !inschrijven"
-        >
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
       </div>
       <div v-else>
         <v-expansion-panels>
@@ -35,6 +26,15 @@
         </v-expansion-panels>
       </div>
     </div>
+    <v-btn
+      fab
+      color="primary"
+      class="plusknop"
+      v-if="!inschrijven"
+      @click="inschrijven = !inschrijven"
+    >
+      <v-icon>mdi-plus</v-icon>
+    </v-btn>
   </div>
 </template>
 
