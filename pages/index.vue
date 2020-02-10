@@ -26,15 +26,22 @@
         </v-expansion-panels>
       </div>
     </div>
-    <v-btn
-      fab
-      color="primary"
-      class="plusknop"
-      v-if="!inschrijven"
-      @click="inschrijven = !inschrijven"
-    >
-      <v-icon>mdi-plus</v-icon>
-    </v-btn>
+    <v-tooltip left>
+      <template v-slot:activator="{ on }">
+        <v-btn
+          fab
+          color="primary"
+          dark
+          v-on="on"
+          class="plusknop"
+          v-if="!inschrijven"
+          @click="inschrijven = !inschrijven"
+        >
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </template>
+      <span>Nieuwe inschrijving</span>
+    </v-tooltip>
   </div>
 </template>
 
