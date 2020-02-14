@@ -26,7 +26,10 @@
         </v-expansion-panels>
       </div>
     </div>
-    <v-tooltip left>
+    <div v-else-if="!inschrijven && !this.$store.state.gebruiker.user.ouder">
+      <DashboardLeider />
+    </div>
+    <v-tooltip left v-if="this.$store.state.gebruiker.user.ouder">
       <template v-slot:activator="{ on }">
         <v-btn
           fab
@@ -49,11 +52,13 @@
 import firebase from 'firebase'
 import Inschrijven from '@/components/Inschrijven'
 import LidInfo from '@/components/LidInfo'
+import DashboardLeider from '@/components/DashboardLeider'
 import { db } from '@/plugins/firebase'
 export default {
   components: {
     Inschrijven,
-    LidInfo
+    LidInfo,
+    DashboardLeider
   },
   data() {
     return {
