@@ -10,7 +10,7 @@
       >
         <v-card
           class="mx-auto"
-          @click="this.$router.push(card.page)"
+          @click="$router.push(card.page)"
           height="100%"
           width="68%"
         >
