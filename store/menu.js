@@ -1,7 +1,7 @@
 const getDefaultState = () => {
   return {
     items: [
-      { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
+      { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/dashboard' },
       { title: 'Mijn account', icon: 'mdi-account', to: '/account' },
       { title: 'Instellingen', icon: 'mdi-settings', to: '/instellingen' }
     ]
