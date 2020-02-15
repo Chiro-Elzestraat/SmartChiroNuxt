@@ -26,7 +26,7 @@
         </v-expansion-panels>
       </div>
     </div>
-    <div v-else-if="!inschrijven && !this.$store.state.gebruiker.user.ouder">
+    <div v-else-if="!inschrijven && this.$store.state.gebruiker.user.leider">
       <DashboardLeider />
     </div>
     <v-tooltip left v-if="this.$store.state.gebruiker.user.ouder">

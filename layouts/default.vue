@@ -103,6 +103,7 @@ export default {
         .currentUser.getIdTokenResult()
         .then((idTokenResult) => {
           if (idTokenResult.claims.leider) {
+            this.$store.commit('gebruiker/setLeider', true)
             db.collection('extraMenu')
               .doc('leider')
               .get()
