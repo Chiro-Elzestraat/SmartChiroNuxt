@@ -4,7 +4,7 @@
 
     <Inschrijven
       v-if="inschrijven && this.$store.state.gebruiker.user.ouder"
-      v-on:ingeschreven="inschrijven = !inschrijven"
+      v-on:ingeschreven="inschrijven = false"
     />
     <div
       v-else-if="!inschrijven && this.$store.state.gebruiker.user.ouder"
@@ -26,7 +26,7 @@
         </v-expansion-panels>
       </div>
     </div>
-    <v-tooltip left>
+    <v-tooltip left v-if="!inschrijven">
       <template v-slot:activator="{ on }">
         <v-btn
           fab
@@ -34,8 +34,7 @@
           dark
           v-on="on"
           class="plusknop"
-          v-if="!inschrijven"
-          @click="inschrijven = !inschrijven"
+          @click="inschrijven = true"
         >
           <v-icon>mdi-plus</v-icon>
         </v-btn>
@@ -64,7 +63,11 @@ export default {
   mounted() {
     firebase.auth().onAuthStateChanged((user) => {
       db.collection('leden')
-        .where('ouderId', '==', this.$store.state.gebruiker.user.data.uid)
+        .where(
+          'ouderId',
+          'array-contains',
+          this.$store.state.gebruiker.user.data.uid
+        )
         .get()
         .then((snap) => {
           this.leden = snap.docs.map((item) => item.data())
