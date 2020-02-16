@@ -254,6 +254,9 @@
             v-for="(extraContact, extraIndex) in extra"
             :key="extraIndex"
           >
+            <v-btn v-if="extraIndex > 0" @click="verwijderExtra(extraIndex)"
+              >Verwijder contactpersoon</v-btn
+            >
             <ExtraInfo :extraProp="extraContact" />
           </v-tab-item>
         </v-tabs-items>
@@ -504,6 +507,9 @@ export default {
     },
     verwijderOuder(index) {
       this.ouders.splice(index, 1)
+    },
+    verwijderExtra(index) {
+      this.extra.splice(index, 1)
     },
     save(refs, geboortedatum) {
       this.$refs[refs][0].save(geboortedatum)
