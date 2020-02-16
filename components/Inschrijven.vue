@@ -284,6 +284,74 @@
         Reset Validation
       </v-btn> -->
     <!-- <CheckGegevens /> -->
+    <v-dialog v-model="betalen" fullscreen>
+      <v-card>
+        <v-toolbar dark color="primary">
+          <v-toolbar-title>Betaling</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn
+              dark
+              text
+              @click="
+                () => {
+                  betalen = false
+                  $emit('ingeschreven')
+                }
+              "
+              >Klaar</v-btn
+            >
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-list three-line subheader>
+          <v-subheader>Ingeschreven leden</v-subheader>
+          <v-list-item v-for="lid in leden">
+            <v-list-item-content>
+              <v-list-item-title>{{ lid.naam }}</v-list-item-title>
+              <v-list-item-subtitle>{{
+                lid.geboortedatum
+              }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+        <v-divider></v-divider>
+        <v-list three-line subheader>
+          <v-subheader>Informatie overschrijving</v-subheader>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>Rekeningnummer</v-list-item-title>
+              <v-list-item-subtitle>BE97 8601 0855 9449</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>Mededeling</v-list-item-title>
+              <v-list-item-subtitle>{{ betalingsId }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>Bedrag</v-list-item-title>
+              <v-list-item-subtitle>{{
+                `€ ${teBetalen.toFixed(2)}`
+              }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+        <v-card-text class="text-center"
+          >Gelieve deze betaling zo snel mogelijk in orde te brengen zodat wij
+          uw leden correct kunnen verzekeren.</v-card-text
+        >
+      </v-card></v-dialog
+    >
+    <v-overlay v-if="laden">
+      <p>Jouw inschrijving wordt vervolledigd. Sluit deze pagina niet.</p>
+      <v-progress-circular
+        indeterminate
+        size="64"
+        style="margin: 0 auto; display:block;"
+      ></v-progress-circular>
+    </v-overlay>
   </div>
 </template>
 
@@ -306,6 +374,7 @@ export default {
   },
   data() {
     return {
+      betalen: false,
       laden: false,
       tab: null,
       ouderTab: null,
@@ -347,7 +416,9 @@ export default {
       email: '',
       select: null,
       checkbox: false,
-      picker: new Date().toISOString().substr(0, 10)
+      picker: new Date().toISOString().substr(0, 10),
+      teBetalen: 0,
+      betalingsId: ''
     }
   },
   watch: {
@@ -370,7 +441,7 @@ export default {
       leden = leden.map((lid) => {
         lid.contact.ouders = this.ouders
         lid.contact.extra = this.extra
-        lid.ouderId = this.$store.state.gebruiker.user.data.uid
+        lid.ouderId = [this.$store.state.gebruiker.user.data.uid]
         return lid
       })
       return leden
@@ -443,16 +514,33 @@ export default {
     inschrijven() {
       this.laden = true
       const batch = db.batch()
+      const ledenIds = []
       this.ledenAlles.forEach((lid) => {
         const doc = db.collection('leden').doc()
         batch.set(doc, lid)
+        ledenIds.push(doc.id)
       })
+      const betaling = db.collection('startbetaling').doc()
+      batch.set(betaling, { leden: ledenIds })
       batch
         .commit()
         .then((result) => {
-          this.laden = false
-          this.$emit('ingeschreven')
-          console.log(result)
+          ledenIds.forEach((lidId) => {
+            db.collection('leden')
+              .doc(lidId)
+              .collection('betaling')
+              .onSnapshot((snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                  if (change.type === 'added') {
+                    this.teBetalen += change.doc.data().bedrag
+                    this.betalingsId = change.doc.data().betalingsnummer
+                    this.laden = false
+                    this.betalen = true
+                    // this.$emit('ingeschreven')
+                  }
+                })
+              })
+          })
         })
         .catch((err) => console.log(err))
     }
