@@ -55,7 +55,9 @@
                       <v-col>
                         <v-text-field
                           v-model="lid.contact.huisarts.gsm"
+                          v-mask="mask"
                           label="Gsm"
+                          :rules="gsmRules"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -359,6 +361,7 @@
 </template>
 
 <script>
+import { mask } from 'vue-the-mask'
 import Geboortedatum from '@/components/Geboortedatum'
 import OuderInfo from '@/components/OuderInfo'
 import ExtraInfo from '@/components/ExtraInfo'
@@ -367,6 +370,9 @@ import Allergieen from '@/components/Allergieen'
 // import CheckGegevens from '@/components/CheckGegevens'
 import { db } from '@/plugins/firebase'
 export default {
+  directives: {
+    mask
+  },
   components: {
     Geboortedatum,
     OuderInfo,
@@ -415,7 +421,15 @@ export default {
       ],
       valid: true,
       name: '',
+      mask: '+## ### ## ## ##',
       nameRules: [(v) => !!v || 'Naam is verplicht'],
+      regexGsm: new RegExp('^[+][0-9]{2} [0-9]{3}( [0-9]{2}){3}$'),
+      gsmRules: [
+        (value) =>
+          this.regexGsm.test(value) ||
+          value === '+32' ||
+          'Ongeldig gsm-nummer. Verwacht formaat: +32 015 45 67 89'
+      ],
       email: '',
       select: null,
       checkbox: false,
