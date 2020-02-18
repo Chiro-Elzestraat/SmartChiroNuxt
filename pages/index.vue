@@ -14,6 +14,11 @@
         <img src="../assets/geenleden.svg" alt="Geen leden" class="geenleden" />
         <h1 class="headline">Hier is niets te zien</h1>
         <p>Ingeschreven leden verschijnen hier.</p>
+        <p>
+          Waren je leden al ingeschreven in het vorige systeem?
+          <a @click="$router.push('overzetten')">Klik dan hier</a> om de
+          gegevens over te zetten.
+        </p>
       </div>
       <div v-else>
         <v-expansion-panels>
@@ -106,7 +111,7 @@ export default {
 .geenleden {
   display: block;
   margin: 0 auto;
-  width: 50%;
+  max-width: 40%;
 }
 .plusknop {
   position: absolute;
