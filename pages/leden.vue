@@ -65,7 +65,7 @@ export default {
       .get()
       .then((snapshot) => {
         const leden = []
-        snapshot.forEach((doc) => leden.push(doc.data()))
+        snapshot.forEach((doc) => leden.push({ ...doc.data(), lidId: doc.id }))
         const vandaag = new Date()
         const maand = vandaag.getMonth()
         const vergelijkDatum =

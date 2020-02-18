@@ -308,7 +308,7 @@
         </v-toolbar>
         <v-list three-line subheader>
           <v-subheader>Ingeschreven leden</v-subheader>
-          <v-list-item v-for="lid in leden">
+          <v-list-item v-for="(lid, index) in leden" :key="index">
             <v-list-item-content>
               <v-list-item-title>{{ lid.naam }}</v-list-item-title>
               <v-list-item-subtitle>{{

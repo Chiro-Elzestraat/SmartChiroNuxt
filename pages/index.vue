@@ -84,7 +84,9 @@ export default {
         )
         .get()
         .then((snap) => {
-          this.leden = snap.docs.map((item) => item.data())
+          this.leden = snap.docs.map((item) => {
+            return { ...item.data(), lidId: item.id }
+          })
         })
     })
   },

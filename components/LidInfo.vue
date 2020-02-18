@@ -2,6 +2,7 @@
   <v-tabs fixed-tabs background-color="primary" dark>
     <v-tab>Contact</v-tab>
     <v-tab>Medische info</v-tab>
+    <v-tab>Betaling</v-tab>
     <v-tab-item>
       <div>
         <h1 class="title">Ouders</h1>
@@ -86,11 +87,18 @@
         </v-card>
       </div>
     </v-tab-item>
+    <v-tab-item>
+      <BetalingInfo :lidId="lid.lidId" />
+    </v-tab-item>
   </v-tabs>
 </template>
 
 <script>
+import BetalingInfo from '@/components/BetalingInfo'
 export default {
+  components: {
+    BetalingInfo
+  },
   props: {
     lid: Object
   }
