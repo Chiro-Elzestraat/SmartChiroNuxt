@@ -78,9 +78,11 @@
             {{ lid.medischeFiche.tetanus.gevaccineerd ? '' : 'niet' }}
             gevaccineerd tegen tetanus</v-card-title
           >
-          <v-card-subtitle
-            >In het jaar {{ lid.medischeFiche.tetanus.jaar }}</v-card-subtitle
-          >
+          <v-card-subtitle>{{
+            lid.medischeFiche.tetanus.jaar
+              ? `In het jaar ${lid.medischeFiche.tetanus.jaar}`
+              : `Jaar onbekend`
+          }}</v-card-subtitle>
         </v-card>
       </div>
     </v-tab-item>
