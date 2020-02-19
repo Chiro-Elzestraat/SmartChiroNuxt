@@ -4,7 +4,7 @@
 
     <Inschrijven
       v-if="inschrijven && this.$store.state.gebruiker.user.ouder"
-      v-on:ingeschreven="inschrijven = false"
+      v-on:ingeschreven="ingeschrevenHandler"
     />
     <div
       v-else-if="!inschrijven && this.$store.state.gebruiker.user.ouder"
@@ -76,6 +76,11 @@ export default {
   },
   mounted() {
     firebase.auth().onAuthStateChanged((user) => {
+      this.getLeden()
+    })
+  },
+  methods: {
+    getLeden() {
       db.collection('leden')
         .where(
           'ouderId',
@@ -88,7 +93,11 @@ export default {
             return { ...item.data(), lidId: item.id }
           })
         })
-    })
+    },
+    ingeschrevenHandler() {
+      this.inschrijven = false
+      this.getLeden()
+    }
   },
   beforeRouteLeave(to, from, next) {
     // called when the route that renders this component is about to
