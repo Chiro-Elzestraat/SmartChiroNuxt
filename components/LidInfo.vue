@@ -87,7 +87,7 @@
             v-if="Object.keys(lid.medischeFiche.aandoeningen).length == 0"
             >Geen aandoeningen gekend</v-card-subtitle
           >
-          <v-card-text>
+          <v-card-text v-else>
             <v-checkbox
               disabled
               v-for="(waarde, aandoening) in lid.medischeFiche.aandoeningen"
@@ -116,6 +116,27 @@
               ? `In het jaar ${lid.medischeFiche.tetanus.jaar}`
               : `Jaar onbekend`
           }}</v-card-subtitle>
+        </v-card>
+        <v-card class="medischeKaart" outlined>
+          <v-card-title
+            :class="
+              lid.medischeFiche.allergieen.length <= 0 ? 'goed' : 'belangrijk'
+            "
+            >Allergieën</v-card-title
+          >
+          <v-card-subtitle v-if="lid.medischeFiche.allergieen.length <= 0"
+            >Geen allergieën gekend</v-card-subtitle
+          >
+          <v-card-text v-else>
+            <ul>
+              <li
+                v-for="(allergie, index) in lid.medischeFiche.allergieen"
+                :key="index"
+              >
+                {{ allergie.type }} - {{ allergie.beschrijving }}
+              </li>
+            </ul>
+          </v-card-text>
         </v-card>
       </div>
     </v-tab-item>
