@@ -1,6 +1,11 @@
 <template>
   <div>
-    <OptieDivider text="Rollenbeheer" icon="mdi-account-multiple" />
+    <OptieDivider
+      v-if="this.$store.state.gebruiker.user.leider"
+      text="Rollenbeheer"
+      icon="mdi-account-multiple"
+    />
+    <p v-else class="text-center">Het is hier voorlopig leeg.</p>
   </div>
 </template>
 
@@ -12,6 +17,11 @@ export default {
   },
   data() {
     return {}
+  },
+  head() {
+    return {
+      title: 'Instellingen'
+    }
   }
 }
 </script>

@@ -109,6 +109,11 @@ export default {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) this.checkNieuw()
     })
+  },
+  head() {
+    return {
+      title: 'Account'
+    }
   }
 }
 </script>

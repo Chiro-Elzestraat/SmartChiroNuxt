@@ -88,6 +88,11 @@ export default {
           })
         )
     }
+  },
+  head() {
+    return {
+      title: 'Finance'
+    }
   }
 }
 </script>

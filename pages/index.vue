@@ -114,6 +114,11 @@ export default {
         next(false)
       }
     }
+  },
+  head() {
+    return {
+      title: 'Dashboard'
+    }
   }
 }
 </script>
