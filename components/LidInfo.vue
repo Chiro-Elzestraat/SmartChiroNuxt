@@ -5,6 +5,7 @@
     <v-tab>Betaling</v-tab>
     <v-tab-item>
       <div>
+        {{ lid.email }}
         <h1 class="title">Ouders</h1>
         <div class="contact">
           <v-card
