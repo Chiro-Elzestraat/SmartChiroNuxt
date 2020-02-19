@@ -173,7 +173,7 @@
             </v-card>
             <v-textarea
               outlined
-              v-model="lid.AanvullendeInfo"
+              v-model="lid.aanvullendeInfo"
               label="Aanvullende opmerkingen (optioneel)"
             ></v-textarea>
           </v-form>
