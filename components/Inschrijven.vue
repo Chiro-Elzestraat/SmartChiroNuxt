@@ -465,7 +465,15 @@ export default {
       return leden
     },
     dataInOrde() {
+      const adres = this.adres
       let valid = true
+      if (
+        !adres.straat ||
+        !adres.postcode ||
+        !adres.huisnummer ||
+        !adres.plaats
+      )
+        valid = false
       this.ledenAlles.forEach((lid) => {
         if (
           !lid.naam ||
