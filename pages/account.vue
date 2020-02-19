@@ -34,6 +34,11 @@
         <h1 class="display-1">
           Welkom terug, {{ this.$store.state.gebruiker.user.data.displayName }}
         </h1>
+        <br />
+        <p v-if="this.$store.state.gebruiker.user.ouder">
+          Wil je leden inschrijven? Dat kan via het
+          <a @click="$router.push('/')">dashboard</a>.
+        </p>
       </div>
       <v-btn id="loguit" @click="loguit()">Log uit</v-btn>
     </div>
