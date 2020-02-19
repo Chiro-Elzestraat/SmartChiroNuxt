@@ -76,6 +76,30 @@
         </v-card>
         <v-card class="medischeKaart" outlined>
           <v-card-title
+            :class="
+              Object.keys(lid.medischeFiche.aandoeningen).length == 0
+                ? 'goed'
+                : 'belangrijk'
+            "
+            >Aandoeningen</v-card-title
+          >
+          <v-card-subtitle
+            v-if="Object.keys(lid.medischeFiche.aandoeningen).length == 0"
+            >Geen aandoeningen gekend</v-card-subtitle
+          >
+          <v-card-text>
+            <v-checkbox
+              disabled
+              v-for="(waarde, aandoening) in lid.medischeFiche.aandoeningen"
+              :key="aandoening"
+              :label="aandoening"
+              :input-value="waarde"
+              hide-details
+            ></v-checkbox>
+          </v-card-text>
+        </v-card>
+        <v-card class="medischeKaart" outlined>
+          <v-card-title
             :class="{
               goed:
                 lid.medischeFiche.tetanus.gevaccineerd &&
