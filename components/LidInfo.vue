@@ -138,6 +138,19 @@
             </ul>
           </v-card-text>
         </v-card>
+        <v-card class="medischeKaart" outlined>
+          <v-card-title
+            :class="!lid.medischeFiche.vroegereZiekten ? 'goed' : 'belangrijk'"
+            >Vroegere ziekten</v-card-title
+          >
+          <v-card-subtitle v-if="!lid.medischeFiche.vroegereZiekten"
+            >Geen vroegere ziekten of heelkundige ingrepen
+            gekend.</v-card-subtitle
+          >
+          <v-card-text v-else>
+            {{ lid.medischeFiche.vroegereZiekten }}
+          </v-card-text>
+        </v-card>
       </div>
     </v-tab-item>
     <v-tab-item>
