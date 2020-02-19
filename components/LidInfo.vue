@@ -147,9 +147,23 @@
             >Geen vroegere ziekten of heelkundige ingrepen
             gekend.</v-card-subtitle
           >
-          <v-card-text v-else>
+          <v-card-subtitle v-else>
             {{ lid.medischeFiche.vroegereZiekten }}
-          </v-card-text>
+          </v-card-subtitle>
+        </v-card>
+        <v-card class="medischeKaart" outlined>
+          <v-card-title
+            :class="!lid.medischeFiche.dieet ? 'goed' : 'waarschuwing'"
+            >Dieet</v-card-title
+          >
+          <v-card-subtitle v-if="!lid.medischeFiche.dieet"
+            >Lid volgt geen dieet</v-card-subtitle
+          >
+          <v-card-subtitle v-else>{{
+            !lid.medischeFiche.dieetDetails
+              ? 'Geen details opgegeven.'
+              : lid.medischeFiche.dieetDetails
+          }}</v-card-subtitle>
         </v-card>
       </div>
     </v-tab-item>
@@ -177,6 +191,9 @@ export default {
 }
 .belangrijk {
   color: #f44336;
+}
+.waarschuwing {
+  color: orange;
 }
 .medischeFiche {
   display: flex;
