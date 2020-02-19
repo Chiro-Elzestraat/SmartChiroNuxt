@@ -78,6 +78,7 @@
         <v-card class="medischeKaart" outlined>
           <v-card-title
             :class="
+              !lid.medischeFiche.aandoeningen ||
               Object.keys(lid.medischeFiche.aandoeningen).length == 0
                 ? 'goed'
                 : 'belangrijk'
@@ -85,7 +86,10 @@
             >Aandoeningen</v-card-title
           >
           <v-card-subtitle
-            v-if="Object.keys(lid.medischeFiche.aandoeningen).length == 0"
+            v-if="
+              !lid.medischeFiche.aandoeningen ||
+                Object.keys(lid.medischeFiche.aandoeningen).length == 0
+            "
             >Geen aandoeningen gekend</v-card-subtitle
           >
           <v-card-text v-else>
@@ -121,11 +125,18 @@
         <v-card class="medischeKaart" outlined>
           <v-card-title
             :class="
-              lid.medischeFiche.allergieen.length <= 0 ? 'goed' : 'belangrijk'
+              !lid.medischeFiche.allergieen ||
+              lid.medischeFiche.allergieen.length <= 0
+                ? 'goed'
+                : 'belangrijk'
             "
             >Allergieën</v-card-title
           >
-          <v-card-subtitle v-if="lid.medischeFiche.allergieen.length <= 0"
+          <v-card-subtitle
+            v-if="
+              !lid.medischeFiche.allergieen ||
+                lid.medischeFiche.allergieen.length <= 0
+            "
             >Geen allergieën gekend</v-card-subtitle
           >
           <v-card-text v-else>
