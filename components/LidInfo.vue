@@ -138,6 +138,17 @@
             </ul>
           </v-card-text>
         </v-card>
+        <v-card
+          v-if="lid.medischeFiche.extraInfo"
+          class="medischeKaart"
+          outlined
+        >
+          <v-card-title>Extra informatie</v-card-title>
+          <v-card-subtitle
+            >In verband met aandoeningen &amp; allergieën</v-card-subtitle
+          >
+          <v-card-text>{{ lid.medischeFiche.extraInfo }}</v-card-text>
+        </v-card>
         <v-card class="medischeKaart" outlined>
           <v-card-title
             :class="!lid.medischeFiche.vroegereZiekten ? 'goed' : 'belangrijk'"
@@ -195,6 +206,10 @@
               lid.medischeFiche.vlugMoe ? 'Is vlug moe' : ''
             }}</v-card-subtitle
           >
+        </v-card>
+        <v-card class="medischeKaart" v-if="lid.aanvullendeInfo" outlined>
+          <v-card-title>Aanvullende info</v-card-title>
+          <v-card-subtitle>{{ lid.aanvullendeInfo }}</v-card-subtitle>
         </v-card>
       </div>
     </v-tab-item>
