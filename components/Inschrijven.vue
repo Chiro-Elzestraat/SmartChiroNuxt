@@ -459,6 +459,7 @@ export default {
         lid.contact.ouders = this.ouders
         lid.contact.extra = this.extra
         lid.ouderId = [this.$store.state.gebruiker.user.data.uid]
+        lid.adres = this.adres
         return lid
       })
       return leden
