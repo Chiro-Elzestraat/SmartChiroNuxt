@@ -47,6 +47,14 @@
             >
           </v-card>
         </div>
+        <v-divider />
+        <v-card>
+          <v-card-title>Adres</v-card-title>
+          <v-card-text>
+            {{ lid.adres.straat }} {{ lid.adres.huisnummer }}
+            {{ lid.adres.bus }} {{ lid.adres.postcode }} {{ lid.adres.plaats }}
+          </v-card-text>
+        </v-card>
       </div>
     </v-tab-item>
     <v-tab-item>
