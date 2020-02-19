@@ -165,6 +165,37 @@
               : lid.medischeFiche.dieetDetails
           }}</v-card-subtitle>
         </v-card>
+        <v-card class="medischeKaart" outlined>
+          <v-card-title
+            :class="
+              lid.medischeFiche.kanDeelnemen &&
+              lid.medischeFiche.kanZwemmen &&
+              !lid.medischeFiche.vlugMoe
+                ? 'goed'
+                : 'belangrijk'
+            "
+            >Deelname</v-card-title
+          >
+          <v-card-subtitle
+            v-if="
+              lid.medischeFiche.kanDeelnemen &&
+                lid.medischeFiche.kanZwemmen &&
+                !lid.medischeFiche.vlugMoe
+            "
+            >Alles ziet er goed uit</v-card-subtitle
+          >
+          <v-card-subtitle v-else
+            >{{
+              lid.medischeFiche.kanDeelnemen
+                ? ''
+                : 'Kan niet deelnemen aan sport & spel aangepast aan zijn leeftijd'
+            }}
+            {{ lid.medischeFiche.kanZwemmen ? '' : 'Kan niet zwemmen' }}
+            {{
+              lid.medischeFiche.vlugMoe ? 'Is vlug moe' : ''
+            }}</v-card-subtitle
+          >
+        </v-card>
       </div>
     </v-tab-item>
     <v-tab-item>
