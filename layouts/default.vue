@@ -124,6 +124,8 @@ export default {
         })
         .catch((error) => {
           console.log(error)
+          this.$store.commit('gebruiker/setNieuweGebruiker', false)
+          this.$router.push('/account')
         })
     })
     if (localStorage.getItem('dark') === 'false') this.setTheme(false)

@@ -79,7 +79,8 @@ export default {
         })
         .catch((error) => {
           console.log(error)
-          this.$store.commit('gebruiker/setNieuweGebruiker', true)
+          this.$store.commit('gebruiker/setNieuweGebruiker', false)
+          this.$router.push('/geeninternet')
         })
     }
   },

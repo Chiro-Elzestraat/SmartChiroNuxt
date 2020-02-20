@@ -110,7 +110,9 @@
                 lid.medischeFiche.tetanus.gevaccineerd &&
                 lid.medischeFiche.tetanus.jaar,
               belangrijk: !lid.medischeFiche.tetanus.gevaccineerd,
-              waarschuwing: lid.medischeFiche.tetanus.gevaccineerd
+              waarschuwing:
+                lid.medischeFiche.tetanus.gevaccineerd &&
+                !lid.medischeFiche.tetanus.jaar
             }"
             >Is
             {{ lid.medischeFiche.tetanus.gevaccineerd ? '' : 'niet' }}
