@@ -34,16 +34,16 @@
 <script>
 import { db } from '@/plugins/firebase'
 export default {
-  data() {
-    return {
-      betalingen: [],
-      laden: true
-    }
-  },
   props: {
     lidId: {
       type: String,
       default: ''
+    }
+  },
+  data() {
+    return {
+      betalingen: [],
+      laden: true
     }
   },
   created() {
