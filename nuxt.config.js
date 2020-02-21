@@ -8,7 +8,7 @@ const vuetify = {
     dark: true,
     themes: {
       dark: {
-        primary: colors.red.darken2,
+        primary: '#DD042B',
         accent: colors.red.darken3,
         secondary: colors.amber.darken3,
         info: colors.teal.lighten1,
@@ -17,7 +17,7 @@ const vuetify = {
         success: colors.green.accent3
       },
       light: {
-        primary: colors.red.darken2
+        primary: '#DD042B'
       }
     }
   }
