@@ -25,7 +25,7 @@
           <v-expansion-panel v-for="(lid, index) in leden" :key="index">
             <v-expansion-panel-header>{{ lid.naam }}</v-expansion-panel-header>
             <v-expansion-panel-content
-              ><LidInfo :lid="lid"
+              ><BewerkLidInfo :lidProp="lid"/><LidInfo :lid="lid"
             /></v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -60,13 +60,15 @@
 import firebase from 'firebase'
 import Inschrijven from '@/components/Inschrijven'
 import LidInfo from '@/components/LidInfo'
+import BewerkLidInfo from '@/components/BewerkLidInfo'
 import DashboardLeider from '@/components/DashboardLeider'
 import { db } from '@/plugins/firebase'
 export default {
   components: {
     Inschrijven,
     LidInfo,
-    DashboardLeider
+    DashboardLeider,
+    BewerkLidInfo
   },
   data() {
     return {
