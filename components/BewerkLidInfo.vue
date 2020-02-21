@@ -26,29 +26,54 @@
         <v-subheader>Contact</v-subheader>
         <h1 class="headline">Ouders</h1>
         <v-list-item v-for="(ouder, index) in lid.contact.ouders" :key="index">
-          <v-text-field v-model="ouder.naam" label="Naam"></v-text-field>
-          <v-text-field v-model="ouder.email" label="E-mail"></v-text-field>
-          <v-text-field v-model="ouder.gsm" label="Gsm"></v-text-field>
+          <v-row class="mb-6">
+            <v-col cols="12" md="4">
+              <v-text-field v-model="ouder.naam" label="Naam"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-text-field v-model="ouder.email" label="E-mail"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-text-field v-model="ouder.gsm" label="Gsm"></v-text-field>
+            </v-col>
+          </v-row>
         </v-list-item>
         <h1 class="headline">Extra contactpersonen</h1>
-        <v-list-item v-for="(extra, index) in lid.contact.extra" :key="index">
-          <v-text-field v-model="extra.naam" label="Naam"></v-text-field>
-          <v-text-field
-            v-model="extra.relatie"
-            label="Relatie met deze persoon"
-          ></v-text-field>
-          <v-text-field v-model="extra.gsm" label="Gsm"></v-text-field>
+        <v-list-item
+          v-for="(extra, index) in lid.contact.extra"
+          :key="`extra${index}`"
+        >
+          <v-row>
+            <v-col cols="12" md="4">
+              <v-text-field v-model="extra.naam" label="Naam"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-text-field
+                v-model="extra.relatie"
+                label="Relatie met deze persoon"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-text-field v-model="extra.gsm" label="Gsm"></v-text-field>
+            </v-col>
+          </v-row>
         </v-list-item>
         <h1 class="headline">Huisarts</h1>
         <v-list-item>
-          <v-text-field
-            v-model="lid.contact.huisarts.naam"
-            label="Naam"
-          ></v-text-field>
-          <v-text-field
-            v-model="lid.contact.huisarts.gsm"
-            label="Gsm"
-          ></v-text-field>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-text-field
+                v-model="lid.contact.huisarts.naam"
+                label="Naam"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field
+                v-model="lid.contact.huisarts.gsm"
+                label="Gsm"
+              ></v-text-field>
+            </v-col>
+          </v-row>
         </v-list-item>
       </v-list>
     </v-card>
