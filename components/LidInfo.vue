@@ -19,7 +19,7 @@
             <v-card-text class="text--primary">
               <a :href="'tel:' + ouder.gsm">{{ ouder.gsm }}</a
               ><br />
-              <a :href="'mailto:' + ouder.mail">{{ ouder.mail }}</a>
+              <a :href="'mailto:' + ouder.email">{{ ouder.email }}</a>
             </v-card-text>
           </v-card>
         </div>
