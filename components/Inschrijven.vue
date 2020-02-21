@@ -289,7 +289,12 @@
         Reset Validation
       </v-btn> -->
     <!-- <CheckGegevens /> -->
-    <v-dialog v-model="betalen" fullscreen>
+    <v-dialog
+      v-model="betalen"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
       <v-card>
         <v-toolbar dark color="primary">
           <v-toolbar-title>Betaling</v-toolbar-title>
