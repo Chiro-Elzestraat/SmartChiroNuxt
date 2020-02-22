@@ -19,7 +19,6 @@
     </v-row>
   </div>
 </template>
-
 <script>
 import firebase from 'firebase'
 export default {
@@ -44,6 +43,12 @@ export default {
           icon: 'mid-gavel',
           src: '/evenementen.svg',
           page: '/events'
+        },
+        {
+          title: 'Uitstappen',
+          icon: 'mdi-dashboard',
+          src: '/uitstap.svg',
+          page: '/uitstap'
         }
       ],
       rollen: []
