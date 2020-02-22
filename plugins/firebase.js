@@ -34,5 +34,6 @@ firebase
     }
   })
 // Subsequent queries will use persistence, if it was enabled successfully;
+export const storage = firebase.storage()
 export const db = firebase.firestore()
 export const auth = app.auth()
