@@ -7,6 +7,7 @@
     </v-card>
     <v-dialog
       v-model="toevoegen"
+      v-if="leider"
       fullscreen
       hide-overlay
       transition="dialog-bottom-transition"
@@ -25,6 +26,7 @@
 </template>
 
 <script>
+import firebase from 'firebase'
 import NieuweUitstap from '@/components/NieuweUitstap'
 export default {
   components: {
@@ -32,8 +34,23 @@ export default {
   },
   data() {
     return {
-      toevoegen: false
+      toevoegen: false,
+      leider: false
     }
+  },
+  created() {
+    firebase.auth().onAuthStateChanged((currentUser) => {
+      currentUser
+        .getIdTokenResult()
+        .then((idTokenResult) => {
+          if (idTokenResult.claims.leider) {
+            this.leider = true
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    })
   }
 }
 </script>
