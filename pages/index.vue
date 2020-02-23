@@ -45,7 +45,9 @@
           color="primary"
           dark
           v-on="on"
-          class="plusknop"
+          bottom
+          fixed
+          right
           @click="inschrijven = true"
         >
           <v-icon>mdi-plus</v-icon>
@@ -130,11 +132,5 @@ export default {
   display: block;
   margin: 0 auto;
   max-width: 40%;
-}
-.plusknop {
-  position: absolute;
-  bottom: 28px;
-  right: 28px;
-  z-index: 1;
 }
 </style>
