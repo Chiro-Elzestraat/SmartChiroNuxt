@@ -28,7 +28,7 @@ export default {
           icon: 'mdi-dashboard',
           src: '/financien.svg',
           page: '/finance',
-          rol: 'ka'
+          rol: 'kas'
         },
         {
           title: 'Verhuur',
