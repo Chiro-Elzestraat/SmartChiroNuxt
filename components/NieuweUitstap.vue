@@ -39,6 +39,7 @@
                   v-model="uitstap.kostprijs"
                   label="Kostprijs"
                   outlined
+                  type="number"
                 ></v-text-field>
               </v-col>
             </v-row>

@@ -34,15 +34,11 @@
             </v-row>
           </v-card-text>
 
-          <!-- <v-card-actions>
-        <v-btn color="orange" text>
-          Share
-        </v-btn>
-
-        <v-btn color="orange" text>
-          Explore
-        </v-btn>
-      </v-card-actions> -->
+          <v-card-actions>
+            <v-btn color="primary" text :to="`/uitstap/${uitstap.id}`">
+              Inschrijven
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -105,7 +101,7 @@ export default {
             .getDownloadURL()
             .then((url) => {
               console.log(url)
-              this.uitstappen.push({ ...doc.data(), url })
+              this.uitstappen.push({ ...doc.data(), url, id: doc.id })
             })
             .catch(function(error) {
               console.log(error)
