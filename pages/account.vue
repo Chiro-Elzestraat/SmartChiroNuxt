@@ -40,7 +40,7 @@
           <a @click="$router.push('/')">dashboard</a>.
         </p>
       </div>
-      <v-btn id="loguit" @click="loguit()">Log uit</v-btn>
+      <v-btn @click="loguit()" bottom>Log uit</v-btn>
     </div>
   </div>
 </template>
@@ -189,9 +189,5 @@ span.buttonText {
   height: calc(100vh - 86px);
   flex-direction: column;
   justify-content: space-between;
-}
-#loguit {
-  width: 100%;
-  align-self: bottom;
 }
 </style>
