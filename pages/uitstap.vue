@@ -6,35 +6,35 @@
       <v-card-subtitle></v-card-subtitle>
       <v-img :src="uitstap.url"></v-img>
     </v-card> -->
-    <v-card
-      class="card"
-      max-width="400"
-      v-for="(uitstap, index) in uitstappen"
-      :key="index"
-    >
-      <v-img class="white--text align-end" height="200px" :src="uitstap.url">
-        <v-card-title>{{ uitstap.titel }}</v-card-title>
-      </v-img>
-
-      <v-card-subtitle class="pb-0"
-        >{{ uitstap.dates[0] }} - {{ uitstap.dates[1] }}</v-card-subtitle
-      >
-
-      <v-card-text class="text--primary">
-        {{ uitstap.beschrijving }}
-        <v-row>
-          <v-chip
-            class="groep"
-            :color="groep.geselecteerd ? 'green' : ''"
-            @click="groep.geselecteerd = !groep.geselecteerd"
-            v-for="(groep, index) in uitstap.groepen"
-            :key="index"
-            >{{ groep.naam }}</v-chip
+    <v-row>
+      <v-col v-for="(uitstap, index) in uitstappen" :key="index">
+        <v-card class="card" max-width="400">
+          <v-img
+            class="white--text align-end"
+            height="200px"
+            :src="uitstap.url"
           >
-        </v-row>
-      </v-card-text>
+            <v-card-title>{{ uitstap.titel }}</v-card-title>
+          </v-img>
 
-      <!-- <v-card-actions>
+          <v-card-subtitle class="pb-0"
+            >{{ uitstap.dates[0] }} - {{ uitstap.dates[1] }}</v-card-subtitle
+          >
+
+          <v-card-text class="text--primary">
+            {{ uitstap.beschrijving }}
+            <v-row>
+              <v-chip
+                class="groep"
+                :color="groep.geselecteerd ? 'green' : ''"
+                v-for="(groep, index) in uitstap.groepen"
+                :key="index"
+                >{{ groep.naam }}</v-chip
+              >
+            </v-row>
+          </v-card-text>
+
+          <!-- <v-card-actions>
         <v-btn color="orange" text>
           Share
         </v-btn>
@@ -43,7 +43,9 @@
           Explore
         </v-btn>
       </v-card-actions> -->
-    </v-card>
+        </v-card>
+      </v-col>
+    </v-row>
     <v-dialog
       v-model="toevoegen"
       v-if="leider"
@@ -52,7 +54,7 @@
       transition="dialog-bottom-transition"
     >
       <template v-slot:activator="{ on }">
-        <v-btn class="plusknop" color="primary" v-on="on" dark fab>
+        <v-btn bottom right fixed color="primary" v-on="on" dark fab>
           <v-icon>mdi-plus</v-icon>
         </v-btn>
       </template>
