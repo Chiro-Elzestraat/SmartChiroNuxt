@@ -27,12 +27,14 @@
               :color="lid.geselecteerd ? 'primary' : ''"
               v-for="(lid, index) in ledenAlles"
               :key="index"
+              :disabled="lid.ingeschreven"
               @click="lid.geselecteerd = !lid.geselecteerd"
               >{{ lid.naam }}</v-chip
             >
           </v-col>
           <v-col>
-            Totaalprijs: {{ uitstap.kostprijs * geselecteerd.length }}
+            Totaalprijs: €
+            {{ (uitstap.kostprijs * geselecteerd.length).toFixed(2) }}
           </v-col>
         </v-row>
       </v-card-text>
@@ -122,7 +124,8 @@ export default {
       laden: false,
       betalen: false,
       teBetalen: 0,
-      betalingsId: ''
+      betalingsId: '',
+      lidIds: []
     }
   },
   methods: {
@@ -144,7 +147,7 @@ export default {
             .onSnapshot((snapshot) => {
               snapshot.docChanges().forEach((change) => {
                 if (change.type === 'added') {
-                  this.teBetalen += change.doc.data().bedrag
+                  this.teBetalen = change.doc.data().bedrag
                   this.betalingsId = change.doc.data().betalingsnummer
                   this.laden = false
                   this.betalen = true
@@ -181,6 +184,26 @@ export default {
             this.ledenAlles = snap.docs.map((item) => {
               return { ...item.data(), lidId: item.id, geselecteerd: false }
             })
+            snap.docs.forEach((item) => {
+              this.lidIds.push({ lidId: item.id, naam: item.data().naam })
+            })
+            db.collection('uitstap')
+              .doc(doc.id)
+              .collection('inschrijving')
+              .where('leden', 'array-contains-any', this.lidIds)
+              .get()
+              .then((inschrijvingen) => {
+                console.log(inschrijvingen.docs)
+                inschrijvingen.docs.forEach((doc) => {
+                  this.ledenAlles = this.ledenAlles.map((lid) => {
+                    if (doc.data().leden.some((l) => l.lidId === lid.lidId)) {
+                      console.log('ja')
+                      return { ...lid, ingeschreven: true }
+                    }
+                    return lid
+                  })
+                })
+              })
           })
       })
   },
