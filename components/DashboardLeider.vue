@@ -1,21 +1,19 @@
 <template>
   <div>
-    <v-row dense>
-      <template v-for="card in cards">
-        <v-col v-if="!card.rol || rollen.includes(card.rol)" :key="card.title">
-          <v-card
-            class="mx-auto"
-            @click="$router.push(card.page)"
-            width="400px"
-          >
-            <v-img :src="card.src" height="200px" width="400px" contain></v-img>
-            <v-card-title v-text="card.title"></v-card-title>
-            <v-card-actions class="justify-center">
-              <v-btn outlined color="primary" text>Ga naar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-col>
-      </template>
+    <v-row>
+      <v-col v-for="(card, index) in cardsFiltered" :key="index">
+        <v-card
+          class="mx-auto"
+          max-width="400"
+          @click="$router.push(card.page)"
+        >
+          <v-img :src="card.src" height="200px" width="400px" contain></v-img>
+          <v-card-title v-text="card.title"></v-card-title>
+          <v-card-actions class="justify-center">
+            <v-btn outlined color="primary" text>Ga naar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
     </v-row>
   </div>
 </template>
@@ -30,7 +28,7 @@ export default {
           icon: 'mdi-dashboard',
           src: '/financien.svg',
           page: '/finance',
-          rol: 'kas'
+          rol: 'ka'
         },
         {
           title: 'Verhuur',
@@ -54,13 +52,19 @@ export default {
       rollen: []
     }
   },
+  computed: {
+    cardsFiltered() {
+      return this.cards.filter((card) => {
+        if (this.rollen.includes(card.rol) || !card.rol) return true
+      })
+    }
+  },
   created() {
     firebase
       .auth()
       .currentUser.getIdTokenResult()
       .then((idTokenResult) => {
         if (idTokenResult.claims.kas) {
-          // Show admin UI.
           this.rollen.push('kas')
         } else {
         }
