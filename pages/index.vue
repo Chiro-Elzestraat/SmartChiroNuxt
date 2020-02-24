@@ -24,9 +24,10 @@
         <v-expansion-panels>
           <v-expansion-panel v-for="(lid, index) in leden" :key="index">
             <v-expansion-panel-header>{{ lid.naam }}</v-expansion-panel-header>
-            <v-expansion-panel-content
-              ><BewerkLidInfo :lidProp="lid"/><LidInfo :lid="lid"
-            /></v-expansion-panel-content>
+            <v-expansion-panel-content>
+              <BewerkLidInfo :lidProp="lid" />
+              <LidInfo :lid="lid" />
+            </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
       </div>
@@ -36,19 +37,19 @@
       <DashboardLeider />
     </div>
     <v-tooltip
-      left
       v-if="this.$store.state.gebruiker.user.ouder && !inschrijven"
+      left
     >
       <template v-slot:activator="{ on }">
         <v-btn
+          v-on="on"
+          @click="inschrijven = true"
           fab
           color="primary"
           dark
-          v-on="on"
           bottom
           fixed
           right
-          @click="inschrijven = true"
         >
           <v-icon>mdi-plus</v-icon>
         </v-btn>
@@ -65,6 +66,7 @@ import LidInfo from '@/components/LidInfo'
 import BewerkLidInfo from '@/components/BewerkLidInfo'
 import DashboardLeider from '@/components/DashboardLeider'
 import { db } from '@/plugins/firebase'
+
 export default {
   components: {
     Inschrijven,
