@@ -1,19 +1,21 @@
 <template>
   <div class="text-center">
-    <img class="logo" src="/icon.png" alt="Logo SmartChiro" />
-    <div id="loginButtons" v-if="!this.$store.state.gebruiker.user.isLoggedIn">
-      <!-- <v-btn @click="login('google')">Login met Google</v-btn>
-      <v-btn @click="login('facebook')">Login met Facebook</v-btn> -->
-      <div id="gSignInWrapper">
-        <div @click="login('google')" v-ripple class="customBtn">
-          <span class="icon google"></span>
-          <span class="buttonText">Google</span>
+    <div v-if="!this.$store.state.gebruiker.user.isLoggedIn">
+      <img class="logo" src="/icon.png" alt="Logo SmartChiro" />
+      <div id="loginButtons">
+        <!-- <v-btn @click="login('google')">Login met Google</v-btn>
+        <v-btn @click="login('facebook')">Login met Facebook</v-btn> -->
+        <div id="gSignInWrapper">
+          <div @click="login('google')" v-ripple class="customBtn">
+            <span class="icon google"></span>
+            <span class="buttonText">Google</span>
+          </div>
         </div>
-      </div>
-      <div id="fSignInWrapper">
-        <div @click="login('facebook')" v-ripple class="facebook customBtn">
-          <span class="icon facebook"></span>
-          <span class="buttonText">Facebook</span>
+        <div id="fSignInWrapper">
+          <div @click="login('facebook')" v-ripple class="facebook customBtn">
+            <span class="icon facebook"></span>
+            <span class="buttonText">Facebook</span>
+          </div>
         </div>
       </div>
     </div>
