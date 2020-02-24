@@ -20,7 +20,7 @@
             >{{ groep.naam }}
           </v-chip>
         </v-row>
-        <v-row>
+        <v-row v-if="$store.state.gebruiker.user.ouder">
           <v-col>
             <v-chip
               :color="lid.geselecteerd || lid.ingeschreven ? 'primary' : ''"
@@ -37,12 +37,35 @@
             {{ (uitstap.kostprijs * geselecteerd.length).toFixed(2) }}
           </v-col>
         </v-row>
+        <v-row v-else>
+          <v-col>
+            <v-list>
+              <v-list-item v-for="(lid, index) in ledenAlles" :key="index">
+                <v-list-item-content>
+                  <v-list-item-title>{{ lid.naam }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ lid.lidId }}</v-list-item-subtitle>
+                </v-list-item-content>
+                <v-list-item-icon>
+                  <v-tooltip left>
+                    <template v-slot:activator="{ on }">
+                      <v-icon v-on="on">{{
+                        lid.betaling.betaald ? 'mdi-check' : 'mdi-close'
+                      }}</v-icon>
+                    </template>
+                    <span>{{ lid.betaling.betalingsnummer }}</span>
+                  </v-tooltip>
+                </v-list-item-icon>
+              </v-list-item>
+            </v-list>
+          </v-col>
+        </v-row>
       </v-card-text>
       <v-actions>
         <v-btn
           @click="inschrijven"
           :loading="laden"
           :disabled="geselecteerd.length == 0"
+          v-if="gebruiker.ouder"
           text
           color="primary"
           >Inschrijving vervolledigen
@@ -153,6 +176,9 @@ export default {
         result.push(lid)
       })
       return result
+    },
+    gebruiker() {
+      return this.$store.state.gebruiker.user
     }
   },
   mounted() {
@@ -187,6 +213,7 @@ export default {
         })
         .catch((err) => console.log(err))
     },
+    laadIngeschreven() {},
     laadGegevens() {
       this.lidIds = []
       db.collection('uitstap')
@@ -203,38 +230,63 @@ export default {
             .catch(function(error) {
               console.log(error)
             })
-          db.collection('leden')
-            .where(
-              'ouderId',
-              'array-contains',
-              this.$store.state.gebruiker.user.data.uid
-            )
-            .get()
-            .then((snap) => {
-              this.ledenAlles = snap.docs.map((item) => {
-                return { ...item.data(), lidId: item.id, geselecteerd: false }
-              })
-              snap.docs.forEach((item) => {
-                this.lidIds.push({ lidId: item.id, naam: item.data().naam })
-              })
-              db.collection('uitstap')
-                .doc(doc.id)
-                .collection('inschrijving')
-                .where('leden', 'array-contains-any', this.lidIds)
-                .get()
-                .then((inschrijvingen) => {
-                  console.log(inschrijvingen.docs)
-                  inschrijvingen.docs.forEach((doc) => {
-                    this.ledenAlles = this.ledenAlles.map((lid) => {
-                      if (doc.data().leden.some((l) => l.lidId === lid.lidId)) {
-                        console.log('ja')
-                        return { ...lid, ingeschreven: true }
-                      }
-                      return lid
+          if (this.gebruiker.ouder) {
+            db.collection('leden')
+              .where(
+                'ouderId',
+                'array-contains',
+                this.$store.state.gebruiker.user.data.uid
+              )
+              .get()
+              .then((snap) => {
+                this.ledenAlles = snap.docs.map((item) => {
+                  return { ...item.data(), lidId: item.id, geselecteerd: false }
+                })
+                snap.docs.forEach((item) => {
+                  this.lidIds.push({ lidId: item.id, naam: item.data().naam })
+                })
+                db.collection('uitstap')
+                  .doc(doc.id)
+                  .collection('inschrijving')
+                  .where('leden', 'array-contains-any', this.lidIds)
+                  .get()
+                  .then((inschrijvingen) => {
+                    console.log(inschrijvingen.docs)
+                    inschrijvingen.docs.forEach((doc) => {
+                      this.ledenAlles = this.ledenAlles.map((lid) => {
+                        if (
+                          doc.data().leden.some((l) => l.lidId === lid.lidId)
+                        ) {
+                          console.log('ja')
+                          return { ...lid, ingeschreven: true }
+                        }
+                        return lid
+                      })
                     })
                   })
-                })
+              })
+          } else if (this.gebruiker.leider) {
+            const ref = db
+              .collection('uitstap')
+              .doc(this.$route.params.id)
+              .collection('inschrijving')
+            ref.get().then((inschrijvingen) => {
+              inschrijvingen.docs.forEach((doc) => {
+                ref
+                  .doc(doc.id)
+                  .collection('betaling')
+                  .get()
+                  .then((betaling) => {
+                    doc.data().leden.forEach((lid) =>
+                      this.ledenAlles.push({
+                        ...lid,
+                        betaling: betaling.docs[0].data()
+                      })
+                    )
+                  })
+              })
             })
+          }
         })
     }
   }

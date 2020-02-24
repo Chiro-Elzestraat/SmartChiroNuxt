@@ -10,9 +10,9 @@
       <v-col v-for="(uitstap, index) in uitstappen" :key="index">
         <v-card class="card" max-width="400">
           <v-img
+            :src="uitstap.url"
             class="white--text align-end"
             height="200px"
-            :src="uitstap.url"
           >
             <v-card-title>{{ uitstap.titel }}</v-card-title>
           </v-img>
@@ -25,18 +25,20 @@
             {{ uitstap.beschrijving }}
             <v-row>
               <v-chip
-                class="groep"
                 :color="groep.geselecteerd ? 'green' : ''"
                 v-for="(groep, index) in uitstap.groepen"
                 :key="index"
+                class="groep"
                 >{{ groep.naam }}</v-chip
               >
             </v-row>
           </v-card-text>
 
           <v-card-actions>
-            <v-btn color="primary" text :to="`/uitstap/${uitstap.id}`">
-              Inschrijven
+            <v-btn :to="`/uitstap/${uitstap.id}`" color="primary" text>
+              {{
+                $store.state.gebruiker.user.ouder ? 'Inschrijven' : 'Meer info'
+              }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -50,7 +52,7 @@
       transition="dialog-bottom-transition"
     >
       <template v-slot:activator="{ on }">
-        <v-btn bottom right fixed color="primary" v-on="on" dark fab>
+        <v-btn v-on="on" bottom right fixed color="primary" dark fab>
           <v-icon>mdi-plus</v-icon>
         </v-btn>
       </template>
