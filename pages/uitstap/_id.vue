@@ -1,36 +1,36 @@
 <template>
   <div>
     <v-card class="card">
-      <v-img class="white--text align-end" height="200px" :src="uitstap.url">
+      <v-img :src="uitstap.url" class="white--text align-end" height="200px">
         <v-card-title>{{ uitstap.titel }}</v-card-title>
       </v-img>
 
       <v-card-subtitle class="pb-0"
-        >{{ uitstap.dates[0] }} - {{ uitstap.dates[1] }}</v-card-subtitle
-      >
+        >{{ uitstap.dates[0] }} - {{ uitstap.dates[1] }}
+      </v-card-subtitle>
 
       <v-card-text class="text--primary">
         {{ uitstap.beschrijving }}
         <v-row>
           <v-chip
-            class="groep"
             :color="groep.geselecteerd ? 'green' : ''"
             v-for="(groep, index) in uitstap.groepen"
             :key="index"
-            >{{ groep.naam }}</v-chip
-          >
+            class="groep"
+            >{{ groep.naam }}
+          </v-chip>
         </v-row>
         <v-row>
-          <v-col
-            ><v-chip
-              class="groep"
-              :color="lid.geselecteerd ? 'primary' : ''"
+          <v-col>
+            <v-chip
+              :color="lid.geselecteerd || lid.ingeschreven ? 'primary' : ''"
               v-for="(lid, index) in ledenAlles"
               :key="index"
               :disabled="lid.ingeschreven"
               @click="lid.geselecteerd = !lid.geselecteerd"
-              >{{ lid.naam }}</v-chip
-            >
+              class="groep"
+              >{{ lid.naam }}
+            </v-chip>
           </v-col>
           <v-col>
             Totaalprijs: €
@@ -39,9 +39,14 @@
         </v-row>
       </v-card-text>
       <v-actions>
-        <v-btn text color="primary" @click="inschrijven" :loading="laden"
-          >Inschrijving vervolledigen</v-btn
-        >
+        <v-btn
+          @click="inschrijven"
+          :loading="laden"
+          :disabled="geselecteerd.length == 0"
+          text
+          color="primary"
+          >Inschrijving vervolledigen
+        </v-btn>
       </v-actions>
     </v-card>
     <v-dialog
@@ -56,16 +61,16 @@
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
-              dark
-              text
               @click="
                 () => {
                   betalen = false
-                  $emit('ingeschreven')
+                  laadGegevens()
                 }
               "
-              >Klaar</v-btn
-            >
+              dark
+              text
+              >Klaar
+            </v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-list three-line subheader>
@@ -73,9 +78,9 @@
           <v-list-item v-for="(lid, index) in geselecteerd" :key="index">
             <v-list-item-content>
               <v-list-item-title>{{ lid.naam }}</v-list-item-title>
-              <v-list-item-subtitle>{{
-                lid.geboortedatum
-              }}</v-list-item-subtitle>
+              <v-list-item-subtitle
+                >{{ lid.geboortedatum }}
+              </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -97,23 +102,23 @@
           <v-list-item>
             <v-list-item-content>
               <v-list-item-title>Bedrag</v-list-item-title>
-              <v-list-item-subtitle>{{
-                `€ ${teBetalen.toFixed(2)}`
-              }}</v-list-item-subtitle>
+              <v-list-item-subtitle
+                >{{ `€ ${teBetalen.toFixed(2)}` }}
+              </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-list>
         <v-card-text class="text-center"
-          >Gelieve deze betaling zo snel mogelijk in orde te brengen zodat wij
-          uw leden correct kunnen verzekeren.</v-card-text
-        >
-      </v-card></v-dialog
-    >
+          >Gelieve deze betaling zo snel mogelijk in orde te brengen.
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import { db, storage } from '@/plugins/firebase'
+
 export default {
   data() {
     return {
@@ -127,6 +132,31 @@ export default {
       betalingsId: '',
       lidIds: []
     }
+  },
+  computed: {
+    leden() {
+      return this.ledenAlles.map((lid) => {
+        return {
+          naam: lid.naam,
+          lidId: lid.lidId,
+          geselecteerd: lid.geselecteerd
+        }
+      })
+    },
+    geselecteerd() {
+      const geselecteerd = this.leden.filter((lid) => {
+        if (lid.geselecteerd) return true
+      })
+      const result = []
+      geselecteerd.forEach((item) => {
+        const { geselecteerd, ...lid } = item
+        result.push(lid)
+      })
+      return result
+    }
+  },
+  mounted() {
+    this.laadGegevens()
   },
   methods: {
     inschrijven() {
@@ -156,77 +186,56 @@ export default {
             })
         })
         .catch((err) => console.log(err))
-    }
-  },
-  mounted() {
-    db.collection('uitstap')
-      .doc(this.$route.params.id)
-      .get()
-      .then((doc) => {
-        storage
-          .ref(`uitstap/${doc.id}`)
-          .getDownloadURL()
-          .then((url) => {
-            console.log(url)
-            this.uitstap = { ...doc.data(), url, id: doc.id }
-          })
-          .catch(function(error) {
-            console.log(error)
-          })
-        db.collection('leden')
-          .where(
-            'ouderId',
-            'array-contains',
-            this.$store.state.gebruiker.user.data.uid
-          )
-          .get()
-          .then((snap) => {
-            this.ledenAlles = snap.docs.map((item) => {
-              return { ...item.data(), lidId: item.id, geselecteerd: false }
+    },
+    laadGegevens() {
+      this.lidIds = []
+      db.collection('uitstap')
+        .doc(this.$route.params.id)
+        .get()
+        .then((doc) => {
+          storage
+            .ref(`uitstap/${doc.id}`)
+            .getDownloadURL()
+            .then((url) => {
+              console.log(url)
+              this.uitstap = { ...doc.data(), url, id: doc.id }
             })
-            snap.docs.forEach((item) => {
-              this.lidIds.push({ lidId: item.id, naam: item.data().naam })
+            .catch(function(error) {
+              console.log(error)
             })
-            db.collection('uitstap')
-              .doc(doc.id)
-              .collection('inschrijving')
-              .where('leden', 'array-contains-any', this.lidIds)
-              .get()
-              .then((inschrijvingen) => {
-                console.log(inschrijvingen.docs)
-                inschrijvingen.docs.forEach((doc) => {
-                  this.ledenAlles = this.ledenAlles.map((lid) => {
-                    if (doc.data().leden.some((l) => l.lidId === lid.lidId)) {
-                      console.log('ja')
-                      return { ...lid, ingeschreven: true }
-                    }
-                    return lid
+          db.collection('leden')
+            .where(
+              'ouderId',
+              'array-contains',
+              this.$store.state.gebruiker.user.data.uid
+            )
+            .get()
+            .then((snap) => {
+              this.ledenAlles = snap.docs.map((item) => {
+                return { ...item.data(), lidId: item.id, geselecteerd: false }
+              })
+              snap.docs.forEach((item) => {
+                this.lidIds.push({ lidId: item.id, naam: item.data().naam })
+              })
+              db.collection('uitstap')
+                .doc(doc.id)
+                .collection('inschrijving')
+                .where('leden', 'array-contains-any', this.lidIds)
+                .get()
+                .then((inschrijvingen) => {
+                  console.log(inschrijvingen.docs)
+                  inschrijvingen.docs.forEach((doc) => {
+                    this.ledenAlles = this.ledenAlles.map((lid) => {
+                      if (doc.data().leden.some((l) => l.lidId === lid.lidId)) {
+                        console.log('ja')
+                        return { ...lid, ingeschreven: true }
+                      }
+                      return lid
+                    })
                   })
                 })
-              })
-          })
-      })
-  },
-  computed: {
-    leden() {
-      return this.ledenAlles.map((lid) => {
-        return {
-          naam: lid.naam,
-          lidId: lid.lidId,
-          geselecteerd: lid.geselecteerd
-        }
-      })
-    },
-    geselecteerd() {
-      const geselecteerd = this.leden.filter((lid) => {
-        if (lid.geselecteerd) return true
-      })
-      const result = []
-      geselecteerd.forEach((item) => {
-        const { geselecteerd, ...lid } = item
-        result.push(lid)
-      })
-      return result
+            })
+        })
     }
   }
 }
