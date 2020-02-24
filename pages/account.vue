@@ -1,21 +1,17 @@
 <template>
   <div class="text-center">
-    <div v-if="!this.$store.state.gebruiker.user.isLoggedIn" id="loginButtons">
+    <img class="logo" src="/icon.png" alt="Logo SmartChiro" />
+    <div id="loginButtons" v-if="!this.$store.state.gebruiker.user.isLoggedIn">
       <!-- <v-btn @click="login('google')">Login met Google</v-btn>
       <v-btn @click="login('facebook')">Login met Facebook</v-btn> -->
       <div id="gSignInWrapper">
-        <div @click="login('google')" v-ripple id="customBtn">
+        <div @click="login('google')" v-ripple class="customBtn">
           <span class="icon google"></span>
           <span class="buttonText">Google</span>
         </div>
       </div>
       <div id="fSignInWrapper">
-        <div
-          @click="login('facebook')"
-          v-ripple
-          id="customBtn"
-          class="facebook"
-        >
+        <div @click="login('facebook')" v-ripple class="facebook customBtn">
           <span class="icon facebook"></span>
           <span class="buttonText">Facebook</span>
         </div>
@@ -54,38 +50,6 @@ export default {
   components: {
     NieuweGebruiker
   },
-  methods: {
-    login(provider) {
-      if (provider === 'google') {
-        provider = new firebase.auth.GoogleAuthProvider()
-      } else if (provider === 'facebook') {
-        provider = new firebase.auth.FacebookAuthProvider()
-      }
-      firebase.auth().signInWithRedirect(provider)
-    },
-    loguit() {
-      firebase.auth().signOut()
-      this.$store.commit('menu/resetState')
-    },
-    checkNieuw() {
-      firebase
-        .auth()
-        .currentUser.getIdTokenResult()
-        .then((idTokenResult) => {
-          if (idTokenResult.claims.leider || idTokenResult.claims.ouder) {
-            console.log('test')
-            this.$store.commit('gebruiker/setNieuweGebruiker', false)
-          } else {
-            this.$store.commit('gebruiker/setNieuweGebruiker', true)
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          this.$store.commit('gebruiker/setNieuweGebruiker', false)
-          this.$router.push('/geeninternet')
-        })
-    }
-  },
   mounted() {
     firebase
       .auth()
@@ -118,6 +82,38 @@ export default {
       if (user) this.checkNieuw()
     })
   },
+  methods: {
+    login(provider) {
+      if (provider === 'google') {
+        provider = new firebase.auth.GoogleAuthProvider()
+      } else if (provider === 'facebook') {
+        provider = new firebase.auth.FacebookAuthProvider()
+      }
+      firebase.auth().signInWithRedirect(provider)
+    },
+    loguit() {
+      firebase.auth().signOut()
+      this.$store.commit('menu/resetState')
+    },
+    checkNieuw() {
+      firebase
+        .auth()
+        .currentUser.getIdTokenResult()
+        .then((idTokenResult) => {
+          if (idTokenResult.claims.leider || idTokenResult.claims.ouder) {
+            console.log('test')
+            this.$store.commit('gebruiker/setNieuweGebruiker', false)
+          } else {
+            this.$store.commit('gebruiker/setNieuweGebruiker', true)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          this.$store.commit('gebruiker/setNieuweGebruiker', false)
+          this.$router.push('/geeninternet')
+        })
+    }
+  },
   head() {
     return {
       title: 'Account'
@@ -127,7 +123,10 @@ export default {
 </script>
 
 <style>
-#customBtn {
+.logo {
+  width: 200px;
+}
+.customBtn {
   margin: 16px;
   display: inline-block;
   background: white;
@@ -138,7 +137,7 @@ export default {
   white-space: nowrap;
 }
 
-#customBtn:hover {
+.customBtn:hover {
   cursor: pointer;
 }
 span.label {
