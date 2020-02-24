@@ -257,7 +257,6 @@ export default {
                         if (
                           doc.data().leden.some((l) => l.lidId === lid.lidId)
                         ) {
-                          console.log('ja')
                           return { ...lid, ingeschreven: true }
                         }
                         return lid
