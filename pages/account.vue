@@ -40,7 +40,9 @@
           <a @click="$router.push('/')">dashboard</a>.
         </p>
       </div>
-      <v-btn @click="loguit()" bottom>Log uit</v-btn>
+      <v-btn @click="loguit()" top right absolute>
+        <v-icon>mdi-logout</v-icon>
+      </v-btn>
     </div>
   </div>
 </template>
@@ -186,7 +188,6 @@ span.buttonText {
 }
 .loggedIn {
   display: flex;
-  height: calc(100vh - 86px);
   flex-direction: column;
   justify-content: space-between;
 }
