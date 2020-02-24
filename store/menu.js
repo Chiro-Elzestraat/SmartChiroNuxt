@@ -1,7 +1,14 @@
 const getDefaultState = () => {
   return {
     items: [
+      {
+        title: 'Leden',
+        icon: 'mdi-account-group',
+        to: '/leden',
+        rol: 'leider'
+      },
       { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
+      { title: 'Uitstappen', icon: 'mdi-tent', to: '/uitstap' },
       { title: 'Mijn account', icon: 'mdi-account', to: '/account' },
       { title: 'Instellingen', icon: 'mdi-settings', to: '/instellingen' }
     ]

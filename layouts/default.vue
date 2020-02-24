@@ -14,6 +14,7 @@
       <v-list>
         <v-list-item
           v-for="(item, i) in this.$store.state.menu.items"
+          v-if="!item.rol || (item.rol == 'leider' && isLeider)"
           :key="i"
           :to="item.to"
           router
@@ -82,7 +83,7 @@
 
 <script>
 import firebase from 'firebase'
-import { db } from '../plugins/firebase'
+// import { db } from '../plugins/firebase'
 export default {
   data() {
     return {
@@ -95,6 +96,11 @@ export default {
       title: 'SmartChiro'
     }
   },
+  computed: {
+    isLeider() {
+      return this.$store.state.gebruiker.user.leider
+    }
+  },
   created() {
     firebase.auth().onAuthStateChanged((user) => {
       this.$store.dispatch('gebruiker/fetchUser', user)
@@ -104,17 +110,17 @@ export default {
         .then((idTokenResult) => {
           if (idTokenResult.claims.leider) {
             this.$store.commit('gebruiker/setLeider', true)
-            db.collection('extraMenu')
-              .doc('leider')
-              .get()
-              .then((doc) => {
-                if (doc.exists) {
-                  this.$store.commit(
-                    'menu/setExtraItems',
-                    doc.data().extraMenus
-                  )
-                }
-              })
+            // db.collection('extraMenu')
+            //   .doc('leider')
+            //   .get()
+            //   .then((doc) => {
+            //     if (doc.exists) {
+            //       this.$store.commit(
+            //         'menu/setExtraItems',
+            //         doc.data().extraMenus
+            //       )
+            //     }
+            //   })
           } else if (idTokenResult.claims.ouder) {
             this.$store.commit('gebruiker/setOuder', true)
           } else {
