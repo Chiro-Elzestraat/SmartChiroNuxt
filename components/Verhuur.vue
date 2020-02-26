@@ -128,7 +128,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn color="green darken-1" text @click="aanvragen = false">
+          <v-btn color="green darken-1" text @click="$emit('terug')">
             Terug
           </v-btn>
         </v-card-actions>
