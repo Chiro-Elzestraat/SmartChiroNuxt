@@ -23,6 +23,12 @@ const vuetify = {
   }
 }
 export default {
+  generate: {
+    fallback: true
+  },
+  router: {
+    mode: 'hash'
+  },
   server: {
     https: {
       key: fs.readFileSync('./server.key'),

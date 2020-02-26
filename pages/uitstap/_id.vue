@@ -48,9 +48,9 @@
                 <v-list-item-icon>
                   <v-tooltip left>
                     <template v-slot:activator="{ on }">
-                      <v-icon v-on="on">{{
-                        lid.betaling.betaald ? 'mdi-check' : 'mdi-close'
-                      }}</v-icon>
+                      <v-icon v-on="on">
+                        {{ lid.betaling.betaald ? 'mdi-check' : 'mdi-close' }}
+                      </v-icon>
                     </template>
                     <span>{{ lid.betaling.betalingsnummer }}</span>
                   </v-tooltip>
@@ -141,6 +141,8 @@
 
 <script>
 import { db, storage } from '@/plugins/firebase'
+
+debugger
 
 export default {
   data() {
