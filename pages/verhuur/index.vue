@@ -5,43 +5,37 @@
       <v-card-title></v-card-title>
       <v-card-subtitle></v-card-subtitle>
       <v-img :src="uitstap.url"></v-img>
-    </v-card> -->
-    <v-row>
-      <v-col v-for="(uitstap, index) in uitstappen" :key="index">
+    </v-card>-->
+    <v-container>
+      <v-row>
+        <v-col><v-row v-for="(verhuur, index) in verhuurdGesorteerd" :key="index">
+      <v-col>
         <v-card class="card" max-width="400">
-          <v-img
-            :src="uitstap.url"
-            class="white--text align-end"
-            height="200px"
-          >
-            <v-card-title>{{ uitstap.titel }}</v-card-title>
-          </v-img>
-
-          <v-card-subtitle class="pb-0"
-            >{{ uitstap.dates[0] }} - {{ uitstap.dates[1] }}</v-card-subtitle
-          >
-
+          <v-card-title>
+            {{ new Date(verhuur.dates[0]).toLocaleDateString('nl', datumOpties) }}
+            - {{ new Date(verhuur.dates[1]).toLocaleDateString('nl', datumOpties) }}
+          </v-card-title>
+          <v-card-subtitle class="pb-6">{{ verhuur.huurder.vereniging }}</v-card-subtitle>
           <v-card-text class="text--primary">
-            {{ uitstap.beschrijving }}
-            <v-row>
-              <v-chip
-                :color="groep.geselecteerd ? 'green' : ''"
-                v-for="(groep, index) in uitstap.groepen"
-                :key="index"
-                class="groep"
-                >{{ groep.naam }}</v-chip
-              >
-            </v-row>
+            Contactpersoon: {{ verhuur.huurder.naam }}<v-spacer />Gsm: {{ verhuur.huurder.gsm }}
+          </v-card-text>
+          <v-card-text class="text--primary">
+            Opmerking:
+            {{ verhuur.opmerking }}
           </v-card-text>
 
-          <v-card-actions>
+          <!--<v-card-actions>
             <v-btn :to="`/uitstap/${uitstap.id}`" color="primary" text>
               Inschrijven
             </v-btn>
-          </v-card-actions>
+          </v-card-actions>-->
         </v-card>
       </v-col>
-    </v-row>
+    </v-row></v-col>
+        <v-col><Agenda /></v-col>
+        </v-row>
+    </v-container>
+    
     <v-dialog
       v-model="toevoegen"
       v-if="leider"
@@ -65,17 +59,46 @@
 
 <script>
 import firebase from 'firebase'
-import { db, storage } from '@/plugins/firebase'
+import { db } from '@/plugins/firebase'
 import Verhuur from '@/components/Verhuur'
+import Agenda from '@/components/Agenda'
+
 export default {
   components: {
-    Verhuur
+    Verhuur,
+    Agenda
   },
   data() {
     return {
       toevoegen: false,
       leider: false,
-      uitstappen: []
+      verhuurd: [],
+      datumOpties: {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }
+    }
+  },
+  computed: {
+    verhuurdGesorteerd() {
+      const verhuurdNietGesorteerd = this.verhuurd
+      return verhuurdNietGesorteerd.sort((a, b) => {
+        if (a.dates[0] < b.dates[0]) {
+          return -1
+        } else if (a.dates[0] === b.dates[0]) {
+          return 0
+        } else {
+          return 1
+        }
+      })
+    },
+    verhuurPerDatum(){
+      const result = {}
+      this.verhuurdGesorteerd.forEach(verhuur => {
+        result[verhuur.dates[0]] = verhuur
+      })
+      return result
     }
   },
   created() {
@@ -93,10 +116,13 @@ export default {
     })
   },
   mounted() {
-    db.collection('uitstap')
+    db.collection('verhuur')
       .get()
       .then((snapshot) => {
-        snapshot.forEach((doc) => {
+        snapshot.forEach((doc) => this.verhuurd.push(doc.data()))
+      })
+    // .then((snapshot) => {
+    /* snapshot.forEach((doc) => {
           storage
             .ref(`uitstap/${doc.id}`)
             .getDownloadURL()
@@ -107,8 +133,8 @@ export default {
             .catch(function(error) {
               console.log(error)
             })
-        })
-      })
+        }) */
+    // })
   }
 }
 </script>

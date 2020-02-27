@@ -19,7 +19,7 @@
               <v-col>
                 <v-text-field
                   label="Vereniging"
-                  v-model="verhuur.vereniging"
+                  v-model="verhuur.huurder.vereniging"
                   outlined
                 ></v-text-field>
               </v-col>
@@ -55,7 +55,7 @@
     </v-list>
     <v-divider></v-divider>
     <v-list three-line subheader>
-      <v-subheader>Data</v-subheader>
+      <v-subheader>Datums</v-subheader>
       <v-list-item>
         <v-container>
           <v-row>
@@ -128,7 +128,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn color="green darken-1" text @click="$emit('terug')">
+          <v-btn color="primary" text @click="terug()">
             Terug
           </v-btn>
         </v-card-actions>
@@ -139,16 +139,21 @@
 
 <script>
 import { db } from '@/plugins/firebase'
-export default {
-  data() {
-    return {
-      verhuur: {
+
+const initialState = () => {
+  return{
+    verhuur: {
         huurder: { naam: '', gsm: '', vereniging: '' },
         dates: [],
         opmerking: ''
       },
       klaar: false
-    }
+  }
+}
+
+export default {
+  data() {
+    return initialState()
   },
   computed: {
     dateRangeText() {
@@ -156,6 +161,10 @@ export default {
     }
   },
   methods: {
+    terug(){
+      Object.assign(this.$data, initialState())
+      this.$emit('terug')
+    },
     aanmaken() {
       db.collection('verhuur')
         .add({
