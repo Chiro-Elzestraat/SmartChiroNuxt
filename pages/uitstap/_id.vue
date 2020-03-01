@@ -39,6 +39,7 @@
         </v-row>
         <v-row v-else>
           <v-col>
+            <h1>Totaal: {{ aantalIngeschrevenLeden }}</h1>
             <v-list>
               <v-list-item v-for="(lid, index) in ledenAlles" :key="index">
                 <v-list-item-content
@@ -170,6 +171,13 @@ export default {
           geselecteerd: lid.geselecteerd
         }
       })
+    },
+    aantalIngeschrevenLeden() {
+      let result = 0
+      this.ledenAlles.forEach((inschrijving) => {
+        result += inschrijving.leden.length
+      })
+      return result
     },
     geselecteerd() {
       const geselecteerd = this.leden.filter((lid) => {
