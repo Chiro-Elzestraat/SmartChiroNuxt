@@ -41,18 +41,23 @@
           <v-col>
             <v-list>
               <v-list-item v-for="(lid, index) in ledenAlles" :key="index">
-                <v-list-item-content>
-                  <v-list-item-title>{{ lid.naam }}</v-list-item-title>
-                  <v-list-item-subtitle>{{ lid.lidId }}</v-list-item-subtitle>
+                <v-list-item-content
+                  v-for="(lidGegevens, index) in lid.leden"
+                  :key="index"
+                >
+                  <v-list-item-title>{{ lidGegevens.naam }}</v-list-item-title>
+                  <v-list-item-subtitle>{{
+                    lidGegevens.lidId
+                  }}</v-list-item-subtitle>
                 </v-list-item-content>
                 <v-list-item-icon>
                   <v-tooltip left>
                     <template v-slot:activator="{ on }">
                       <v-icon v-on="on">
-                        {{ lid.betaling.betaald ? 'mdi-check' : 'mdi-close' }}
+                        {{ lid.betaald ? 'mdi-check' : 'mdi-close' }}
                       </v-icon>
                     </template>
-                    <span>{{ lid.betaling.betalingsnummer }}</span>
+                    <span>{{ lid.betalingsnummer }}</span>
                   </v-tooltip>
                 </v-list-item-icon>
               </v-list-item>
@@ -142,8 +147,6 @@
 <script>
 import { db, storage } from '@/plugins/firebase'
 
-debugger
-
 export default {
   data() {
     return {
@@ -192,19 +195,17 @@ export default {
       const ref = db
         .collection('uitstap')
         .doc(this.uitstap.id)
-        .collection('inschrijving')
+        .collection('betaling')
         .doc()
       ref
         .set({ leden: this.geselecteerd })
         .then((doc) => {
           db.collection('uitstap')
             .doc(this.uitstap.id)
-            .collection('inschrijving')
-            .doc(ref.id)
             .collection('betaling')
             .onSnapshot((snapshot) => {
               snapshot.docChanges().forEach((change) => {
-                if (change.type === 'added') {
+                if (change.type === 'modified') {
                   this.teBetalen = change.doc.data().bedrag
                   this.betalingsId = change.doc.data().betalingsnummer
                   this.laden = false
@@ -249,7 +250,7 @@ export default {
                 })
                 db.collection('uitstap')
                   .doc(doc.id)
-                  .collection('inschrijving')
+                  .collection('betaling')
                   .where('leden', 'array-contains-any', this.lidIds)
                   .get()
                   .then((inschrijvingen) => {
@@ -270,21 +271,10 @@ export default {
             const ref = db
               .collection('uitstap')
               .doc(this.$route.params.id)
-              .collection('inschrijving')
+              .collection('betaling')
             ref.get().then((inschrijvingen) => {
               inschrijvingen.docs.forEach((doc) => {
-                ref
-                  .doc(doc.id)
-                  .collection('betaling')
-                  .get()
-                  .then((betaling) => {
-                    doc.data().leden.forEach((lid) =>
-                      this.ledenAlles.push({
-                        ...lid,
-                        betaling: betaling.docs[0].data()
-                      })
-                    )
-                  })
+                this.ledenAlles.push(doc.data())
               })
             })
           }
