@@ -38,7 +38,7 @@
           <a @click="$router.push('/')">dashboard</a>.
         </p>
       </div>
-      <v-btn @click="loguit()" top right absolute>
+      <v-btn @click="loguit()" bottom right absolute>
         <v-icon>mdi-logout</v-icon>
       </v-btn>
     </div>
