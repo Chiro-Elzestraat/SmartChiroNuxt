@@ -52,10 +52,10 @@ export default {
     return {
       // TODO: deze groepen kunnen ook opgehaald worden van server
       groepen: [
-        { naam: 'Speelclub', leden: [], minLeeftijd: -2, maxLeeftijd: 8 },
-        { naam: 'Rakkers', leden: [], minLeeftijd: 8, maxLeeftijd: 12 },
-        { naam: 'Toppers', leden: [], minLeeftijd: 12, maxLeeftijd: 15 },
-        { naam: 'Kerels', leden: [], minLeeftijd: 15, maxLeeftijd: 16 },
+        { naam: 'Speelclub', leden: [], minLeeftijd: 0, maxLeeftijd: 9 },
+        { naam: 'Rakkers', leden: [], minLeeftijd: 9, maxLeeftijd: 12 },
+        { naam: 'Toppers', leden: [], minLeeftijd: 12, maxLeeftijd: 14 },
+        { naam: 'Kerels', leden: [], minLeeftijd: 14, maxLeeftijd: 16 },
         { naam: `Aspi's`, leden: [], minLeeftijd: 16, maxLeeftijd: 18 }
       ]
     }
