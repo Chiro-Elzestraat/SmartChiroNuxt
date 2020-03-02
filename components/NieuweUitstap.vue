@@ -1,13 +1,13 @@
 <template>
   <v-card>
     <v-toolbar dark color="primary">
-      <v-btn icon dark @click="$emit('sluit')">
+      <v-btn @click="$emit('sluit')" icon dark>
         <v-icon>mdi-close</v-icon>
       </v-btn>
       <v-toolbar-title>Nieuwe activiteit</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn dark text @click="aanmaken">Aanmaken</v-btn>
+        <v-btn @click="aanmaken" dark text>Aanmaken</v-btn>
       </v-toolbar-items>
     </v-toolbar>
     <v-list three-line subheader>
@@ -18,8 +18,8 @@
             <v-row>
               <v-col>
                 <v-text-field
-                  label="Titel"
                   v-model="uitstap.titel"
+                  label="Titel"
                   outlined
                 ></v-text-field>
               </v-col>
@@ -27,9 +27,9 @@
             <v-row>
               <v-col>
                 <v-textarea
+                  v-model="uitstap.beschrijving"
                   label="Beschrijving"
                   outlined
-                  v-model="uitstap.beschrijving"
                 ></v-textarea>
               </v-col>
             </v-row>
@@ -46,8 +46,8 @@
             <v-row>
               <v-col>
                 <v-file-input
-                  label="Afbeelding"
                   id="afbeelding"
+                  label="Afbeelding"
                   filled
                   prepend-icon="mdi-camera"
                 ></v-file-input>
@@ -90,24 +90,22 @@
           <v-row justify="center">
             <v-date-picker
               v-model="uitstap.deadline"
+              :min="new Date().toISOString()"
+              :max="
+                uitstap.dates[0] ? uitstap.dates[0] : new Date().toISOString()
+              "
               class="mt-4"
               locale="nl"
               first-day-of-week="1"
-              :min="new Date().toLocaleDateString('en-US')"
-              :max="
-                uitstap.dates[0]
-                  ? uitstap.dates[0]
-                  : new Date().toLocaleDateString('en-US')
-              "
             ></v-date-picker>
           </v-row>
           <v-row>
             <v-chip
-              class="groep"
               :color="groep.geselecteerd ? 'green' : ''"
               @click="groep.geselecteerd = !groep.geselecteerd"
               v-for="(groep, index) in uitstap.groepen"
               :key="index"
+              class="groep"
               >{{ groep.naam }}</v-chip
             >
           </v-row>
