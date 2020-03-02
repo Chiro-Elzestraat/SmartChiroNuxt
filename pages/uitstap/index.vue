@@ -18,9 +18,9 @@
           </v-img>
 
           <v-card-subtitle class="pb-0"
-            >{{ uitstap.dates[0] }} - {{ uitstap.dates[1] }}</v-card-subtitle
+            >{{ uitstap.dates[0] }} t.e.m. {{ uitstap.dates[1] }}<br />Deadline
+            voor inschrijven: {{ uitstap.deadline }}</v-card-subtitle
           >
-
           <v-card-text class="text--primary">
             {{ uitstap.beschrijving }}
             <v-row>
@@ -76,7 +76,8 @@ export default {
     return {
       toevoegen: false,
       leider: false,
-      uitstappen: []
+      uitstappen: [],
+      nu: new Date()
     }
   },
   created() {
@@ -110,6 +111,24 @@ export default {
             })
         })
       })
+    window.setInterval(() => {
+      this.nu = Math.trunc(new Date().getTime() / 1000)
+    }, 1000)
+  },
+  methods: {
+    secondenNaarDhms(seconden) {
+      seconden = Number(seconden)
+      const d = Math.floor(seconden / (3600 * 24))
+      const h = Math.floor((seconden % (3600 * 24)) / 3600)
+      const m = Math.floor((seconden % 3600) / 60)
+      const s = Math.floor(seconden % 60)
+
+      const dDisplay = d > 0 ? d + (d === 1 ? ' dag, ' : ' dagen, ') : ''
+      const hDisplay = h > 0 ? h + (h === 1 ? ' uur, ' : ' uren, ') : ''
+      const mDisplay = m > 0 ? m + (m === 1 ? ' minuut, ' : ' minuten, ') : ''
+      const sDisplay = s > 0 ? s + (s === 1 ? ' second' : ' seconden') : ''
+      return dDisplay + hDisplay + mDisplay + sDisplay
+    }
   }
 }
 </script>
