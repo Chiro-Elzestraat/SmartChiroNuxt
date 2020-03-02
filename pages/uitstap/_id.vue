@@ -30,6 +30,9 @@
               @click="lid.geselecteerd = !lid.geselecteerd"
               class="groep"
               >{{ lid.naam }}
+              <v-icon v-if="lid.ingeschreven">{{
+                lid.betaald ? 'mdi-check' : 'mdi-clock-outline'
+              }}</v-icon>
             </v-chip>
           </v-col>
           <v-col>
@@ -268,7 +271,11 @@ export default {
                         if (
                           doc.data().leden.some((l) => l.lidId === lid.lidId)
                         ) {
-                          return { ...lid, ingeschreven: true }
+                          return {
+                            ...lid,
+                            ingeschreven: true,
+                            betaald: doc.data().betaald
+                          }
                         }
                         return lid
                       })
