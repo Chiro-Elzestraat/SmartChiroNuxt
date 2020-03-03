@@ -122,43 +122,42 @@ export default {
   methods: {
     maakProfiel() {
       this.laden = true
-      const user = firebase.auth().currentUser
-
-      user
-        .updateProfile({
-          displayName: this.gebruiker.naam
+      db.collection('gebruikers')
+        .doc(this.$store.state.gebruiker.user.data.uid)
+        .set({
+          naam: this.gebruiker.naam,
+          gsm: this.gebruiker.gsm,
+          rollen: ['ouder']
         })
         .then(() => {
           db.collection('gebruikers')
             .doc(this.$store.state.gebruiker.user.data.uid)
-            .set({
-              naam: this.gebruiker.naam,
-              gsm: this.gebruiker.gsm,
-              rollen: ['ouder']
-            })
-            .then(() => {
-              db.collection('gebruikers')
-                .doc(this.$store.state.gebruiker.user.data.uid)
-                .onSnapshot((doc) => {
-                  console.log(doc.data())
-                  if (doc.data().rollen_ok) {
-                    firebase.auth().currentUser.getIdToken(true)
+            .onSnapshot((doc) => {
+              console.log(doc.data())
+              if (doc.data().rollen_ok) {
+                firebase
+                  .auth()
+                  .currentUser.getIdToken(true)
+                  .then(() => {
                     this.laden = false
                     this.$store.commit('gebruiker/setNieuweGebruiker', false)
                     this.$store.commit('gebruiker/setOuder', true)
-                  }
-                })
-            })
-            .catch((err) => {
-              console.log(err)
-              this.laden = false
+                  })
+                  .catch((error) => {
+                    window.alert(
+                      `Er is iets fout gegaan. Foutcode: ${error.code}. Foutmelding: ${error.message}`
+                    )
+                  })
+              }
             })
         })
-        .catch((error) => {
-          window.alert(
-            `Er is iets fout gegaan. Foutcode: ${error.code}. Foutmelding: ${error.message}`
-          )
+        .catch((err) => {
+          console.log(err)
+          this.laden = false
         })
+      firebase.auth().currentUser.updateProfile({
+        displayName: this.gebruiker.naam
+      })
     }
   }
 }
