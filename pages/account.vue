@@ -1,26 +1,43 @@
 <template>
-  <div class="text-center">
+  <div>
     <div v-if="!this.$store.state.gebruiker.user.isLoggedIn">
-      <img class="logo" src="/icon.png" alt="Logo SmartChiro" />
-      <div id="loginButtons">
-        <!-- <v-btn @click="login('google')">Login met Google</v-btn>
-        <v-btn @click="login('facebook')">Login met Facebook</v-btn> -->
-        <div id="gSignInWrapper">
-          <div @click="login('google')" v-ripple class="customBtn">
-            <span class="icon google"></span>
-            <span class="buttonText">Google</span>
+      <img
+        class="logo"
+        src="/icon.png"
+        alt="Logo SmartChiro"
+        style="margin: 0 auto;display: block;"
+      />
+      <v-card outlined width="500" style="margin: 16px auto; display: block;">
+        <v-card-title>Aanbevolen</v-card-title>
+        <v-card-subtitle>Ingelogd in slechts 1 klik</v-card-subtitle>
+        <v-card-text>
+          <div id="loginButtons">
+            <!-- <v-btn @click="login('google')">Login met Google</v-btn>
+            <v-btn @click="login('facebook')">Login met Facebook</v-btn> -->
+            <div id="gSignInWrapper">
+              <div @click="login('google')" v-ripple class="customBtn">
+                <span class="icon google"></span>
+                <span class="buttonText">Google</span>
+              </div>
+            </div>
+            <div id="fSignInWrapper">
+              <div
+                @click="login('facebook')"
+                v-ripple
+                class="facebook customBtn"
+              >
+                <span class="icon facebook"></span>
+                <span class="buttonText">Facebook</span>
+              </div>
+            </div>
           </div>
-        </div>
-        <div id="fSignInWrapper">
-          <div @click="login('facebook')" v-ripple class="facebook customBtn">
-            <span class="icon facebook"></span>
-            <span class="buttonText">Facebook</span>
-          </div>
-        </div>
-      </div>
+        </v-card-text>
+      </v-card>
       <v-dialog v-model="dialog" width="500">
         <template v-slot:activator="{ on }">
-          <v-btn v-on="on">Login met e-mail</v-btn>
+          <v-btn v-on="on" style="margin: 0 auto; display: block;"
+            >Login met e-mail</v-btn
+          >
         </template>
         <v-card outlined>
           <v-card-title>Login met e-mail</v-card-title>
@@ -254,14 +271,19 @@ export default {
   width: 200px;
 }
 .customBtn {
-  margin: 16px;
-  display: inline-block;
+  margin: 8px;
+  display: block;
   background: white;
   color: #444;
   width: 190px;
   border-radius: 5px;
   border: 1px solid #eee;
   white-space: nowrap;
+}
+@media (max-width: 418px) {
+  .customBtn {
+    margin: 16px auto;
+  }
 }
 
 .customBtn:hover {
