@@ -17,21 +17,21 @@
           <div class="invoer">
             <v-text-field
               v-model="gebruiker.naam"
+              :rules="rules.nietLeeg"
               label="Naam"
               hint="voor- en achternaam"
-              :rules="rules.nietLeeg"
             >
             </v-text-field>
             <v-text-field
               v-model="gebruiker.gsm"
               v-mask="mask"
-              label="Gsm"
-              hint="in het formaat +32 123 45 67 89"
               :rules="rules.gsm"
               @keyup.enter="huidig++"
+              label="Gsm"
+              hint="in het formaat +32 123 45 67 89"
             ></v-text-field>
           </div>
-          <v-btn color="primary" @click="huidig++" :disabled="!gegevensInOrde">
+          <v-btn @click="huidig++" :disabled="!gegevensInOrde" color="primary">
             Verder
           </v-btn>
         </v-stepper-content>
@@ -40,14 +40,14 @@
             <v-checkbox v-model="privacy">
               <template v-slot:label>
                 <div>
-                  Ik ga akkoort met het
+                  Ik ga akkoord met het
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
                       <a
-                        target="_blank"
-                        href="https://privacy.chiroelzestraat.be"
                         @click.stop
                         v-on="on"
+                        target="_blank"
+                        href="https://privacy.chiroelzestraat.be"
                       >
                         privacybeleid
                       </a>
@@ -60,14 +60,14 @@
             </v-checkbox>
           </div>
           <v-btn
-            color="primary"
             :disabled="!privacy"
             @click="maakProfiel()"
             :loading="laden"
+            color="primary"
           >
             Verder
           </v-btn>
-          <v-btn text @click="huidig--" :disabled="laden">Terug</v-btn>
+          <v-btn @click="huidig--" :disabled="laden" text>Terug</v-btn>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -122,29 +122,42 @@ export default {
   methods: {
     maakProfiel() {
       this.laden = true
-      db.collection('gebruikers')
-        .doc(this.$store.state.gebruiker.user.data.uid)
-        .set({
-          naam: this.gebruiker.naam,
-          gsm: this.gebruiker.gsm,
-          rollen: ['ouder']
+      const user = firebase.auth().currentUser
+
+      user
+        .updateProfile({
+          displayName: this.gebruiker.naam
         })
         .then(() => {
           db.collection('gebruikers')
             .doc(this.$store.state.gebruiker.user.data.uid)
-            .onSnapshot((doc) => {
-              console.log(doc.data())
-              if (doc.data().rollen_ok) {
-                firebase.auth().currentUser.getIdToken(true)
-                this.laden = false
-                this.$store.commit('gebruiker/setNieuweGebruiker', false)
-                this.$store.commit('gebruiker/setOuder', true)
-              }
+            .set({
+              naam: this.gebruiker.naam,
+              gsm: this.gebruiker.gsm,
+              rollen: ['ouder']
+            })
+            .then(() => {
+              db.collection('gebruikers')
+                .doc(this.$store.state.gebruiker.user.data.uid)
+                .onSnapshot((doc) => {
+                  console.log(doc.data())
+                  if (doc.data().rollen_ok) {
+                    firebase.auth().currentUser.getIdToken(true)
+                    this.laden = false
+                    this.$store.commit('gebruiker/setNieuweGebruiker', false)
+                    this.$store.commit('gebruiker/setOuder', true)
+                  }
+                })
+            })
+            .catch((err) => {
+              console.log(err)
+              this.laden = false
             })
         })
-        .catch((err) => {
-          console.log(err)
-          this.laden = false
+        .catch((error) => {
+          window.alert(
+            `Er is iets fout gegaan. Foutcode: ${error.code}. Foutmelding: ${error.message}`
+          )
         })
     }
   }
