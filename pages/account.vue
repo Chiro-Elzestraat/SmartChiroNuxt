@@ -94,13 +94,13 @@
     </div>
     <div v-else class="loggedIn">
       <div v-if="this.$store.state.gebruiker.user.nieuweGebruiker">
-        <h1 class="display-1">
+        <h1 class="display-1 text-center">
           Welkom op SmartChiro{{ displayName ? `, ${displayName}` : '' }}!<br />
           Vervolledig je profiel om verder te gaan.
         </h1>
         <NieuweGebruiker />
       </div>
-      <div v-else>
+      <div v-else class="text-center">
         <h1 class="display-1">
           Welkom terug{{ displayName ? `, ${displayName}` : '' }}
         </h1>
