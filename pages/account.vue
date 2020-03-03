@@ -18,19 +18,74 @@
           </div>
         </div>
       </div>
+      <v-dialog v-model="dialog" width="500">
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on">Login met e-mail</v-btn>
+        </template>
+        <v-card outlined>
+          <v-card-title>Login met e-mail</v-card-title>
+          <v-card-text>
+            <v-tabs v-model="tab">
+              <v-tab>Login</v-tab>
+              <v-tab>Registreer</v-tab>
+            </v-tabs>
+            <v-tabs-items v-model="tab">
+              <v-tab-item>
+                <v-container>
+                  <v-text-field
+                    v-model="email"
+                    outlined
+                    label="E-mail"
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="wachtwoord"
+                    outlined
+                    label="Wachtwoord"
+                    type="password"
+                  ></v-text-field>
+                  <v-btn @click="loginEmail" :loading="laden">Login</v-btn>
+                </v-container>
+              </v-tab-item>
+              <v-tab-item>
+                <v-container>
+                  <v-text-field
+                    v-model="emailr"
+                    outlined
+                    label="E-mail"
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="wachtwoordr"
+                    outlined
+                    label="Wachtwoord"
+                    type="password"
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="herhaalwachtwoordr"
+                    outlined
+                    label="Herhaal wachtwoord"
+                    type="password"
+                  ></v-text-field>
+                  <v-btn @click="maakAccount" :loading="laden"
+                    >Registreer</v-btn
+                  >
+                </v-container>
+              </v-tab-item>
+            </v-tabs-items>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </div>
     <div v-else class="loggedIn">
       <div v-if="this.$store.state.gebruiker.user.nieuweGebruiker">
         <h1 class="display-1">
-          Welkom op SmartChiro,
-          {{ this.$store.state.gebruiker.user.data.displayName }}!<br />
+          Welkom op SmartChiro{{ displayName ? `, ${displayName}` : '' }}!<br />
           Vervolledig je profiel om verder te gaan.
         </h1>
         <NieuweGebruiker />
       </div>
       <div v-else>
         <h1 class="display-1">
-          Welkom terug, {{ this.$store.state.gebruiker.user.data.displayName }}
+          Welkom terug{{ displayName ? `, ${displayName}` : '' }}
         </h1>
         <br />
         <p v-if="this.$store.state.gebruiker.user.ouder">
@@ -42,6 +97,16 @@
         <v-icon>mdi-logout</v-icon>
       </v-btn>
     </div>
+    <v-dialog v-model="errorDialog" width="500">
+      <v-card>
+        <v-card-title>Er is iets fout gegaan.</v-card-title>
+        <v-card-subtitle>{{ error.code }}</v-card-subtitle>
+        <v-card-text class="text--primary">{{ error.message }}</v-card-text>
+        <v-card-actions>
+          <v-btn @click="errorDialog = false">Ok</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -51,6 +116,25 @@ import NieuweGebruiker from '../components/NieuweGebruiker'
 export default {
   components: {
     NieuweGebruiker
+  },
+  data() {
+    return {
+      tab: 0,
+      email: '',
+      wachtwoord: '',
+      emailr: '',
+      wachtwoordr: '',
+      herhaalwachtwoordr: '',
+      laden: false,
+      dialog: false,
+      errorDialog: false,
+      error: {}
+    }
+  },
+  computed: {
+    displayName() {
+      return this.$store.state.gebruiker.user.data.displayName
+    }
   },
   mounted() {
     firebase
@@ -92,6 +176,47 @@ export default {
         provider = new firebase.auth.FacebookAuthProvider()
       }
       firebase.auth().signInWithRedirect(provider)
+    },
+    maakAccount(email, password) {
+      if (this.wachtwoordr === this.herhaalwachtwoordr) {
+        this.laden = true
+        firebase
+          .auth()
+          .createUserWithEmailAndPassword(this.emailr, this.wachtwoordr)
+          .then(() => {
+            this.emailr = ''
+            this.wachtwoordr = ''
+            this.herhaalwachtwoordr = ''
+            this.laden = false
+          })
+          .catch((error) => {
+            this.error = error
+            this.errorDialog = true
+            this.laden = false
+          })
+      } else {
+        this.error = {
+          code: 'input/passwords-do-not-match',
+          message: 'Wachtwoorden komen niet overeen.'
+        }
+        this.errorDialog = true
+      }
+    },
+    loginEmail() {
+      this.laden = true
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.wachtwoord)
+        .then(() => {
+          this.email = ''
+          this.wachtwoord = ''
+          this.laden = false
+        })
+        .catch((error) => {
+          this.errorDialog = true
+          this.error = error
+          this.laden = false
+        })
     },
     loguit() {
       firebase.auth().signOut()
