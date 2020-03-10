@@ -42,9 +42,10 @@
         <v-card outlined>
           <v-card-title>Login met e-mail</v-card-title>
           <v-card-text>
-            <v-tabs v-model="tab">
+            <v-tabs v-model="tab" show-arrows>
               <v-tab>Login</v-tab>
               <v-tab>Registreer</v-tab>
+              <v-tab>Wachtwoord vergeten</v-tab>
             </v-tabs>
             <v-tabs-items v-model="tab">
               <v-tab-item>
@@ -87,6 +88,18 @@
                   >
                 </v-container>
               </v-tab-item>
+              <v-tab-item>
+                <v-container>
+                  <v-text-field
+                    v-model="emailVergeten"
+                    outlined
+                    label="E-mail"
+                  ></v-text-field>
+                  <v-btn @click="wachtwoordVergeten" :loading="laden"
+                    >Stuur reset e-mail</v-btn
+                  >
+                </v-container>
+              </v-tab-item>
             </v-tabs-items>
           </v-card-text>
         </v-card>
@@ -124,6 +137,15 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="emailGelukt" width="500">
+      <v-card>
+        <v-card-title>Gelukt!</v-card-title>
+        <v-card-text>Check je mail om je wachtwoord te resetten.</v-card-text>
+        <v-card-actions>
+          <v-btn @click="emailGelukt = false">Ok</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -145,7 +167,9 @@ export default {
       laden: false,
       dialog: false,
       errorDialog: false,
-      error: {}
+      error: {},
+      emailVergeten: '',
+      emailGelukt: false
     }
   },
   computed: {
@@ -228,6 +252,22 @@ export default {
           this.email = ''
           this.wachtwoord = ''
           this.laden = false
+        })
+        .catch((error) => {
+          this.errorDialog = true
+          this.error = error
+          this.laden = false
+        })
+    },
+    wachtwoordVergeten() {
+      this.laden = true
+      firebase
+        .auth()
+        .sendPasswordResetEmail(this.emailVergeten)
+        .then(() => {
+          this.emailGelukt = true
+          this.laden = false
+          this.emailVergeten = ''
         })
         .catch((error) => {
           this.errorDialog = true
