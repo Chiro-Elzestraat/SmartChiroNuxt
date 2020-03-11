@@ -6,25 +6,25 @@
       <v-card-text>
         <form @submit="submit">
           <v-text-field
-            label="Transactie-ID"
-            hint="Eerste twee cijfers geven de categorie aan."
             v-model="transactieId"
             @input="search"
+            label="Transactie-ID"
+            hint="Eerste twee cijfers geven de categorie aan."
           ></v-text-field>
           <v-text-field
             :hint="`Verwacht bedrag: ${totaalPrijs}`"
-            label="Bedrag"
             v-model="bedrag"
+            label="Bedrag"
           ></v-text-field>
           <v-btn
-            type="submit"
-            class="bevestigknop"
             :loading="laden"
             :disabled="betaald"
             :color="bedrag == totaalPrijs ? 'green' : 'red'"
+            type="submit"
+            class="bevestigknop"
             >Bevestig</v-btn
           >
-          <p class="text-center" v-if="transactieId != '' && betaald">
+          <p v-if="transactieId != '' && betaald" class="text-center">
             Al betaald
           </p>
         </form>
@@ -34,8 +34,8 @@
 </template>
 
 <script>
-import { db } from '@/plugins/firebase'
-import { auth } from '@/plugins/firebase'
+import { db, auth } from '@/plugins/firebase'
+
 export default {
   data() {
     return {
@@ -60,6 +60,7 @@ export default {
               saldo -= doc.data().bedrag
               await doc.ref
                 .update({ betaald: true })
+                .then(() => console.log('betaling geslaagd'))
                 .catch((err) =>
                   console.error('Fout bij verwerken betaling: ', err)
                 )
@@ -78,7 +79,8 @@ export default {
       db.collectionGroup('betaling')
         .where('betalingsnummer', '==', this.transactieId)
         .get()
-        .then((snap) =>
+        .then((snap) => {
+          this.totaalPrijs = 0
           snap.forEach((doc) => {
             if (!doc.data().betaald) {
               this.totaalPrijs += doc.data().bedrag
@@ -86,7 +88,7 @@ export default {
             }
             console.log(doc.data())
           })
-        )
+        })
     }
   },
   head() {
