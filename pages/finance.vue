@@ -13,6 +13,7 @@
           ></v-text-field>
           <v-text-field
             :hint="`Verwacht bedrag: ${totaalPrijs}`"
+            :persistent-hint="totaalPrijs > 0"
             v-model="bedrag"
             label="Bedrag"
           ></v-text-field>
