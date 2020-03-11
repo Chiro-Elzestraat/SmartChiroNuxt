@@ -57,7 +57,10 @@
                 <v-list-item-icon>
                   <v-tooltip left>
                     <template v-slot:activator="{ on }">
-                      <v-icon v-on="on">
+                      <v-icon
+                        v-on="on"
+                        @click="kopierNummer(lid.betalingsnummer)"
+                      >
                         {{ lid.betaald ? 'mdi-check' : 'mdi-close' }}
                       </v-icon>
                     </template>
@@ -201,6 +204,9 @@ export default {
     this.laadGegevens()
   },
   methods: {
+    kopierNummer(betalingsnummer) {
+      navigator.clipboard.writeText(betalingsnummer).then(() => {})
+    },
     inschrijven() {
       this.laden = true
       const ref = db
