@@ -148,6 +148,9 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+    <v-snackbar v-model="gekopieerd">
+      Betalingsnummer gekopierd
+    </v-snackbar>
   </div>
 </template>
 
@@ -165,7 +168,8 @@ export default {
       betalen: false,
       teBetalen: 0,
       betalingsId: '',
-      lidIds: []
+      lidIds: [],
+      gekopieerd: false
     }
   },
   computed: {
@@ -205,7 +209,9 @@ export default {
   },
   methods: {
     kopierNummer(betalingsnummer) {
-      navigator.clipboard.writeText(betalingsnummer).then(() => {})
+      navigator.clipboard.writeText(betalingsnummer).then(() => {
+        this.gekopieerd = true
+      })
     },
     inschrijven() {
       this.laden = true
