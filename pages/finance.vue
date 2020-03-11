@@ -19,13 +19,16 @@
           ></v-text-field>
           <v-btn
             :loading="laden"
-            :disabled="betaald"
+            :disabled="betaald || bestaatNiet"
             :color="bedrag == totaalPrijs ? 'green' : 'red'"
             type="submit"
             class="bevestigknop"
             >Bevestig</v-btn
           >
-          <p v-if="transactieId != '' && betaald" class="text-center">
+          <p v-if="bestaatNiet" class="text-center">
+            Transactie ID bestaat niet.
+          </p>
+          <p v-else-if="transactieId != '' && betaald" class="text-center">
             Al betaald
           </p>
         </form>
@@ -44,7 +47,8 @@ export default {
       totaalPrijs: 0,
       bedrag: '',
       laden: false,
-      betaald: true
+      betaald: true,
+      bestaatNiet: false
     }
   },
   methods: {
@@ -89,6 +93,7 @@ export default {
             }
             console.log(doc.data())
           })
+          this.bestaatNiet = snap.docs.length === 0
         })
     }
   },
