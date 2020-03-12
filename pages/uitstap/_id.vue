@@ -40,9 +40,23 @@
             {{ (uitstap.kostprijs * geselecteerd.length).toFixed(2) }}
           </v-col>
         </v-row>
-        <v-row v-else>
+        <v-row v-else-if="$store.state.gebruiker.user.leider">
           <v-col>
-            <h1>Totaal: {{ aantalIngeschrevenLeden }}</h1>
+            <v-container>
+              <v-col
+                ><h1>Totaal: {{ aantalIngeschrevenLeden }}</h1></v-col
+              >
+              <v-col><v-btn @click="krijgMails">Krijg emails</v-btn></v-col>
+            </v-container>
+            <v-dialog v-model="toonMails">
+              <v-card>
+                <v-card-title>Alle mails</v-card-title>
+                <v-card-text>{{ mails }}</v-card-text>
+                <v-card-actions>
+                  <v-btn @click="toonMails = false">Sluit</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
             <v-list>
               <v-list-item v-for="(lid, index) in ledenAlles" :key="index">
                 <v-list-item-content
@@ -169,7 +183,9 @@ export default {
       teBetalen: 0,
       betalingsId: '',
       lidIds: [],
-      gekopieerd: false
+      gekopieerd: false,
+      mails: '',
+      toonMails: false
     }
   },
   computed: {
@@ -306,6 +322,21 @@ export default {
             })
           }
         })
+    },
+    krijgMails() {
+      this.ledenAlles.forEach((inschrijving) => {
+        inschrijving.leden.forEach((lid) => {
+          db.collection('leden')
+            .doc(lid.lidId)
+            .get()
+            .then((result) => {
+              result.data().contact.ouders.forEach((ouder) => {
+                if (ouder.email.includes('@')) this.mails += ouder.email + ';'
+              })
+              this.toonMails = true
+            })
+        })
+      })
     }
   }
 }
