@@ -67,6 +67,11 @@
     </v-app-bar>
     <v-content>
       <v-container>
+        <v-alert type="error">
+          Het algemeen weekend en de chirozondagen van 22 en 29 maart zijn
+          afgelast. Alle reeds gestorte betalingen van het algemeen weekend
+          worden teruggestort.
+        </v-alert>
         <nuxt />
       </v-container>
     </v-content>
