@@ -2,6 +2,8 @@
   <div>
     <v-toolbar flat color="primary" dark>
       <v-toolbar-title>Overzicht leden</v-toolbar-title>
+      <v-spacer />
+      <v-btn @click="krijgMails">Kopier mails</v-btn>
     </v-toolbar>
     <v-tabs
       :vertical="!this.$device.isMobile"
@@ -38,6 +40,9 @@
         </v-card>
       </v-tab-item>
     </v-tabs>
+    <v-snackbar v-model="gekopieerd"
+      >Mails van alle ouders gekopierd naar het klembord.</v-snackbar
+    >
   </div>
 </template>
 
@@ -57,7 +62,9 @@ export default {
         { naam: 'Toppers', leden: [], minLeeftijd: 12, maxLeeftijd: 14 },
         { naam: 'Kerels', leden: [], minLeeftijd: 14, maxLeeftijd: 16 },
         { naam: `Aspi's`, leden: [], minLeeftijd: 16, maxLeeftijd: 18 }
-      ]
+      ],
+      mails: '',
+      gekopieerd: false
     }
   },
   mounted() {
@@ -77,6 +84,9 @@ export default {
           pas over de groepen om deze in de juiste groep te plaatsen, ik denk dat dat
           efficiënter is, maar nog niet zeker */
           for (const lid of leden) {
+            lid.contact.ouders.forEach((ouder) => {
+              if (ouder.email.includes('@')) this.mails += ouder.email + ';'
+            })
             const leeftijd =
               (vergelijkDatum - new Date(lid.geboortedatum)) /
               (1000 * 3600 * 24 * 365)
@@ -127,6 +137,13 @@ export default {
   head() {
     return {
       title: 'Leden'
+    }
+  },
+  methods: {
+    krijgMails() {
+      navigator.clipboard.writeText(this.mails).then(() => {
+        this.gekopieerd = true
+      })
     }
   }
 }
