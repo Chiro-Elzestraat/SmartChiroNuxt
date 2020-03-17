@@ -8,39 +8,69 @@
     </v-row>
     <br />
     <br />
-    <v-row>
-      <v-col v-for="(poging, index) in teBevestigen" :key="index">
-        <v-card>
-          <v-card-title>{{ poging.naam }}</v-card-title>
-          <v-card-subtitle></v-card-subtitle>
-          <v-card-text>
-            <img :src="poging.url" width="300px" alt="Poging afbeelding" />
-          </v-card-text>
-          <v-card-actions>
-            <v-btn @click="goedkeuren(index)" color="#64DD17" text
-              >Goedkeuren</v-btn
-            >
-            <v-dialog v-model="dialog">
-              <template v-slot:activator="{ on }">
-                <v-btn v-on="on" color="primary" text>Afkeuren</v-btn>
-              </template>
-              <v-card>
-                <v-card-title>Opgelet</v-card-title>
-                <v-card-subtitle
-                  >Zeker dat je deze poging wilt afkeuren?</v-card-subtitle
+    <v-tabs v-model="tab">
+      <v-tab>Te beoordelen</v-tab>
+      <v-tab>Opdrachten</v-tab>
+    </v-tabs>
+    <v-tabs-items v-model="tab">
+      <v-tab-item>
+        <v-row>
+          <v-col v-for="(poging, index) in teBevestigen" :key="index">
+            <v-card>
+              <v-card-title>{{ poging.titel }}</v-card-title>
+              <v-card-subtitle>{{ poging.naam }}</v-card-subtitle>
+              <v-card-text>
+                <img :src="poging.url" width="300px" alt="Poging afbeelding" />
+              </v-card-text>
+              <v-card-actions>
+                <v-btn @click="goedkeuren(index)" color="#64DD17" text
+                  >Goedkeuren</v-btn
                 >
-                <v-card-actions
-                  ><v-btn text @click="afkeuren(index)">Ja</v-btn
-                  ><v-btn text @click="dialog = false"
-                    >Nee</v-btn
-                  ></v-card-actions
-                >
+                <v-dialog v-model="dialog">
+                  <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" color="primary" text>Afkeuren</v-btn>
+                  </template>
+                  <v-card>
+                    <v-card-title>Opgelet</v-card-title>
+                    <v-card-subtitle
+                      >Zeker dat je deze poging wilt afkeuren?</v-card-subtitle
+                    >
+                    <v-card-actions
+                      ><v-btn text @click="afkeuren(index)">Ja</v-btn
+                      ><v-btn text @click="dialog = false"
+                        >Nee</v-btn
+                      ></v-card-actions
+                    >
+                  </v-card>
+                </v-dialog>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+          <v-col v-if="teBevestigen.length === 0" class="text-center">
+            <img
+              src="../assets/geenleden.svg"
+              style="display: block;
+  margin: 0 auto;
+  max-width: 40%;"
+            />
+            Nog geen pogingen ingestuurd.
+          </v-col>
+        </v-row>
+      </v-tab-item>
+      <v-tab-item>
+        <v-container>
+          <v-row>
+            <v-col v-for="(opdracht, index) in opdrachten" :key="index">
+              <v-card outlined>
+                <v-card-title>{{ opdracht.naam }}</v-card-title>
+                <v-card-subtitle>{{ opdracht.omschrijving }}</v-card-subtitle>
+                <v-card-text>Aantal punten: {{ opdracht.punten }}</v-card-text>
               </v-card>
-            </v-dialog>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-tab-item>
+    </v-tabs-items>
     <v-snackbar v-model="opgeslagen">Opgeslagen</v-snackbar>
   </div>
 </template>
@@ -54,9 +84,11 @@ export default {
   },
   data() {
     return {
-      teBevestigen: [], // oke voor een reden heb ik geen toegang tot de database.... HOE KAN DA er staat letterlijk allow read, write: if true;
+      teBevestigen: [],
       dialog: false,
-      opgeslagen: false
+      opgeslagen: false,
+      opdrachten: [],
+      tab: 0
     }
   },
   methods: {
@@ -77,17 +109,30 @@ export default {
     }
   },
   created() {
-    db.collectionGroup('ledenVoltooid')
-      .where('bevestigd', '==', false)
+    db.collection('opdrachten')
       .get()
-      .then((snapshot) => {
-        console.log(snapshot)
-        snapshot.forEach((doc) => {
-          storage
-            .ref(`quarantainespel/${doc.id}`)
-            .getDownloadURL()
-            .then((url) => {
-              this.teBevestigen.push({ ...doc.data(), url, ref: doc.ref })
+      .then((result) => {
+        result.docs.forEach((doc) => {
+          this.opdrachten.push(doc.data())
+          doc.ref
+            .collection('ledenVoltooid')
+            .where('bevestigd', '==', false)
+            .get()
+            .then((snapshot) => {
+              console.log(snapshot)
+              snapshot.forEach((doc1) => {
+                storage
+                  .ref(`quarantainespel/${doc1.id}`)
+                  .getDownloadURL()
+                  .then((url) => {
+                    this.teBevestigen.push({
+                      ...doc1.data(),
+                      url,
+                      ref: doc1.ref,
+                      titel: doc.data().naam
+                    })
+                  })
+              })
             })
         })
       })
