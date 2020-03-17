@@ -60,7 +60,7 @@
       <v-tab-item>
         <v-container>
           <v-row>
-            <v-col v-for="(opdracht, index) in opdrachten" :key="index">
+            <v-col cols="12" lg="3" md="4" sm="4" v-for="(opdracht, index) in opdrachten" :key="index">
               <v-card outlined>
                 <v-card-title>{{ opdracht.naam }}</v-card-title>
                 <v-card-subtitle>{{ opdracht.omschrijving }}</v-card-subtitle>
