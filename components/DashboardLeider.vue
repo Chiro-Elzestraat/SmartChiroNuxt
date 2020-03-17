@@ -10,7 +10,9 @@
           <v-img :src="card.src" height="200px" width="400px" contain></v-img>
           <v-card-title v-text="card.title"></v-card-title>
           <v-card-actions class="justify-center">
-            <v-btn outlined color="primary" text>Ga naar</v-btn>
+            <v-btn outlined :color="card.color || 'primary'" text
+              >Ga naar</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-col>
@@ -24,6 +26,7 @@ export default {
     return {
       cards: [
         {
+          // top || zorgt ervoor dat als card.color undefined is, dat die de waarde erachter pakt (primary) --> dus als card.color gevuld is, pakt die da, anders primary
           title: 'Financiën',
           icon: 'mdi-dashboard',
           src: '/financien.svg',
@@ -47,6 +50,12 @@ export default {
           icon: 'mdi-dashboard',
           src: '/uitstap.svg',
           page: '/uitstap'
+        },
+        {
+          title: 'Quarantainespel',
+          src: '/virus.svg',
+          page: '/quarantainespel',
+          color: '#64DD17'
         }
       ],
       rollen: []

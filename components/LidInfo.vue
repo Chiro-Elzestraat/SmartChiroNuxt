@@ -5,6 +5,12 @@
     <v-tab>Betaling</v-tab>
     <v-tab-item>
       <div>
+        <div
+          style="width: 100%; background-color: #fff; display: flex;align-items: center;
+  justify-content: center;"
+        >
+          <qrcode-vue :value="lid.lidId" style="padding: 40px;" />
+        </div>
         {{ lid.email }}
         <h1 class="title">Ouders</h1>
         <div class="contact">
@@ -234,10 +240,12 @@
 </template>
 
 <script>
+import QrcodeVue from 'qrcode.vue'
 import BetalingInfo from '@/components/BetalingInfo'
 export default {
   components: {
-    BetalingInfo
+    BetalingInfo,
+    QrcodeVue
   },
   props: {
     lid: Object
