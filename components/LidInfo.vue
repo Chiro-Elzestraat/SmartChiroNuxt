@@ -7,9 +7,10 @@
       <div>
         <div
           style="width: 100%; background-color: #fff; display: flex;align-items: center;
-  justify-content: center;"
+  justify-content: center; flex-direction: column;"
         >
           <qrcode-vue :value="lid.lidId" style="padding: 40px;" />
+          <p style="color: black;">{{ lid.lidId }}</p>
         </div>
         {{ lid.email }}
         <h1 class="title">Ouders</h1>

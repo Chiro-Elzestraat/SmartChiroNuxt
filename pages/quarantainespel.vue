@@ -10,6 +10,7 @@
     <br />
     <v-tabs v-model="tab">
       <v-tab>Te beoordelen</v-tab>
+      <v-tab>Alle inzendingen</v-tab>
       <v-tab>Opdrachten</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
@@ -53,14 +54,42 @@
   margin: 0 auto;
   max-width: 40%;"
             />
-            Nog geen pogingen ingestuurd.
+            Alles beoordeeld.
           </v-col>
         </v-row>
       </v-tab-item>
       <v-tab-item>
         <v-container>
           <v-row>
-            <v-col cols="12" lg="3" md="4" sm="4" v-for="(opdracht, index) in opdrachten" :key="index">
+            <v-col v-for="(poging, index) in alles" :key="index">
+              <v-card outlined>
+                <v-card-title>{{ poging.titel }}</v-card-title>
+                <v-card-subtitle>{{ poging.naam }}</v-card-subtitle>
+                <v-card-text>
+                  <img
+                    :src="poging.url"
+                    width="300px"
+                    alt="Poging afbeelding"
+                  />
+                  <br />
+                  {{ poging.afgekeurd ? 'Afgekeurd' : 'Goedgekeurd' }}
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-tab-item>
+      <v-tab-item>
+        <v-container>
+          <v-row>
+            <v-col
+              cols="12"
+              lg="3"
+              md="4"
+              sm="4"
+              v-for="(opdracht, index) in opdrachten"
+              :key="index"
+            >
               <v-card outlined>
                 <v-card-title>{{ opdracht.naam }}</v-card-title>
                 <v-card-subtitle>{{ opdracht.omschrijving }}</v-card-subtitle>
@@ -85,6 +114,7 @@ export default {
   data() {
     return {
       teBevestigen: [],
+      alles: [],
       dialog: false,
       opgeslagen: false,
       opdrachten: [],
@@ -116,7 +146,6 @@ export default {
           this.opdrachten.push(doc.data())
           doc.ref
             .collection('ledenVoltooid')
-            .where('bevestigd', '==', false)
             .get()
             .then((snapshot) => {
               console.log(snapshot)
@@ -125,12 +154,21 @@ export default {
                   .ref(`quarantainespel/${doc1.id}`)
                   .getDownloadURL()
                   .then((url) => {
-                    this.teBevestigen.push({
-                      ...doc1.data(),
-                      url,
-                      ref: doc1.ref,
-                      titel: doc.data().naam
-                    })
+                    if (!doc1.data().bevestigd) {
+                      this.teBevestigen.push({
+                        ...doc1.data(),
+                        url,
+                        ref: doc1.ref,
+                        titel: doc.data().naam
+                      })
+                    } else {
+                      this.alles.push({
+                        ...doc1.data(),
+                        url,
+                        ref: doc1.ref,
+                        titel: doc.data().naam
+                      })
+                    }
                   })
               })
             })
