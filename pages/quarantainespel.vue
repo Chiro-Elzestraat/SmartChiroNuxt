@@ -37,8 +37,8 @@
                       >Zeker dat je deze poging wilt afkeuren?</v-card-subtitle
                     >
                     <v-card-actions
-                      ><v-btn text @click="afkeuren(index)">Ja</v-btn
-                      ><v-btn text @click="dialog = false"
+                      ><v-btn @click="afkeuren(index)" text>Ja</v-btn
+                      ><v-btn @click="dialog = false" text
                         >Nee</v-btn
                       ></v-card-actions
                     >
@@ -67,6 +67,7 @@
                 <v-card-subtitle>{{ poging.naam }}</v-card-subtitle>
                 <v-card-text>
                   <img
+                    v-if="poging.url"
                     :src="poging.url"
                     width="300px"
                     alt="Poging afbeelding"
@@ -74,6 +75,11 @@
                   <br />
                   {{ poging.afgekeurd ? 'Afgekeurd' : 'Goedgekeurd' }}
                 </v-card-text>
+                <v-card-actions>
+                  <v-btn text @click="poging.url = poging.urlFull"
+                    >Laad volledige afbeelding</v-btn
+                  >
+                </v-card-actions>
               </v-card>
             </v-col>
           </v-row>
@@ -83,12 +89,12 @@
         <v-container>
           <v-row>
             <v-col
+              v-for="(opdracht, index) in opdrachten"
+              :key="index"
               cols="12"
               lg="3"
               md="4"
               sm="4"
-              v-for="(opdracht, index) in opdrachten"
-              :key="index"
             >
               <v-card outlined>
                 <v-card-title>{{ opdracht.naam }}</v-card-title>
@@ -121,6 +127,55 @@ export default {
       tab: 0
     }
   },
+  created() {
+    db.collection('opdrachten')
+      .get()
+      .then((result) => {
+        result.docs.forEach((doc) => {
+          this.opdrachten.push(doc.data())
+          doc.ref
+            .collection('ledenVoltooid')
+            .get()
+            .then((snapshot) => {
+              console.log(snapshot)
+              snapshot.forEach((doc1) => {
+                let url = ''
+                storage
+                  .ref(`quarantainespel/thumbs/${doc1.id}_200x200`)
+                  .getDownloadURL()
+                  .then((url1) => {
+                    url = url1
+                  })
+                  .catch()
+                  .finally(() => {
+                    storage
+                      .ref(`quarantainespel/${doc1.id}`)
+                      .getDownloadURL()
+                      .then((urlFull) => {
+                        if (!doc1.data().bevestigd) {
+                          this.teBevestigen.push({
+                            ...doc1.data(),
+                            url,
+                            urlFull,
+                            ref: doc1.ref,
+                            titel: doc.data().naam
+                          })
+                        } else {
+                          this.alles.push({
+                            ...doc1.data(),
+                            url,
+                            urlFull,
+                            ref: doc1.ref,
+                            titel: doc.data().naam
+                          })
+                        }
+                      })
+                  })
+              })
+            })
+        })
+      })
+  },
   methods: {
     goedkeuren(index) {
       const ref = this.teBevestigen[index].ref
@@ -137,43 +192,6 @@ export default {
         this.opgeslagen = true
       })
     }
-  },
-  created() {
-    db.collection('opdrachten')
-      .get()
-      .then((result) => {
-        result.docs.forEach((doc) => {
-          this.opdrachten.push(doc.data())
-          doc.ref
-            .collection('ledenVoltooid')
-            .get()
-            .then((snapshot) => {
-              console.log(snapshot)
-              snapshot.forEach((doc1) => {
-                storage
-                  .ref(`quarantainespel/${doc1.id}`)
-                  .getDownloadURL()
-                  .then((url) => {
-                    if (!doc1.data().bevestigd) {
-                      this.teBevestigen.push({
-                        ...doc1.data(),
-                        url,
-                        ref: doc1.ref,
-                        titel: doc.data().naam
-                      })
-                    } else {
-                      this.alles.push({
-                        ...doc1.data(),
-                        url,
-                        ref: doc1.ref,
-                        titel: doc.data().naam
-                      })
-                    }
-                  })
-              })
-            })
-        })
-      })
   }
 }
 </script>
