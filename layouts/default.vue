@@ -68,7 +68,7 @@
     <v-content>
       <v-container>
         <v-alert v-if="!this.$store.state.gebruiker.user.leider" type="error">
-          Wegens het coronavirus zijn de chirozondagen van 22 en 29 maart zijn
+          Wegens het coronavirus zijn de chirozondagen tot en met 19 april
           afgelast.
         </v-alert>
         <nuxt />
