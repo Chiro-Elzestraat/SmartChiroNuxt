@@ -21,7 +21,12 @@
               <v-card-title>{{ poging.titel }}</v-card-title>
               <v-card-subtitle>{{ poging.naam }}</v-card-subtitle>
               <v-card-text>
-                <img :src="poging.url" width="300px" alt="Poging afbeelding" />
+                <img
+                  @click="poging.url = poging.urlFull"
+                  :src="poging.url"
+                  width="300px"
+                  alt="Poging afbeelding"
+                />
               </v-card-text>
               <v-card-actions>
                 <v-btn @click="goedkeuren(index)" color="#64DD17" text
@@ -76,7 +81,7 @@
                   {{ poging.afgekeurd ? 'Afgekeurd' : 'Goedgekeurd' }}
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn text @click="poging.url = poging.urlFull"
+                  <v-btn @click="poging.url = poging.urlFull" text
                     >Laad volledige afbeelding</v-btn
                   >
                 </v-card-actions>
