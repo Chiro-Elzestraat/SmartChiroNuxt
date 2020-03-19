@@ -87,9 +87,12 @@ export default {
             lid.contact.ouders.forEach((ouder) => {
               if (ouder.email.includes('@')) this.mails += ouder.email + ';'
             })
+            const chiroLeeftijd = lid.chiroLeeftijd || 0
             const leeftijd =
               (vergelijkDatum - new Date(lid.geboortedatum)) /
-              (1000 * 3600 * 24 * 365)
+                (1000 * 3600 * 24 * 365) +
+              chiroLeeftijd
+
             console.log(leeftijd)
             if (leeftijd <= groep.maxLeeftijd && leeftijd > groep.minLeeftijd) {
               groep.leden.push(lid)
