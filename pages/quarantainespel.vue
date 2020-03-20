@@ -119,9 +119,7 @@
           </v-row>
           <p class="text-center">
             Vind je een inzending niet? Dan is deze verplaatst naar het
-            <a @click="krijgArchief()">archief</a>
-            om de prestaties van de applicatie hoog te houden. Maxim maakt ASAP
-            de functionaliteit om dit archief te bekijken
+            <a @click="krijgArchief()">archief</a>.
           </p>
           <v-dialog
             v-model="archiefZichtbaar"
