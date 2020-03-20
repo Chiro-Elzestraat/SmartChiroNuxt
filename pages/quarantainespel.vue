@@ -87,7 +87,14 @@
                     width="300px"
                     alt="Poging afbeelding"
                   />
-                  <video v-else-if="poging.url" controls width="240">
+                  <video
+                    v-else-if="
+                      poging.url &&
+                        poging.metadata.contentType.substr(0, 5) === 'video'
+                    "
+                    controls
+                    width="240"
+                  >
                     <source
                       :type="poging.metadata.contentType"
                       :src="poging.urlFull"
@@ -111,10 +118,68 @@
             </v-col>
           </v-row>
           <p class="text-center">
-            Vind je een inzending niet? Dan is deze verplaatst naar het archief
+            Vind je een inzending niet? Dan is deze verplaatst naar het
+            <a @click="krijgArchief()">archief</a>
             om de prestaties van de applicatie hoog te houden. Maxim maakt ASAP
             de functionaliteit om dit archief te bekijken
           </p>
+          <v-dialog
+            v-model="archiefZichtbaar"
+            fullscreen
+            hide-overlay
+            transition="dialog-bottom-transition"
+          >
+            <v-card>
+              <v-toolbar dark color="primary">
+                <v-btn @click="archiefZichtbaar = false" icon dark>
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+                <v-toolbar-title>Archief</v-toolbar-title>
+              </v-toolbar>
+              <v-container>
+                <v-row>
+                  <v-col v-for="(poging, index) in archief" :key="index">
+                    <img
+                      v-if="
+                        poging.url &&
+                          poging.metadata.contentType.substr(0, 5) === 'image'
+                      "
+                      :src="poging.url"
+                      width="300px"
+                      alt="Poging afbeelding"
+                    />
+                    <v-btn
+                      v-if="poging.url !== poging.urlFull"
+                      @click="poging.url = poging.urlFull"
+                      text
+                      >Laad volledige afbeelding</v-btn
+                    >
+                    <video
+                      v-else-if="
+                        poging.url &&
+                          poging.metadata.contentType.substr(0, 5) === 'video'
+                      "
+                      controls
+                      width="240"
+                    >
+                      <source
+                        :type="poging.metadata.contentType"
+                        :src="poging.urlFull"
+                      />
+                    </video>
+                    <br />
+                    {{ poging.afgekeurd ? 'Afgekeurd' : 'Goedgekeurd' }}
+                  </v-col>
+                </v-row>
+                <v-btn
+                  @click="volgende"
+                  v-if="lastVisible"
+                  style="margin: 0 auto; display: block;"
+                  >Laad volgende</v-btn
+                >
+              </v-container>
+            </v-card>
+          </v-dialog>
         </v-container>
       </v-tab-item>
       <v-tab-item>
@@ -157,7 +222,9 @@ export default {
       opgeslagen: false,
       opdrachten: [],
       tab: 0,
-      lastVisible: {}
+      lastVisible: {},
+      archief: [],
+      archiefZichtbaar: false
     }
   },
   created() {
@@ -185,6 +252,50 @@ export default {
         this.alles.splice(index, 1)
         this.opgeslagen = true
       })
+    },
+    krijgArchief() {
+      this.archiefZichtbaar = true
+      if (this.archief.length === 0) {
+        this.haalArchiefOp(db.collectionGroup('ledenVoltooid'))
+      }
+    },
+    volgende() {
+      this.haalArchiefOp(
+        db.collectionGroup('ledenVoltooid').startAfter(this.lastVisible)
+      )
+    },
+    haalArchiefOp(ref) {
+      ref
+        .limit(15)
+        .get()
+        .then((result) => {
+          this.lastVisible = result.docs[result.docs.length - 1]
+          result.docs.forEach((doc) => {
+            let url = ''
+            storage
+              .ref(`quarantainespel/thumbs/${doc.id}_200x200`)
+              .getDownloadURL()
+              .then((url1) => {
+                url = url1
+              })
+              .catch()
+              .finally(() => {
+                const imgRef = storage.ref(`quarantainespel/${doc.id}`)
+                imgRef.getDownloadURL().then((urlFull) => {
+                  imgRef.getMetadata().then((metadata) => {
+                    this.archief.push({
+                      ...doc.data(),
+                      url,
+                      urlFull,
+                      ref: doc.ref,
+                      titel: doc.data().naam,
+                      metadata
+                    })
+                  })
+                })
+              })
+          })
+        })
     },
     haalOp() {
       db.collection('opdrachten')
