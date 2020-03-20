@@ -24,9 +24,16 @@
                 <img
                   @click="poging.url = poging.urlFull"
                   :src="poging.url"
+                  v-if="poging.metadata.contentType.substr(0, 5) === 'image'"
                   width="300px"
                   alt="Poging afbeelding"
                 />
+                <video v-else controls width="240">
+                  <source
+                    :type="poging.metadata.contentType"
+                    :src="poging.urlFull"
+                  />
+                </video>
               </v-card-text>
               <v-card-actions>
                 <v-btn @click="goedkeuren(index)" color="#64DD17" text
@@ -72,22 +79,42 @@
                 <v-card-subtitle>{{ poging.naam }}</v-card-subtitle>
                 <v-card-text>
                   <img
-                    v-if="poging.url"
+                    v-if="
+                      poging.url &&
+                        poging.metadata.contentType.substr(0, 5) === 'image'
+                    "
                     :src="poging.url"
                     width="300px"
                     alt="Poging afbeelding"
                   />
+                  <video v-else-if="poging.url" controls width="240">
+                    <source
+                      :type="poging.metadata.contentType"
+                      :src="poging.urlFull"
+                    />
+                  </video>
                   <br />
                   {{ poging.afgekeurd ? 'Afgekeurd' : 'Goedgekeurd' }}
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn @click="poging.url = poging.urlFull" text
+                  <v-btn
+                    v-if="poging.url !== poging.urlFull"
+                    @click="poging.url = poging.urlFull"
+                    text
                     >Laad volledige afbeelding</v-btn
+                  >
+                  <v-btn @click="verplaatsArchief(index)"
+                    >Verplaats naar archief</v-btn
                   >
                 </v-card-actions>
               </v-card>
             </v-col>
           </v-row>
+          <p class="text-center">
+            Vind je een inzending niet? Dan is deze verplaatst naar het archief
+            om de prestaties van de applicatie hoog te houden. Maxim maakt ASAP
+            de functionaliteit om dit archief te bekijken
+          </p>
         </v-container>
       </v-tab-item>
       <v-tab-item>
@@ -129,57 +156,12 @@ export default {
       dialog: false,
       opgeslagen: false,
       opdrachten: [],
-      tab: 0
+      tab: 0,
+      lastVisible: {}
     }
   },
   created() {
-    db.collection('opdrachten')
-      .get()
-      .then((result) => {
-        result.docs.forEach((doc) => {
-          this.opdrachten.push(doc.data())
-          doc.ref
-            .collection('ledenVoltooid')
-            .get()
-            .then((snapshot) => {
-              console.log(snapshot)
-              snapshot.forEach((doc1) => {
-                let url = ''
-                storage
-                  .ref(`quarantainespel/thumbs/${doc1.id}_200x200`)
-                  .getDownloadURL()
-                  .then((url1) => {
-                    url = url1
-                  })
-                  .catch()
-                  .finally(() => {
-                    storage
-                      .ref(`quarantainespel/${doc1.id}`)
-                      .getDownloadURL()
-                      .then((urlFull) => {
-                        if (!doc1.data().bevestigd) {
-                          this.teBevestigen.push({
-                            ...doc1.data(),
-                            url,
-                            urlFull,
-                            ref: doc1.ref,
-                            titel: doc.data().naam
-                          })
-                        } else {
-                          this.alles.push({
-                            ...doc1.data(),
-                            url,
-                            urlFull,
-                            ref: doc1.ref,
-                            titel: doc.data().naam
-                          })
-                        }
-                      })
-                  })
-              })
-            })
-        })
-      })
+    this.haalOp()
   },
   methods: {
     goedkeuren(index) {
@@ -196,6 +178,66 @@ export default {
         this.dialog = false
         this.opgeslagen = true
       })
+    },
+    verplaatsArchief(index) {
+      const ref = this.alles[index].ref
+      ref.update({ archief: true }).then(() => {
+        this.alles.splice(index, 1)
+        this.opgeslagen = true
+      })
+    },
+    haalOp() {
+      db.collection('opdrachten')
+        .get()
+        .then((result) => {
+          this.lastVisible = result.docs[result.docs.length - 1]
+          result.docs.forEach((doc) => {
+            this.opdrachten.push(doc.data())
+            doc.ref
+              .collection('ledenVoltooid')
+              .where('archief', '==', false)
+              .get()
+              .then((snapshot) => {
+                console.log(snapshot)
+                snapshot.forEach((doc1) => {
+                  let url = ''
+                  storage
+                    .ref(`quarantainespel/thumbs/${doc1.id}_200x200`)
+                    .getDownloadURL()
+                    .then((url1) => {
+                      url = url1
+                    })
+                    .catch()
+                    .finally(() => {
+                      const imgRef = storage.ref(`quarantainespel/${doc1.id}`)
+                      imgRef.getDownloadURL().then((urlFull) => {
+                        imgRef.getMetadata().then((metadata) => {
+                          if (!doc1.data().bevestigd) {
+                            this.teBevestigen.push({
+                              ...doc1.data(),
+                              url,
+                              urlFull,
+                              ref: doc1.ref,
+                              titel: doc.data().naam,
+                              metadata
+                            })
+                          } else {
+                            this.alles.push({
+                              ...doc1.data(),
+                              url,
+                              urlFull,
+                              ref: doc1.ref,
+                              titel: doc.data().naam,
+                              metadata
+                            })
+                          }
+                        })
+                      })
+                    })
+                })
+              })
+          })
+        })
     }
   }
 }
