@@ -58,6 +58,14 @@
                       </div>
                     </v-col>
                   </v-row>
+                  <v-row>
+                    <v-col>
+                      <v-checkbox
+                        v-model="opdracht.video"
+                        label="Video"
+                      ></v-checkbox>
+                    </v-col>
+                  </v-row>
                 </v-form>
               </v-container>
             </v-list-item>
