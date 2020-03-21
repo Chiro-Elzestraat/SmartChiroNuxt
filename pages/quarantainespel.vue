@@ -110,7 +110,7 @@
                     text
                     >Volledige foto</v-btn
                   >
-                  <v-dialog v-model="verplaatsDialog" width="500">
+                  <v-dialog v-model="poging.verplaatsDialog" width="500">
                     <template v-slot:activator="{ on }">
                       <v-btn v-on="on" text>Archiveer</v-btn>
                     </template>
@@ -123,7 +123,9 @@
                       >
                       <v-card-actions>
                         <v-btn @click="verplaatsArchief(index)" text>Ja</v-btn>
-                        <v-btn @click="verplaatsDialog = false" text>Nee</v-btn>
+                        <v-btn @click="poging.verplaatsDialog = false" text
+                          >Nee</v-btn
+                        >
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
@@ -352,7 +354,8 @@ export default {
                               urlFull,
                               ref: doc1.ref,
                               titel: doc.data().naam,
-                              metadata
+                              metadata,
+                              verplaatsDialog: false
                             })
                           }
                         })
