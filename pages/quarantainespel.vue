@@ -107,7 +107,7 @@
                   <v-btn
                     v-if="
                       poging.url !== poging.urlFull &&
-                        !poging.metadata.contentType.substr(0, 5) === 'video'
+                        poging.metadata.contentType.substr(0, 5) === 'image'
                     "
                     @click="poging.url = poging.urlFull"
                     text
