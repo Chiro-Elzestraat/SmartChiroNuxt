@@ -162,15 +162,26 @@
                           poging.metadata.contentType.substr(0, 5) === 'image'
                       "
                       :src="poging.url"
+                      @click="poging.url = poging.urlFull"
                       width="300px"
                       alt="Poging afbeelding"
                     />
-                    <video v-else-if="poging.urlFull" controls width="240">
+                    <video
+                      v-else-if="
+                        poging.urlFull &&
+                          poging.metadata.contentType.substr(0, 5) === 'video'
+                      "
+                      controls
+                      width="240"
+                    >
                       <source
                         :type="poging.metadata.contentType"
                         :src="poging.urlFull"
                       />
                     </video>
+                    <v-btn v-else @click="poging.url = poging.urlFull"
+                      >Laad afbeelding</v-btn
+                    >
                     <br />
                     {{ poging.afgekeurd ? 'Afgekeurd' : 'Goedgekeurd' }}
                   </v-col>
