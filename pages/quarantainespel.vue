@@ -89,7 +89,7 @@
                   />
                   <video
                     v-else-if="
-                      poging.url &&
+                      poging.urlFull &&
                         poging.metadata.contentType.substr(0, 5) === 'video'
                     "
                     controls
@@ -105,7 +105,10 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-btn
-                    v-if="poging.url !== poging.urlFull"
+                    v-if="
+                      poging.url !== poging.urlFull &&
+                        !poging.metadata.contentType.substr(0, 5) === 'video'
+                    "
                     @click="poging.url = poging.urlFull"
                     text
                     >Volledige foto</v-btn
@@ -162,20 +165,7 @@
                       width="300px"
                       alt="Poging afbeelding"
                     />
-                    <v-btn
-                      v-if="poging.url !== poging.urlFull"
-                      @click="poging.url = poging.urlFull"
-                      text
-                      >Laad volledige afbeelding</v-btn
-                    >
-                    <video
-                      v-else-if="
-                        poging.url &&
-                          poging.metadata.contentType.substr(0, 5) === 'video'
-                      "
-                      controls
-                      width="240"
-                    >
+                    <video v-else-if="poging.urlFull" controls width="240">
                       <source
                         :type="poging.metadata.contentType"
                         :src="poging.urlFull"
