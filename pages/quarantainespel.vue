@@ -108,11 +108,25 @@
                     v-if="poging.url !== poging.urlFull"
                     @click="poging.url = poging.urlFull"
                     text
-                    >Laad volledige afbeelding</v-btn
+                    >Volledige foto</v-btn
                   >
-                  <v-btn @click="verplaatsArchief(index)"
-                    >Verplaats naar archief</v-btn
-                  >
+                  <v-dialog v-model="verplaatsDialog" width="500">
+                    <template v-slot:activator="{ on }">
+                      <v-btn v-on="on" text>Archiveer</v-btn>
+                    </template>
+                    <v-card>
+                      <v-card-title>Bevestig verplaatsen</v-card-title>
+                      <v-card-text
+                        >Weet je zeker dat je deze poging wil verplaatsen naar
+                        het archief? Deze actie kan niet ongedaan gemaakt
+                        worden.</v-card-text
+                      >
+                      <v-card-actions>
+                        <v-btn @click="verplaatsArchief(index)" text>Ja</v-btn>
+                        <v-btn @click="verplaatsDialog = false" text>Nee</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </v-card-actions>
               </v-card>
             </v-col>
@@ -222,7 +236,8 @@ export default {
       tab: 0,
       lastVisible: {},
       archief: [],
-      archiefZichtbaar: false
+      archiefZichtbaar: false,
+      verplaatsDialog: false
     }
   },
   created() {
