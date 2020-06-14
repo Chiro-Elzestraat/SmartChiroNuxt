@@ -90,11 +90,15 @@
         <v-btn
           @click="inschrijven"
           :loading="laden"
-          :disabled="geselecteerd.length == 0"
+          :disabled="geselecteerd.length == 0 || deadlineVerlopen"
           v-if="gebruiker.ouder"
           text
           color="primary"
-          >Inschrijving vervolledigen
+          >{{
+            deadlineVerlopen
+              ? 'Inschrijvingen afgelopen'
+              : 'Inschrijving vervolledigen'
+          }}
         </v-btn>
       </v-actions>
     </v-card>
@@ -189,6 +193,12 @@ export default {
     }
   },
   computed: {
+    deadlineVerlopen() {
+      return (
+        new Date().getTime() >=
+        new Date(new Date(this.uitstap.deadline).getTime() + 86400000)
+      )
+    },
     leden() {
       return this.ledenAlles.map((lid) => {
         return {
