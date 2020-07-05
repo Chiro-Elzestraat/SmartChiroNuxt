@@ -12,9 +12,23 @@
     </template>
     <v-card>
       <v-toolbar dark color="primary">
-        <v-btn @click="dialog = false" icon dark>
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
+        <v-dialog width="500" v-model="cancelDialog">
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" icon dark>
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>Wijzigingen verwerpen</v-card-title>
+            <v-card-text
+              >Weet u zeker dat u de wijzigingen niet wil oplsaan?</v-card-text
+            >
+            <v-card-actions>
+              <v-btn @click="dialog = false" text>Ja</v-btn>
+              <v-btn @click="cancelDialog = false" text>Nee</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
         <v-toolbar-title>{{ lid.naam }}</v-toolbar-title>
         <v-spacer />
@@ -266,6 +280,7 @@ export default {
   },
   data() {
     return {
+      cancelDialog: false,
       dialog: false,
       laden: false,
       opgeslagen: false
