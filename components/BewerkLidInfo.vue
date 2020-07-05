@@ -22,7 +22,7 @@
           <v-btn @click="opslaan" :loading="laden" dark text>Opslaan</v-btn>
         </v-toolbar-items>
       </v-toolbar>
-      <v-list three-line subheader class="text-center">
+      <v-list three-line subheader>
         <v-list-item>
           <v-row>
             <v-col>
@@ -99,6 +99,150 @@
             /></v-col>
           </v-row>
         </v-list-item>
+        <v-subheader>Medische fiche</v-subheader>
+        <v-list-item>
+          <v-card outlined style="padding: 16px;margin: 16px 0;">
+            <v-card-title>Medische fiche</v-card-title>
+            <v-card-subtitle>{{ lid.naam }}</v-card-subtitle>
+            <v-card-text>
+              <v-card outlined style="padding: 16px;margin: 16px 0;">
+                <v-card-title>Huisarts</v-card-title>
+                <v-card-subtitle>Contactgegevens</v-card-subtitle>
+                <v-card-text>
+                  <v-row>
+                    <v-col
+                      ><v-text-field
+                        v-model="lid.contact.huisarts.naam"
+                        label="Naam"
+                    /></v-col>
+                    <v-col>
+                      <v-text-field
+                        v-model="lid.contact.huisarts.gsm"
+                        v-mask="mask"
+                        :rules="gsmRules"
+                        label="Gsm"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
+              <v-row>
+                <v-checkbox
+                  v-model="lid.medischeFiche.tetanus.gevaccineerd"
+                  :label="
+                    `${
+                      lid.naam ? lid.naam.split(/\s(.+)/)[0] : ''
+                    } is gevaccineerd tegen tetanus`
+                  "
+                ></v-checkbox>
+                &nbsp;
+                <v-text-field
+                  v-model="lid.medischeFiche.tetanus.jaar"
+                  :disabled="!lid.medischeFiche.tetanus.gevaccineerd"
+                  label="In het jaar (optioneel)"
+                ></v-text-field>
+              </v-row>
+              <v-row>
+                <v-textarea
+                  v-model="lid.medischeFiche.vroegereZiekten"
+                  outlined
+                  auto-grow
+                  label="Vroegere ziekten of heelkundige ingrepen"
+                ></v-textarea>
+              </v-row>
+              <v-row>
+                {{ lid.naam ? lid.naam.split(/\s(.+)/)[0] : '' }} lijdt aan
+                <Aandoeningen
+                  :lidAandoeningen="lid.medischeFiche.aandoeningen"
+                />
+              </v-row>
+              <v-row>
+                <v-card outlined class="allergieen">
+                  <v-card-title>Allergieën</v-card-title>
+                  <v-card-subtitle
+                    >Voeg hier eventuele allergieën toe.</v-card-subtitle
+                  >
+                  <v-card-text>
+                    <Allergieen :lidAllergieen="lid.medischeFiche.allergieen" />
+                  </v-card-text>
+                </v-card>
+              </v-row>
+              <v-row>
+                <v-textarea
+                  v-model="lid.medischeFiche.extraInfo"
+                  outlined
+                  auto-grow
+                  label="Extra informatie in verband met aandoeningen &amp; allergieën."
+                />
+              </v-row>
+              <v-row>
+                <v-radio-group v-model="lid.medischeFiche.dieet" row
+                  ><span style="margin: auto 0;"
+                    >Volgt {{ lid.naam ? lid.naam.split(/\s(.+)/)[0] : '' }} een
+                    dieet?&nbsp;</span
+                  ><v-radio
+                    :value="true"
+                    default
+                    label="Ja, namelijk"/><v-text-field
+                    v-model="lid.medischeFiche.dieetDetails"
+                    :disabled="!lid.medischeFiche.dieet"/>
+                  <v-radio :value="false" label="Nee"
+                /></v-radio-group>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-checkbox
+                    v-model="lid.medischeFiche.kanZwemmen"
+                    label="Kan zwemmen"
+                    hide-details
+                  />
+
+                  <v-checkbox
+                    v-model="lid.medischeFiche.vlugMoe"
+                    label="Is vlug moe"
+                    hide-details
+                  />
+                  <v-checkbox
+                    v-model="lid.medischeFiche.kanDeelnemen"
+                    label="Kan deelnemen aan sport en spel afgestemd op zijn leeftijd"
+                    hide-details
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-card outlined>
+                    <v-card-text>
+                      <p>
+                        Leiding mag - behalve EHBO - niet op eigen initiatief
+                        medische handelingen uitvoeren. Zonder toestemming van
+                        de ouders mogen ze zelfs geen pijnstillende of
+                        koortswerende medicatie toedienen, zoals Perdolan,
+                        Dafalgan of aspirines. Hieronder kunt u hen die
+                        toestemming geven zodat ze voor dergelijke zorgen niet
+                        naar een arts moeten.
+                      </p>
+                      <v-checkbox
+                        v-model="lid.medischeFiche.medischeHandelingen"
+                        hide-details
+                        label="Ja, wij geven toestemming"
+                      ></v-checkbox>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-textarea
+                    v-model="lid.aanvullendeInfo"
+                    outlined
+                    label="Aanvullende opmerkingen (optioneel)"
+                  ></v-textarea>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-list-item>
       </v-list>
     </v-card>
     <v-snackbar v-model="opgeslagen" color="success" top>Opgeslagen</v-snackbar>
@@ -107,7 +251,13 @@
 
 <script>
 import { db } from '@/plugins/firebase'
+import Aandoeningen from '@/components/Aandoeningen'
+import Allergieen from '@/components/Allergieen'
 export default {
+  components: {
+    Aandoeningen,
+    Allergieen
+  },
   props: {
     lidProp: {
       type: Object,

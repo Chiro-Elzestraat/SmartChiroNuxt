@@ -16,9 +16,9 @@
         <h1 class="title">Ouders</h1>
         <div class="contact">
           <v-card
-            outlined
             v-for="(ouder, i) in lid.contact.ouders"
             :key="i"
+            outlined
             class="contactpersoon"
           >
             <v-card-title class="headline">Ouder {{ i + 1 }}</v-card-title>
@@ -34,9 +34,9 @@
         <h1 class="title">Extra contactpersonen</h1>
         <div class="contact">
           <v-card
-            outlined
             v-for="(extra, i) in lid.contact.extra"
             :key="i"
+            outlined
             class="contactpersoon"
           >
             <v-card-title class="headline">{{ extra.relatie }}</v-card-title>
@@ -86,7 +86,9 @@
           <v-card-title
             :class="
               !lid.medischeFiche.aandoeningen ||
-              Object.keys(lid.medischeFiche.aandoeningen).length == 0
+              Object.keys(lid.medischeFiche.aandoeningen).filter(
+                (value) => lid.medischeFiche.aandoeningen[value]
+              ).length == 0
                 ? 'goed'
                 : 'belangrijk'
             "
@@ -95,17 +97,20 @@
           <v-card-subtitle
             v-if="
               !lid.medischeFiche.aandoeningen ||
-                Object.keys(lid.medischeFiche.aandoeningen).length == 0
+                Object.keys(lid.medischeFiche.aandoeningen).filter(
+                  (value) => lid.medischeFiche.aandoeningen[value]
+                ).length == 0
             "
             >Geen aandoeningen gekend</v-card-subtitle
           >
           <v-card-text v-else>
             <v-checkbox
-              disabled
               v-for="(waarde, aandoening) in lid.medischeFiche.aandoeningen"
+              v-if="waarde"
               :key="aandoening"
               :label="aandoening"
               :input-value="waarde"
+              disabled
               hide-details
             ></v-checkbox>
           </v-card-text>
@@ -228,7 +233,7 @@
             }}</v-card-subtitle
           >
         </v-card>
-        <v-card class="medischeKaart" v-if="lid.aanvullendeInfo" outlined>
+        <v-card v-if="lid.aanvullendeInfo" class="medischeKaart" outlined>
           <v-card-title>Aanvullende info</v-card-title>
           <v-card-subtitle>{{ lid.aanvullendeInfo }}</v-card-subtitle>
         </v-card>
@@ -250,6 +255,11 @@ export default {
   },
   props: {
     lid: Object
+  },
+  methods: {
+    drukaf(value) {
+      console.log(value)
+    }
   }
 }
 </script>
