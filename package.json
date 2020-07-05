@@ -19,7 +19,7 @@
     "@nuxtjs/manifest": "^3.0.0-beta.16",
     "@nuxtjs/pwa": "^3.0.0-beta.19",
     "fibers": "^4.0.2",
-    "firebase": "^7.7.0",
+    "firebase": "^7.15.5",
     "minimist": "^1.2.3",
     "nuxt": "^2.0.0",
     "qrcode.vue": "^1.7.0",
