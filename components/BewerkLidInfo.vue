@@ -31,7 +31,7 @@
           </v-row>
         </v-list-item>
         <v-subheader>Contact</v-subheader>
-        <h1 class="headline">Ouders</h1>
+        <h1 class="headline ml-4">Ouders</h1>
         <v-list-item v-for="(ouder, index) in lid.contact.ouders" :key="index">
           <v-row class="mb-6">
             <v-col cols="12" md="4">
@@ -45,7 +45,7 @@
             </v-col>
           </v-row>
         </v-list-item>
-        <h1 class="headline">Extra contactpersonen</h1>
+        <h1 class="headline ml-4">Extra contactpersonen</h1>
         <v-list-item
           v-for="(extra, index) in lid.contact.extra"
           :key="`extra${index}`"
@@ -65,7 +65,7 @@
             </v-col>
           </v-row>
         </v-list-item>
-        <h1 class="headline">Huisarts</h1>
+        <h1 class="headline ml-4">Huisarts</h1>
         <v-list-item>
           <v-row>
             <v-col cols="12" md="6">
