@@ -6,23 +6,30 @@
     transition="dialog-bottom-transition"
   >
     <template v-slot:activator="{ on }">
-      <v-btn dark icon v-on="on" style="margin: 16px;"
+      <v-btn v-on="on" dark icon style="margin: 16px;"
         ><v-icon color="primary">mdi-account-edit</v-icon></v-btn
       >
     </template>
     <v-card>
       <v-toolbar dark color="primary">
-        <v-btn icon dark @click="dialog = false">
+        <v-btn @click="dialog = false" icon dark>
           <v-icon>mdi-close</v-icon>
         </v-btn>
 
         <v-toolbar-title>{{ lid.naam }}</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
-          <v-btn @click="opslaan" dark text :loading="laden">Opslaan</v-btn>
+          <v-btn @click="opslaan" :loading="laden" dark text>Opslaan</v-btn>
         </v-toolbar-items>
       </v-toolbar>
       <v-list three-line subheader class="text-center">
+        <v-list-item>
+          <v-row>
+            <v-col>
+              <v-text-field v-model="lid.naam" label="Naam"></v-text-field>
+            </v-col>
+          </v-row>
+        </v-list-item>
         <v-subheader>Contact</v-subheader>
         <h1 class="headline">Ouders</h1>
         <v-list-item v-for="(ouder, index) in lid.contact.ouders" :key="index">
@@ -75,6 +82,23 @@
             </v-col>
           </v-row>
         </v-list-item>
+        <v-subheader>Adres</v-subheader>
+        <v-list-item>
+          <v-row>
+            <v-col cols="12" md="6"
+              ><v-text-field v-model="lid.adres.plaats" label="Plaats"
+            /></v-col>
+            <v-col cols="12" md="6"
+              ><v-text-field v-model="lid.adres.postcode" label="Postcode"
+            /></v-col>
+            <v-col cols="12" md="6"
+              ><v-text-field v-model="lid.adres.straat" label="Straat"
+            /></v-col>
+            <v-col cols="12" md="6"
+              ><v-text-field v-model="lid.adres.huisnummer" label="Huisnummer"
+            /></v-col>
+          </v-row>
+        </v-list-item>
       </v-list>
     </v-card>
     <v-snackbar v-model="opgeslagen" color="success" top>Opgeslagen</v-snackbar>
@@ -84,17 +108,17 @@
 <script>
 import { db } from '@/plugins/firebase'
 export default {
+  props: {
+    lidProp: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {
       dialog: false,
       laden: false,
       opgeslagen: false
-    }
-  },
-  props: {
-    lidProp: {
-      type: Object,
-      default: () => {}
     }
   },
   computed: {
