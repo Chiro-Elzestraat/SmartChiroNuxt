@@ -12,7 +12,7 @@
     </template>
     <v-card>
       <v-toolbar dark color="primary">
-        <v-dialog width="500" v-model="cancelDialog">
+        <v-dialog v-model="cancelDialog" width="500">
           <template v-slot:activator="{ on }">
             <v-btn v-on="on" icon dark>
               <v-icon>mdi-close</v-icon>
@@ -36,6 +36,38 @@
           <v-btn @click="opslaan" :loading="laden" dark text>Opslaan</v-btn>
         </v-toolbar-items>
       </v-toolbar>
+      <v-card color="orange">
+        <v-card-title>Extra informatie i.v.m. Covid-19</v-card-title>
+        <v-card-text>
+          <v-checkbox
+            :label="
+              `Ik (of een andere volwassene uit de bubbel van ${lid.naam}) is
+            7/7, 24/24 in staat om ${lid.naam} te komen ophalen tijdens het
+            kamp en zal hem binnen de 24h bij een arts laten onderzoeken en zo nodig laten testen. Het resultaat van de test deel ik mee aan de medische contactpersoon van de kampbubbel.`
+            "
+            v-model="lid.medischeFiche.covid.ophalen"
+            class="pa-0 ma-0"
+          />
+          <v-checkbox
+            :label="
+              `${lid.naam} mag 1 dosis paracetamol krijgen in geval van pijn of koorts zonder ouderlijk/medisch advies.`
+            "
+            v-model="lid.medischeFiche.covid.paracetamol"
+            class="pa-0 ma-0"
+          />
+          <v-checkbox
+            :label="
+              `${lid.naam} mag gezien worden door een arts in geval van symptomen die verdacht zijn voor Covid-19 (ook wanneer de ziekte niet ernstig is).`
+            "
+            v-model="lid.medischeFiche.covid.arts"
+            class="pa-0 ma-0"
+          />
+          <v-text-field
+            v-model="lid.medischeFiche.covid.rijksregisternummer"
+            label="Rijksregisternummer"
+          ></v-text-field>
+        </v-card-text>
+      </v-card>
       <v-list three-line subheader>
         <v-list-item>
           <v-row>
@@ -132,8 +164,6 @@
                     <v-col>
                       <v-text-field
                         v-model="lid.contact.huisarts.gsm"
-                        v-mask="mask"
-                        :rules="gsmRules"
                         label="Gsm"
                       ></v-text-field>
                     </v-col>
@@ -291,6 +321,7 @@ export default {
       const { lidId, ...lid } = this.lidProp // Hiermee wordt lidId uit het object "lidProp" gefilterd.
       // De reden om dit te filteren, is omdat we dit gegeven niet willen opslagen in de database als waarde (dit is immers al het id van het document waarin het is opgeslagen)
       // Uitleg van hoe de filtering werkt: https://stackoverflow.com/a/45898081
+      if (!lid.medischeFiche.covid) lid.medischeFiche.covid = {}
       return lid
     }
   },
@@ -303,6 +334,7 @@ export default {
         .then(() => {
           this.opgeslagen = true
           this.laden = false
+          this.dialog = false
         })
         .catch((err) => console.log(err))
     }
@@ -317,5 +349,8 @@ export default {
 }
 v-text-field {
   margin: 8px;
+}
+.v-label {
+  height: auto !important;
 }
 </style>

@@ -68,6 +68,41 @@
     <v-tab-item>
       <div class="medischeFiche">
         <v-card class="medischeKaart" outlined>
+          <v-card color="orange">
+            <v-card-title>Extra informatie i.v.m. Covid-19</v-card-title>
+            <v-card-text>
+              <v-container fluid>
+                <v-checkbox
+                  :label="
+                    `Ik (of een andere volwassene uit de bubbel van ${lid.naam}) is
+            7/7, 24/24 in staat om ${lid.naam} te komen ophalen tijdens het
+            kamp en zal hem binnen de 24h bij een arts laten onderzoeken en zo nodig laten testen. Het resultaat van de test deel ik mee aan de medische contactpersoon van de kampbubbel.`
+                  "
+                  v-model="ophalen"
+                  readonly
+                />
+                <v-checkbox
+                  :label="
+                    `${lid.naam} mag 1 dosis paracetamol krijgen in geval van pijn of koorts zonder ouderlijk/medisch advies.`
+                  "
+                  v-model="paracetamol"
+                  readonly
+                />
+                <v-checkbox
+                  :label="
+                    `${lid.naam} mag gezien worden door een arts in geval van symptomen die verdacht zijn voor Covid-19 (ook wanneer de ziekte niet ernstig is).`
+                  "
+                  v-model="arts"
+                  readonly
+                />
+                <v-text-field
+                  v-model="rijksregisternummer"
+                  label="Rijksregisternummer"
+                  readonly
+                ></v-text-field>
+              </v-container>
+            </v-card-text>
+          </v-card>
           <v-card-title
             :class="{
               goed: lid.medischeFiche.medischeHandelingen,
@@ -256,6 +291,22 @@ export default {
   props: {
     lid: Object
   },
+  computed: {
+    ophalen() {
+      return this.lid.medischeFiche.covid?.ophalen
+    },
+    paracetamol() {
+      return this.lid.medischeFiche.covid?.paracetamol
+    },
+    arts() {
+      return this.lid.medischeFiche.covid?.arts
+    },
+    rijksregisternummer() {
+      return this.lid.medischeFiche.covid?.rijksregisternummer
+        ? this.lid.medischeFiche.covid.rijksregisternummer
+        : 'Niet opgegeven'
+    }
+  },
   methods: {
     drukaf(value) {
       console.log(value)
@@ -290,5 +341,8 @@ export default {
 .contact {
   display: flex;
   flex-wrap: wrap;
+}
+.v-label {
+  height: auto !important;
 }
 </style>
