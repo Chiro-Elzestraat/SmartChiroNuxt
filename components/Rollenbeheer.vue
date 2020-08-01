@@ -6,6 +6,15 @@
       class="pa-0"
     />
     <v-row class="text-center">
+      <v-col v-for="(rolnaam, index) in rollen.naam" :key="index" cols="4">
+        <div @click="haalGroepsleidingOp">
+          <v-btn fab color="primary">
+            <v-icon>{{rollen.icon[index]}}</v-icon>
+          </v-btn>
+          <p>{{rolnaam}}</p>
+        </div>
+      </v-col>
+      <!--
       <v-col cols="4">
         <div @click="haalGroepsleidingOp">
           <v-btn fab color="primary">
@@ -37,7 +46,7 @@
           <v-icon>mdi-whistle</v-icon>
         </v-btn>
         <p>Leider</p>
-      </v-col>
+      </v-col>-->
     </v-row>
     <v-dialog v-model="groepsleider" width="500">
       <v-card>
@@ -75,6 +84,10 @@ export default {
   },
   data() {
     return {
+      rollen: {
+        naam:['Groepsleider', 'Website', 'Kas', 'Verhuur', 'Leider'],
+        icon:['mdi-account', 'mdi-laptop', 'mdi-cash-register', 'mdi-home', 'mdi-whistle']
+    },
       groepsleider: false,
       groepsleiding: []
     }
