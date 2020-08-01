@@ -21,11 +21,8 @@ export const mutations = {
   setNieuweGebruiker(state, isNieuw) {
     state.user.nieuweGebruiker = isNieuw
   },
-  setOuder(state, ouder) {
-    state.user.ouder = ouder
-  },
-  setLeider(state, leider) {
-    state.user.leider = leider
+  setClaim(state, claim) {
+    state.user[claim] = true
   }
 }
 
