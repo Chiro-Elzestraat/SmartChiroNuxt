@@ -5,10 +5,7 @@
       <v-spacer />
       <v-btn @click="krijgMails">Kopier mails</v-btn>
     </v-toolbar>
-    <v-tabs
-      :vertical="!this.$device.isMobile"
-      :show-arrows="this.$device.isMobile"
-    >
+    <v-tabs :vertical="!this.$device.isMobile" :show-arrows="this.$device.isMobile">
       <v-tab v-for="(groep, i) in groepen" :key="i" class="vtab">
         <!-- <v-icon left>mdi-account</v-icon> -->
         {{ groep.naam }}
@@ -24,11 +21,11 @@
                   {{ lid.naam }}
                   <v-spacer />
                   {{
-                    new Date(lid.geboortedatum).toLocaleDateString('nl-NL', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })
+                  new Date(lid.geboortedatum).toLocaleDateString('nl-NL', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                  })
                   }}
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
@@ -39,31 +36,44 @@
           </v-card-text>
         </v-card>
       </v-tab-item>
-      <v-tab class="vtab">Leiding<v-spacer />{{leiders.length}}</v-tab>
+      <v-tab class="vtab">
+        Leiding
+        <v-spacer />
+        {{leiders.length}}
+      </v-tab>
       <v-tab-item>
         <v-card flat>
           <v-card-title>Overzicht leiding</v-card-title>
           <v-card-text>
             <v-expansion-panels focusable popout>
               <v-expansion-panel v-for="(leider, ii) in leiders" :key="ii">
-                <v-expansion-panel-header>
-                  {{ leider.naam }}
-                </v-expansion-panel-header>
+                <v-expansion-panel-header>{{ leider.naam }}</v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-card><v-card-title><h5>gsm</h5></v-card-title><v-card-text>{{
-                  leider.gsm
-                }}</v-card-text><v-card-title><h5>adres</h5></v-card-title>
-                <v-card-text>{{ leider.adres.straat }} {{ leider.adres.huisnummer }}
-            {{ leider.adres.bus }} {{ leider.adres.postcode }} {{ leider.adres.plaats }}</v-card-text></v-card></v-expansion-panel-content>
+                  <v-card>
+                    <v-card-title>
+                      <h5>gsm</h5>
+                    </v-card-title>
+                    <v-card-text>
+                      {{
+                      leider.gsm
+                      }}
+                    </v-card-text>
+                    <v-card-title>
+                      <h5>adres</h5>
+                    </v-card-title>
+                    <v-card-text>
+                      {{ leider.adres.straat }} {{ leider.adres.huisnummer }}
+                      {{ leider.adres.bus }} {{ leider.adres.postcode }} {{ leider.adres.plaats }}
+                    </v-card-text>
+                  </v-card>
+                </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
           </v-card-text>
         </v-card>
       </v-tab-item>
     </v-tabs>
-    <v-snackbar v-model="gekopieerd"
-      >Mails van alle ouders gekopierd naar het klembord.</v-snackbar
-    >
+    <v-snackbar v-model="gekopieerd">Mails van alle ouders gekopierd naar het klembord.</v-snackbar>
   </v-container>
 </template>
 
@@ -93,9 +103,11 @@ export default {
     db.collection('leiders')
       .get()
       .then((snapshotleiding) => {
-         snapshotleiding.forEach((doc) => this.leiders.push({ ...doc.data(), leiderId: doc.id }))
-         console.log(this.leiders)
-    })
+        snapshotleiding.forEach((doc) =>
+          this.leiders.push({ ...doc.data(), leiderId: doc.id })
+        )
+        console.log(this.leiders)
+      })
 
     db.collection('leden')
       .get()
@@ -165,7 +177,6 @@ export default {
     //     })
     //   }
     // })
-    
   },
 
   head() {
