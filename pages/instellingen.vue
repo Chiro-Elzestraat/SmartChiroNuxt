@@ -15,8 +15,9 @@ export default {
   computed: {
     groepsleider() {
       return (
-        this.$store.state.gebruiker.user.groepsleider ||
-        this.$store.state.gebruiker.user.website
+        this.$store.state.gebruiker.user.leider &&
+        (this.$store.state.gebruiker.user.groepsleider ||
+          this.$store.state.gebruiker.user.website)
       )
     }
   },
