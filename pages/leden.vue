@@ -39,7 +39,7 @@
           </v-card-text>
         </v-card>
       </v-tab-item>
-      <v-tab>Leiding</v-tab>
+      <v-tab class="vtab">Leiding<v-spacer />{{leiders.length}}</v-tab>
       <v-tab-item>
         <v-card flat>
           <v-card-title>Overzicht leiding</v-card-title>
@@ -49,9 +49,12 @@
                 <v-expansion-panel-header>
                   {{ leider.naam }}
                 </v-expansion-panel-header>
-                <v-expansion-panel-content>{{
+                <v-expansion-panel-content>
+                  <v-card><v-card-title><h5>gsm</h5></v-card-title><v-card-text>{{
                   leider.gsm
-                }}</v-expansion-panel-content>
+                }}</v-card-text><v-card-title><h5>adres</h5></v-card-title>
+                <v-card-text>{{ leider.adres.straat }} {{ leider.adres.huisnummer }}
+            {{ leider.adres.bus }} {{ leider.adres.postcode }} {{ leider.adres.plaats }}</v-card-text></v-card></v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
           </v-card-text>
@@ -81,12 +84,19 @@ export default {
         { naam: 'Kerels', leden: [], minLeeftijd: 14, maxLeeftijd: 16 },
         { naam: `Aspi's`, leden: [], minLeeftijd: 16, maxLeeftijd: 18 }
       ],
-      leiders: ['kak', 'pipi'],
       mails: [],
+      leiders: [],
       gekopieerd: false
     }
   },
   mounted() {
+    db.collection('leiders')
+      .get()
+      .then((snapshotleiding) => {
+         snapshotleiding.forEach((doc) => this.leiders.push({ ...doc.data(), leiderId: doc.id }))
+         console.log(this.leiders)
+    })
+
     db.collection('leden')
       .get()
       .then((snapshot) => {
@@ -112,7 +122,6 @@ export default {
                 (1000 * 3600 * 24 * 365) +
               chiroLeeftijd
 
-            console.log(leeftijd)
             if (leeftijd <= groep.maxLeeftijd && leeftijd > groep.minLeeftijd) {
               groep.leden.push(lid)
               continue
@@ -156,12 +165,7 @@ export default {
     //     })
     //   }
     // })
-    // db.collection('leiding')
-    //   .get()
-    //   .then((snapshot) => {
-    //      const leiders = []
-    //      snapshot.forEach((doc) => leiders.push({ ...doc.data(), leiderId: doc.id }))
-    // })
+    
   },
 
   head() {
