@@ -7,60 +7,27 @@
     />
     <v-row class="text-center">
       <v-col v-for="(rolnaam, index) in rollen.naam" :key="index" cols="4">
-        <div @click="haalGroepsleidingOp">
+        <div @click="haalRolOp(rolnaam)">
           <v-btn fab color="primary">
             <v-icon>{{rollen.icon[index]}}</v-icon>
           </v-btn>
           <p>{{rolnaam}}</p>
         </div>
       </v-col>
-      <!--
-      <v-col cols="4">
-        <div @click="haalGroepsleidingOp">
-          <v-btn fab color="primary">
-            <v-icon>mdi-account</v-icon>
-          </v-btn>
-          <p>Groepsleider</p>
-        </div>
-      </v-col>
-      <v-col cols="4">
-        <v-btn fab color="primary">
-          <v-icon>mdi-laptop</v-icon>
-        </v-btn>
-        <p>Website</p>
-      </v-col>
-      <v-col cols="4">
-        <v-btn fab color="primary">
-          <v-icon>mdi-cash-register</v-icon>
-        </v-btn>
-        <p>Kas</p>
-      </v-col>
-      <v-col cols="4">
-        <v-btn fab color="primary">
-          <v-icon>mdi-home</v-icon>
-        </v-btn>
-        <p>Verhuur</p>
-      </v-col>
-      <v-col cols="4">
-        <v-btn fab color="primary">
-          <v-icon>mdi-whistle</v-icon>
-        </v-btn>
-        <p>Leider</p>
-      </v-col>-->
     </v-row>
-    <v-dialog v-model="groepsleider" width="500">
+    <v-dialog v-model="rolDialog" width="500">
       <v-card>
-        <v-card-title>Groepsleider</v-card-title>
+        <v-card-title>{{huidigeRol}}</v-card-title>
         <v-card-text>
           <v-list>
             <v-list-item
+              v-for="gebruiker in gebruikersMetRol"
+              :key="gebruiker.gsm"
               two-line
-              v-for="leider in groepsleiding"
-              :key="leider.gsm"
             >
               <v-list-item-content>
-                <v-list-item-title>{{ leider.naam }}</v-list-item-title>
-                <v-list-item-subtitle>{{ leider.gsm }}</v-list-item-subtitle>
+                <v-list-item-title>{{ gebruiker.naam }}</v-list-item-title>
+                <v-list-item-subtitle>{{ gebruiker.gsm }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -88,23 +55,26 @@ export default {
         naam:['Groepsleider', 'Website', 'Kas', 'Verhuur', 'Leider'],
         icon:['mdi-account', 'mdi-laptop', 'mdi-cash-register', 'mdi-home', 'mdi-whistle']
     },
-      groepsleider: false,
-      groepsleiding: []
+      rolDialog: false,
+      huidigeRol: '',
+      gebruikersMetRol: [] // dit moet nog van naam veranderen want is niet meer logisch
     }
   },
   methods: {
-    haalGroepsleidingOp() {
-      this.groepsleider = true
-      this.groepsleiding = []
+    haalRolOp(rol) {
+      this.huidigeRol = rol
+      rol = rol.toLowerCase()
+      this.rolDialog = true
+      this.gebruikersMetRol = []
       const groepsleiders = db
         .collectionGroup('toegang')
-        .where('heeft', 'array-contains', 'groepsleider')
+        .where('heeft', 'array-contains', rol)
         .get()
         .then((docs) =>
           docs.forEach((doc) =>
             doc.ref.parent.parent
               .get()
-              .then((leider) => this.groepsleiding.push(leider.data()))
+              .then((leider) => this.gebruikersMetRol.push(leider.data()))
           )
         )
       console.log(groepsleiders)
