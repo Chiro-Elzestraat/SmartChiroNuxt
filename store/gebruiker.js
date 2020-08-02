@@ -23,7 +23,10 @@ export const mutations = {
   },
   setClaim(state, claim) {
     state.user[claim] = true
-  }
+  },
+  setOuder(state, ouder) {
+    state.user.ouder = ouder
+  },
 }
 
 export const actions = {

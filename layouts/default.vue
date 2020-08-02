@@ -110,12 +110,14 @@ export default {
           if (!idTokenResult.claims) {
             this.$store.commit('gebruiker/setNieuweGebruiker', true)
             this.$router.push('/account')
-          } else {
-            for (const claim in idTokenResult.claims.rollen) {
-              console.log(claim)
-              this.$store.commit('gebruiker/setClaim', claim)
+          } else if(idTokenResult.claims.rollen){
+              for (const claim in idTokenResult.claims.rollen) {
+                console.log(claim)
+                this.$store.commit('gebruiker/setClaim', claim)
+              }
+            }else{
+              this.$store.commit('gebruiker/setOuder', true)
             }
-          }
         })
         .catch((error) => {
           console.log(error)
