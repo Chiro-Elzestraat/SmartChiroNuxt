@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <v-toolbar flat color="primary" dark>
       <v-toolbar-title>Overzicht leden</v-toolbar-title>
       <v-spacer />
@@ -43,7 +43,7 @@
     <v-snackbar v-model="gekopieerd"
       >Mails van alle ouders gekopierd naar het klembord.</v-snackbar
     >
-  </div>
+  </v-container>
 </template>
 
 <script>

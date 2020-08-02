@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <h1>Quarantainespel</h1>
     <v-row>
       <v-col>
@@ -219,7 +219,7 @@
       </v-tab-item>
     </v-tabs-items>
     <v-snackbar v-model="opgeslagen">Opgeslagen</v-snackbar>
-  </div>
+  </v-container>
 </template>
 
 <script>

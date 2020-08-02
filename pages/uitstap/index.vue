@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <h1>Uitstappen</h1>
     <!-- <v-card>
       <v-card-title></v-card-title>
@@ -61,7 +61,7 @@
         @aangemaakt="toevoegen = false"
       />
     </v-dialog>
-  </div>
+  </v-container>
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <h1>Financiën</h1>
     <v-card>
       <v-card-title>Betalingsverwerking</v-card-title>
@@ -34,7 +34,7 @@
         </form>
       </v-card-text>
     </v-card>
-  </div>
+  </v-container>
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <div v-if="!this.$store.state.gebruiker.user.isLoggedIn">
       <img
         class="logo"
@@ -146,7 +146,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </div>
+  </v-container>
 </template>
 
 <script>

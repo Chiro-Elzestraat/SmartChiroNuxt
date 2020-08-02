@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <v-card class="card">
       <v-img :src="uitstap.url" class="white--text align-end" height="200px">
         <v-card-title>{{ uitstap.titel }}</v-card-title>
@@ -169,7 +169,7 @@
     <v-snackbar v-model="gekopieerd">
       Betalingsnummer gekopierd
     </v-snackbar>
-  </div>
+  </v-container>
 </template>
 
 <script>
