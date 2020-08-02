@@ -57,7 +57,7 @@ export default {
     },
       rolDialog: false,
       huidigeRol: '',
-      gebruikersMetRol: [] // dit moet nog van naam veranderen want is niet meer logisch
+      gebruikersMetRol: []
     }
   },
   methods: {
