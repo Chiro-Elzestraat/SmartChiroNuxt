@@ -29,18 +29,16 @@
                 <v-list-item-title>{{ gebruiker.naam }}</v-list-item-title>
                 <v-list-item-subtitle>{{ gebruiker.id }}</v-list-item-subtitle>
               </v-list-item-content>
+              <v-list-item-icon>
+                <v-icon
+                  @click="verwijderDialog = true"
+                  :disabled="
+                    $store.state.gebruiker.user.data.uid === gebruiker.id
+                  "
+                  >mdi-trash-can-outline</v-icon
+                >
+              </v-list-item-icon>
               <v-dialog v-model="verwijderDialog" width="500">
-                <template v-slot:activator="{ on }">
-                  <v-list-item-icon>
-                    <v-icon
-                      v-on="on"
-                      :disabled="
-                        $store.state.gebruiker.user.data.uid === gebruiker.id
-                      "
-                      >mdi-trash-can-outline</v-icon
-                    >
-                  </v-list-item-icon>
-                </template>
                 <v-card>
                   <v-card-title>Waarschuwing</v-card-title>
                   <v-card-text
@@ -129,6 +127,7 @@ export default {
       huidigeRol: '',
       gebruikersMetRol: [],
       zoekResultaten: [],
+      contactLeiders: [],
       zoekOpdracht: ''
     }
   },
@@ -172,14 +171,25 @@ export default {
               .collection('toegang')
               .doc(doc.id)
               .update(data)
-            this.gebruikersMetRol = this.gebruikersMetRol.filter(
-              (gebruiker) => gebruiker.id !== id
-            )
+              .then(() => {
+                this.verwijderDialog = false
+                this.gebruikersMetRol = this.gebruikersMetRol.filter(
+                  (gebruiker) => gebruiker.id !== id
+                )
+                if (rol === 'leider') {
+                  db.collection('leiders')
+                    .doc('leidersdoc')
+
+                }
+              })
           })
         })
     },
     voegRolToe(gebruiker) {
       const rol = this.huidigeRol.toLowerCase()
+      if (this.huidigeRol === 'Leider') {
+        this.updateContactLeiding()
+      }
       db.collection('gebruikers')
         .doc(gebruiker.id)
         .collection('toegang')
@@ -218,6 +228,14 @@ export default {
             )
           )
         )
+    },
+    updateContactLeiding() {
+      db.collection('leiders')
+        .doc('leidersdoc')
+        .get()
+        .then((doc) => (this.contactLeiders = [...doc.data().leiders]))
+
+      console.log('updating')
     }
   }
 }

@@ -58,13 +58,15 @@
                       leider.gsm
                       }}
                     </v-card-text>
-                    <v-card-title>
-                      <h5>adres</h5>
-                    </v-card-title>
-                    <v-card-text>
-                      {{ leider.adres.straat }} {{ leider.adres.huisnummer }}
-                      {{ leider.adres.bus }} {{ leider.adres.postcode }} {{ leider.adres.plaats }}
-                    </v-card-text>
+                    <div v-if="leider.adres">
+                      <v-card-title>
+                        <h5>adres</h5>
+                      </v-card-title>
+                      <v-card-text>
+                        {{ leider.adres.straat }} {{ leider.adres.huisnummer }}
+                        {{ leider.adres.bus }} {{ leider.adres.postcode }} {{ leider.adres.plaats }}
+                      </v-card-text>
+                    </div>
                   </v-card>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -101,11 +103,10 @@ export default {
   },
   mounted() {
     db.collection('leiders')
+      .doc('leidersdoc')
       .get()
-      .then((snapshotleiding) => {
-        snapshotleiding.forEach((doc) =>
-          this.leiders.push({ ...doc.data(), leiderId: doc.id })
-        )
+      .then((doc) => {
+        this.leiders = [...doc.data().leiders]
         console.log(this.leiders)
       })
 
