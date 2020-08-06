@@ -15,6 +15,19 @@
         </div>
       </v-col>
     </v-row>
+    <v-dialog v-model="verwijderDialog" width="500">
+      <v-card>
+        <v-card-title>Waarschuwing</v-card-title>
+        <v-card-text
+        >Bent u zeker dat u deze persoon zijn rol als
+          {{ huidigeRol }} wilt verwijderen</v-card-text
+        >
+        <v-card-actions>
+          <v-btn @click="deleteRol(huidigGebruikerId)" text>Ja</v-btn>
+          <v-btn @click="verwijderDialog = false" text>Nee</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="rolDialog" width="500">
       <v-card>
         <v-card-title>{{ huidigeRol }}</v-card-title>
@@ -31,26 +44,13 @@
               </v-list-item-content>
               <v-list-item-icon>
                 <v-icon
-                  @click="verwijderDialog = true"
+                  @click="verwijder(gebruiker.id)"
                   :disabled="
                     $store.state.gebruiker.user.data.uid === gebruiker.id
                   "
                   >mdi-trash-can-outline</v-icon
                 >
               </v-list-item-icon>
-              <v-dialog v-model="verwijderDialog" width="500">
-                <v-card>
-                  <v-card-title>Waarschuwing</v-card-title>
-                  <v-card-text
-                    >Bent u zeker dat u deze persoon zijn rol als
-                    {{ huidigeRol }} wilt verwijderen</v-card-text
-                  >
-                  <v-card-actions>
-                    <v-btn @click="deleteRol(gebruiker.id)" text>Ja</v-btn>
-                    <v-btn @click="verwijderDialog = false" text>Nee</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
             </v-list-item>
           </v-list>
         </v-card-text>
@@ -128,7 +128,8 @@ export default {
       gebruikersMetRol: [],
       zoekResultaten: [],
       contactLeiders: [],
-      zoekOpdracht: ''
+      zoekOpdracht: '',
+      huidigGebruikerId: '',
     }
   },
   watch: {
@@ -138,6 +139,10 @@ export default {
     }
   },
   methods: {
+    verwijder(id){
+      this.huidigGebruikerId = id
+      this.verwijderDialog = true
+    },
     zoek() {
       this.zoekResultaten = []
       db.collection('gebruikers')
