@@ -85,7 +85,7 @@ export default {
       currentUser
         .getIdTokenResult()
         .then((idTokenResult) => {
-          if (idTokenResult.claims.leider) {
+          if (idTokenResult.claims.rollen.leider) {
             this.leider = true
           }
         })
