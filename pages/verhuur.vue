@@ -20,10 +20,10 @@
                  <v-text-field v-model="boeking.huurder.gsm" label="GSM"/>
                  <v-row>
                    <v-col cols="auto">
-                     <v-checkbox v-model="boeking.contractInorde" label="Contract in orde"></v-checkbox>
+                     <v-checkbox v-model="boeking.huurder.contractInorde" label="Contract in orde"></v-checkbox>
                    </v-col>
                    <v-col cols="auto">
-                     <v-checkbox v-model="boeking.waarborgInorde" label="Waarborg in orde"></v-checkbox>
+                     <v-checkbox v-model="boeking.huurder.waarborgInorde" label="Waarborg in orde"></v-checkbox>
                    </v-col>
                  </v-row>
                </v-col>
@@ -67,6 +67,8 @@ export default {
         datumAanvraag: '',
         dates: [],
         huurder: {
+          contractInOrde: false,
+          waarborgInOrde: false,
           gsm: '',
           naam: '',
           vereniging: '',
