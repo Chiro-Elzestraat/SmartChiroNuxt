@@ -56,7 +56,7 @@
       <v-btn fab text @click="prev">
         <v-icon small>mdi-chevron-left</v-icon>
       </v-btn>
-      <v-btn text @click="start = ''">
+      <v-btn text @click="start = ''" :disabled="start === ''">
         Vandaag
       </v-btn>
       <v-btn fab text @click="next">
@@ -77,7 +77,7 @@
 export default {
   data() {
     return {
-      start: new Date(),
+      start: '',
       nieuweBoekingDialog: false,
       datumInput: false,
       boeking: {
