@@ -53,7 +53,17 @@
             </v-container>
           </v-card>
         </v-dialog>
+      <v-btn fab text @click="prev">
+        <v-icon small>mdi-chevron-left</v-icon>
+      </v-btn>
+      <v-btn text @click="start = ''">
+        Vandaag
+      </v-btn>
+      <v-btn fab text @click="next">
+        <v-icon small>mdi-chevron-right</v-icon>
+      </v-btn>
       <v-calendar
+        v-model="start"
         ref="calendar"
         :events="events"
         color="primary"
@@ -67,6 +77,7 @@
 export default {
   data() {
     return {
+      start: new Date(),
       nieuweBoekingDialog: false,
       datumInput: false,
       boeking: {
@@ -118,6 +129,9 @@ export default {
       })
     })
   },
+  mounted() {
+    this.$refs.calendar.checkChange()
+  },
   methods: {
     voegVerhuurToe() {
       db.collection('verhuur').add({datumAanvraag: new Date(this.boeking.datumAanvraag), beginDatum: new Date(this.beginDatum), eindDatum: new Date(this.eindDatum)}).then(ref => {
@@ -125,7 +139,13 @@ export default {
           this.nieuweBoekingDialog = false
         })
       })
-    }
+    },
+    prev () {
+      this.$refs.calendar.prev()
+    },
+    next () {
+      this.$refs.calendar.next()
+    },
   }
 }
 </script>
