@@ -53,6 +53,12 @@
             </v-container>
           </v-card>
         </v-dialog>
+      <v-calendar
+        ref="calendar"
+        :events="events"
+        color="primary"
+        type="month"
+      ></v-calendar>
     </v-container>
 </template>
 
@@ -78,22 +84,6 @@ export default {
       opkomendeVerhuur: []
     }
   },
-  methods: {
-    voegVerhuurToe() {
-      db.collection('verhuur').add({datumAanvraag: new Date(this.boeking.datumAanvraag), beginDatum: new Date(this.beginDatum), eindDatum: new Date(this.eindDatum)}).then(ref => {
-        ref.collection('huurder').doc('info').set({...this.boeking.huurder, opmerking: this.boeking.opmerking}).then(() => {
-          this.nieuweBoekingDialog = false
-        })
-      })
-    }
-  },
-  created() {
-    db.collection('verhuur').where('eindDatum', '>', new Date()).get().then(querySnapshot => {
-      querySnapshot.forEach(doc =>{
-        this.opkomendeVerhuur.push(doc.data())
-      })
-    })
-  },
   computed: {
     beginDatum() {
       if(this.gesorteerdeDatums.length > 0)
@@ -108,6 +98,33 @@ export default {
     gesorteerdeDatums(){
       const dates = this.boeking.dates
       return dates.sort((a, b) => new Date(a).getTime()-new Date(b).getTime())
+    },
+    events(){
+      const events = []
+       this.opkomendeVerhuur.forEach(verhuur => {
+         console.log(verhuur)
+         if(verhuur.beginDatum)
+           events.push({name: 'Verhuurd', start: new Date(verhuur.beginDatum.seconds * 1000), end: new Date(verhuur.eindDatum.seconds * 1000)})
+       })
+      if(events.length > 0)
+        return events
+      return []
+      }
+  },
+  created() {
+    db.collection('verhuur').where('eindDatum', '>', new Date()).get().then(querySnapshot => {
+      querySnapshot.forEach(doc =>{
+        this.opkomendeVerhuur.push(doc.data())
+      })
+    })
+  },
+  methods: {
+    voegVerhuurToe() {
+      db.collection('verhuur').add({datumAanvraag: new Date(this.boeking.datumAanvraag), beginDatum: new Date(this.beginDatum), eindDatum: new Date(this.eindDatum)}).then(ref => {
+        ref.collection('huurder').doc('info').set({...this.boeking.huurder, opmerking: this.boeking.opmerking}).then(() => {
+          this.nieuweBoekingDialog = false
+        })
+      })
     }
   }
 }
