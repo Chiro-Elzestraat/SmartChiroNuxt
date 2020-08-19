@@ -79,7 +79,7 @@ export default {
   },
   methods: {
     voegVerhuurToe() {
-      db.collection('verhuur').add({datumAanvraag: this.boeking.datumAanvraag, dates: this.boeking.dates}).then(ref => {
+      db.collection('verhuur').add({datumAanvraag: this.boeking.datumAanvraag, beginDatum: this.beginDatum, eindDatum: this.eindDatum}).then(ref => {
         ref.collection('huurder').doc('info').set({...this.boeking.huurder, opmerking: this.boeking.opmerking}).then(() => {
           this.nieuweBoekingDialog = false
         })
