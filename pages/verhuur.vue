@@ -85,6 +85,25 @@ export default {
         })
       })
     }
+  },
+  created() {
+    // db.collection('verhuur').where()
+  },
+  computed: {
+    beginDatum() {
+      if(this.gesorteerdeDatums.length > 0)
+        return this.gesorteerdeDatums[0]
+      return 0
+    },
+    eindDatum(){
+      if(this.gesorteerdeDatums.length > 1)
+        return this.gesorteerdeDatums[1]
+      return 0
+    },
+    gesorteerdeDatums(){
+      const dates = this.boeking.dates
+      return dates.sort((a, b) => new Date(a).getTime()-new Date(b).getTime())
+    }
   }
 }
 </script>
