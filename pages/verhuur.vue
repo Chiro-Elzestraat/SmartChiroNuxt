@@ -53,22 +53,61 @@
             </v-container>
           </v-card>
         </v-dialog>
-      <v-btn fab text @click="prev">
+      <v-btn @click="prev" fab text>
         <v-icon small>mdi-chevron-left</v-icon>
       </v-btn>
-      <v-btn text @click="start = ''" :disabled="start === ''">
+      <v-btn @click="start = ''" :disabled="start === ''" text>
         Vandaag
       </v-btn>
-      <v-btn fab text @click="next">
+      <v-btn @click="next" fab text>
         <v-icon small>mdi-chevron-right</v-icon>
       </v-btn>
       <v-calendar
-        v-model="start"
         ref="calendar"
+        v-model="start"
         :events="events"
+        @click:event="showEvent"
         color="primary"
         type="month"
       ></v-calendar>
+      <v-menu
+        v-model="selectedOpen"
+        :close-on-content-click="false"
+        :activator="selectedElement"
+        offset-x
+      >
+        <v-card
+          color="grey lighten-4"
+          min-width="350px"
+          flat
+        >
+          <v-toolbar
+            color="primary"
+            dark
+          >
+            <v-btn icon>
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn icon>
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-card-text>
+            <!-- Hier alle details zetten -->
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+              @click="selectedOpen = false"
+              text
+              color="secondary"
+            >
+              Sluiten
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-menu>
     </v-container>
 </template>
 
@@ -77,6 +116,9 @@
 export default {
   data() {
     return {
+      selectedEvent: {},
+      selectedElement: null,
+      selectedOpen: false,
       start: '',
       nieuweBoekingDialog: false,
       datumInput: false,
@@ -115,7 +157,7 @@ export default {
        this.opkomendeVerhuur.forEach(verhuur => {
          console.log(verhuur)
          if(verhuur.beginDatum)
-           events.push({name: 'Verhuurd', start: new Date(verhuur.beginDatum.seconds * 1000), end: new Date(verhuur.eindDatum.seconds * 1000)})
+           events.push({id: verhuur.id, name: 'Verhuurd', start: new Date(verhuur.beginDatum.seconds * 1000), end: new Date(verhuur.eindDatum.seconds * 1000)})
        })
       if(events.length > 0)
         return events
@@ -125,7 +167,7 @@ export default {
   created() {
     db.collection('verhuur').where('eindDatum', '>', new Date()).get().then(querySnapshot => {
       querySnapshot.forEach(doc =>{
-        this.opkomendeVerhuur.push(doc.data())
+        this.opkomendeVerhuur.push({...doc.data(), id: doc.id})
       })
     })
   },
@@ -133,6 +175,22 @@ export default {
     this.$refs.calendar.checkChange()
   },
   methods: {
+    showEvent ({ nativeEvent, event }) {
+      const open = () => {
+        this.selectedEvent = event
+        this.selectedElement = nativeEvent.target
+        setTimeout(() => {this.selectedOpen = true}, 10)
+      }
+
+      if (this.selectedOpen) {
+        this.selectedOpen = false
+        setTimeout(open, 10)
+      } else {
+        open()
+      }
+
+      nativeEvent.stopPropagation()
+    },
     voegVerhuurToe() {
       db.collection('verhuur').add({datumAanvraag: new Date(this.boeking.datumAanvraag), beginDatum: new Date(this.beginDatum), eindDatum: new Date(this.eindDatum)}).then(ref => {
         ref.collection('huurder').doc('info').set({...this.boeking.huurder, opmerking: this.boeking.opmerking}).then(() => {
