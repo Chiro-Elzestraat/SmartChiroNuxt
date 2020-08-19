@@ -75,6 +75,7 @@ export default {
         },
         opmerking: '',
       },
+      opkomendeVerhuur: []
     }
   },
   methods: {
@@ -87,7 +88,11 @@ export default {
     }
   },
   created() {
-    // db.collection('verhuur').where()
+    db.collection('verhuur').where('eindDatum', '>', new Date()).get().then(querySnapshot => {
+      querySnapshot.forEach(doc =>{
+        this.opkomendeVerhuur.push(doc.data())
+      })
+    })
   },
   computed: {
     beginDatum() {
