@@ -77,7 +77,6 @@
         offset-x
       >
         <v-card
-          color="grey lighten-4"
           min-width="350px"
           flat
         >
@@ -87,13 +86,40 @@
           >
             <v-toolbar-title>{{selectedEvent.huurder ? selectedEvent.huurder.vereniging : ""}}</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon>
-              <v-icon>mdi-pencil</v-icon>
+            <v-btn v-if="bewerken" icon>
+              <v-icon>mdi-content-save</v-icon>
+            </v-btn>
+            <v-btn @click="bewerken = !bewerken" icon>
+              <v-icon>{{bewerken ? 'mdi-close' : 'mdi-pencil'}}</v-icon>
             </v-btn>
           </v-toolbar>
-          <v-card-text>
-            <!-- Hier alle details zetten -->
+          <v-card-text style="height: 300px; overflow:auto;">
             <v-progress-circular v-if="infoLaden" indeterminate color="primary"/>
+            <v-form v-if="selectedEvent.huurder" :disabled="!bewerken">
+              <v-row>
+                <v-col class="py-0"><v-checkbox v-model="selectedEvent.huurder.contractInOrde" class="shrink mr-0 mt-0" label="Contract in orde"/></v-col>
+              </v-row>
+              <v-row>
+                <v-col class="py-0"><v-checkbox v-model="selectedEvent.huurder.waarborgInOrde" class="shrink mr-0 mt-0" label="Waarborg in orde"/></v-col>
+              </v-row>
+              <v-row>
+                <v-col class="py-0"><v-text-field v-model="selectedEvent.huurder.vereniging" label="Vereniging"></v-text-field></v-col>
+              </v-row>
+              <v-row align="center">
+                <v-col class="py-0"><v-text-field v-model="selectedEvent.huurder.email" label="Email"></v-text-field></v-col>
+                <v-col class="py-0" cols="auto"><a :href="`mailto:${selectedEvent.huurder.email}`"><v-icon>mdi-email</v-icon></a></v-col>
+              </v-row>
+              <v-row align="center">
+                <v-col class="py-0"><v-text-field v-model="selectedEvent.huurder.gsm" label="GSM"></v-text-field></v-col>
+                <v-col class="py-0" cols="auto"><a :href="`tel:${selectedEvent.huurder.gsm}`"><v-icon>mdi-phone</v-icon></a></v-col>
+              </v-row>
+              <v-row>
+                <v-col class="py-0"><v-text-field v-model="selectedEvent.huurder.naam" label="Naam"></v-text-field></v-col>
+              </v-row>
+              <v-row>
+                <v-col class="py-0"><v-textarea v-model="selectedEvent.huurder.opmerking" label="Opmerking"></v-textarea></v-col>
+              </v-row>
+            </v-form>
           </v-card-text>
           <v-card-actions>
             <v-btn
@@ -114,6 +140,7 @@
 export default {
   data() {
     return {
+      bewerken: false,
       infoLaden: false,
       selectedEvent: {},
       selectedElement: null,
