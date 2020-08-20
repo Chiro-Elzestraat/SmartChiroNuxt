@@ -20,10 +20,10 @@
                  <v-text-field v-model="boeking.huurder.gsm" label="GSM"/>
                  <v-row>
                    <v-col cols="auto">
-                     <v-checkbox v-model="boeking.huurder.contractInorde" label="Contract in orde"></v-checkbox>
+                     <v-checkbox v-model="boeking.huurder.contractInOrde" label="Contract in orde"></v-checkbox>
                    </v-col>
                    <v-col cols="auto">
-                     <v-checkbox v-model="boeking.huurder.waarborgInorde" label="Waarborg in orde"></v-checkbox>
+                     <v-checkbox v-model="boeking.huurder.waarborgInOrde" label="Waarborg in orde"></v-checkbox>
                    </v-col>
                  </v-row>
                </v-col>
@@ -85,17 +85,15 @@
             color="primary"
             dark
           >
-            <v-btn icon>
-              <v-icon>mdi-pencil</v-icon>
-            </v-btn>
-            <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+            <v-toolbar-title>{{selectedEvent.huurder ? selectedEvent.huurder.vereniging : ""}}</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon>
-              <v-icon>mdi-dots-vertical</v-icon>
+              <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </v-toolbar>
           <v-card-text>
             <!-- Hier alle details zetten -->
+            <v-progress-circular v-if="infoLaden" indeterminate color="primary"/>
           </v-card-text>
           <v-card-actions>
             <v-btn
@@ -116,6 +114,7 @@
 export default {
   data() {
     return {
+      infoLaden: false,
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,
@@ -178,6 +177,11 @@ export default {
     showEvent ({ nativeEvent, event }) {
       const open = () => {
         this.selectedEvent = event
+        this.infoLaden = true
+        db.collection('verhuur').doc(event.id).collection('huurder').doc('info').get().then(doc => {
+          this.selectedEvent.huurder = doc.data()
+          this.infoLaden = false
+        })
         this.selectedElement = nativeEvent.target
         setTimeout(() => {this.selectedOpen = true}, 10)
       }
