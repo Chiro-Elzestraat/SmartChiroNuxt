@@ -165,7 +165,7 @@ export default {
       }
   },
   created() {
-    db.collection('verhuur').where('eindDatum', '>', new Date()).get().then(querySnapshot => {
+    db.collection('verhuur').where('eindDatum', '>', new Date(new Date().setDate(new Date().getDate() - 1))).get().then(querySnapshot => {
       querySnapshot.forEach(doc =>{
         this.opkomendeVerhuur.push({...doc.data(), id: doc.id})
       })
