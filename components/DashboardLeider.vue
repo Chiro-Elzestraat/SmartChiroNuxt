@@ -64,7 +64,13 @@ export default {
   computed: {
     cardsFiltered() {
       return this.cards.filter((card) => {
-        if (this.rollen.includes(card.rol) || !card.rol) return true
+        if (
+          this.rollen.includes(card.rol) ||
+          !card.rol ||
+          this.rollen.includes('groepsleider') ||
+          this.rollen.includes('website')
+        )
+          return true
       })
     }
   },
@@ -73,9 +79,8 @@ export default {
       .auth()
       .currentUser.getIdTokenResult()
       .then((idTokenResult) => {
-        if (idTokenResult.claims.kas) {
-          this.rollen.push('kas')
-        } else {
+        for (const rol in idTokenResult.claims.rollen) {
+          this.rollen.push(rol)
         }
       })
       .catch((error) => {

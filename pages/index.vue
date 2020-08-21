@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <!-- <h1>Welkom op SmartChiro!</h1> -->
 
     <Inschrijven
@@ -56,7 +56,7 @@
       </template>
       <span>Nieuwe inschrijving</span>
     </v-tooltip>
-  </div>
+  </v-container>
 </template>
 
 <script>

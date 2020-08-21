@@ -1,8 +1,13 @@
 // import path from 'path'
 import fs from 'fs'
 import colors from 'vuetify/es5/util/colors'
+import nl from 'vuetify/es5/locale/nl'
 
 const vuetify = {
+  lang: {
+    locales: {nl},
+    current: 'nl',
+  },
   customVariables: ['~/assets/variables.scss'],
   theme: {
     dark: true,

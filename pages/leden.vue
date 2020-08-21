@@ -1,36 +1,33 @@
 <template>
-  <div>
+  <v-container>
     <v-toolbar flat color="primary" dark>
       <v-toolbar-title>Overzicht leden</v-toolbar-title>
       <v-spacer />
       <v-btn @click="krijgMails">Kopier mails</v-btn>
     </v-toolbar>
-    <v-tabs
-      :vertical="!this.$device.isMobile"
-      :show-arrows="this.$device.isMobile"
-    >
+    <v-tabs :vertical="!this.$device.isMobile" :show-arrows="this.$device.isMobile">
       <v-tab v-for="(groep, i) in groepen" :key="i" class="vtab">
         <!-- <v-icon left>mdi-account</v-icon> -->
         {{ groep.naam }}
         <v-spacer />
         {{ groep.leden.length }}
       </v-tab>
-
       <v-tab-item v-for="(groep, i) in groepen" :key="i">
         <v-card flat>
           <v-card-text>
             <v-expansion-panels focusable popout>
               <v-expansion-panel v-for="(lid, i) in groep.leden || 0" :key="i">
-                <v-expansion-panel-header
-                  >{{ lid.naam }} <v-spacer />
+                <v-expansion-panel-header>
+                  {{ lid.naam }}
+                  <v-spacer />
                   {{
-                    new Date(lid.geboortedatum).toLocaleDateString('nl-NL', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })
-                  }}</v-expansion-panel-header
-                >
+                  new Date(lid.geboortedatum).toLocaleDateString('nl-NL', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                  })
+                  }}
+                </v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <LidInfo :lid="lid" />
                 </v-expansion-panel-content>
@@ -39,11 +36,47 @@
           </v-card-text>
         </v-card>
       </v-tab-item>
+      <v-tab class="vtab">
+        Leiding
+        <v-spacer />
+        {{leiders.length}}
+      </v-tab>
+      <v-tab-item>
+        <v-card flat>
+          <v-card-title>Overzicht leiding</v-card-title>
+          <v-card-text>
+            <v-expansion-panels focusable popout>
+              <v-expansion-panel v-for="(leider, ii) in leiders" :key="ii">
+                <v-expansion-panel-header>{{ leider.naam }}</v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-card>
+                    <v-card-title>
+                      <h5>gsm</h5>
+                    </v-card-title>
+                    <v-card-text>
+                      {{
+                      leider.gsm
+                      }}
+                    </v-card-text>
+                    <div v-if="leider.adres">
+                      <v-card-title>
+                        <h5>adres</h5>
+                      </v-card-title>
+                      <v-card-text>
+                        {{ leider.adres.straat }} {{ leider.adres.huisnummer }}
+                        {{ leider.adres.bus }} {{ leider.adres.postcode }} {{ leider.adres.plaats }}
+                      </v-card-text>
+                    </div>
+                  </v-card>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-card-text>
+        </v-card>
+      </v-tab-item>
     </v-tabs>
-    <v-snackbar v-model="gekopieerd"
-      >Mails van alle ouders gekopierd naar het klembord.</v-snackbar
-    >
-  </div>
+    <v-snackbar v-model="gekopieerd">Mails van alle ouders gekopierd naar het klembord.</v-snackbar>
+  </v-container>
 </template>
 
 <script>
@@ -63,11 +96,20 @@ export default {
         { naam: 'Kerels', leden: [], minLeeftijd: 14, maxLeeftijd: 16 },
         { naam: `Aspi's`, leden: [], minLeeftijd: 16, maxLeeftijd: 18 }
       ],
-      mails: '',
+      mails: [],
+      leiders: [],
       gekopieerd: false
     }
   },
   mounted() {
+    db.collection('leiders')
+      .doc('leidersdoc')
+      .get()
+      .then((doc) => {
+        this.leiders = [...doc.data().leiders]
+        console.log(this.leiders)
+      })
+
     db.collection('leden')
       .get()
       .then((snapshot) => {
@@ -85,7 +127,7 @@ export default {
           efficiënter is, maar nog niet zeker */
           for (const lid of leden) {
             lid.contact.ouders.forEach((ouder) => {
-              if (ouder.email.includes('@')) this.mails += ouder.email + ';'
+              if (ouder.email.includes('@')) this.mails.push(ouder.email)
             })
             const chiroLeeftijd = lid.chiroLeeftijd || 0
             const leeftijd =
@@ -93,12 +135,12 @@ export default {
                 (1000 * 3600 * 24 * 365) +
               chiroLeeftijd
 
-            console.log(leeftijd)
             if (leeftijd <= groep.maxLeeftijd && leeftijd > groep.minLeeftijd) {
               groep.leden.push(lid)
               continue
             }
           }
+          this.mails = [...new Set(this.mails)]
         })
       })
       .catch((err) => {
@@ -137,6 +179,7 @@ export default {
     //   }
     // })
   },
+
   head() {
     return {
       title: 'Leden'
@@ -144,7 +187,7 @@ export default {
   },
   methods: {
     krijgMails() {
-      navigator.clipboard.writeText(this.mails).then(() => {
+      navigator.clipboard.writeText(this.mails.join(';')).then(() => {
         this.gekopieerd = true
       })
     }

@@ -21,12 +21,12 @@ export const mutations = {
   setNieuweGebruiker(state, isNieuw) {
     state.user.nieuweGebruiker = isNieuw
   },
+  setClaim(state, claim) {
+    state.user[claim] = true
+  },
   setOuder(state, ouder) {
     state.user.ouder = ouder
   },
-  setLeider(state, leider) {
-    state.user.leider = leider
-  }
 }
 
 export const actions = {

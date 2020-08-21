@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <div v-if="!this.$store.state.gebruiker.user.isLoggedIn">
       <img
         class="logo"
@@ -146,7 +146,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -284,7 +284,10 @@ export default {
         .auth()
         .currentUser.getIdTokenResult()
         .then((idTokenResult) => {
-          if (idTokenResult.claims.leider || idTokenResult.claims.ouder) {
+          if (
+            idTokenResult.claims.rollen.leider ||
+            idTokenResult.claims.rollen.ouder
+          ) {
             console.log('test')
             this.$store.commit('gebruiker/setNieuweGebruiker', false)
           } else {
@@ -294,7 +297,7 @@ export default {
         .catch((error) => {
           console.log(error)
           this.$store.commit('gebruiker/setNieuweGebruiker', false)
-          this.$router.push('/geeninternet')
+          // this.$router.push('/geeninternet')
         })
     }
   },

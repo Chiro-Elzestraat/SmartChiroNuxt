@@ -1,19 +1,25 @@
 <template>
   <div>
-    <OptieDivider
-      v-if="this.$store.state.gebruiker.user.leider"
-      text="Rollenbeheer"
-      icon="mdi-account-multiple"
-    />
+    <Rollenbeheer v-if="groepsleider" />
+
     <p v-else class="text-center">Het is hier voorlopig leeg.</p>
   </div>
 </template>
 
 <script>
-import OptieDivider from '@/components/OptieDivider'
+import Rollenbeheer from '@/components/Rollenbeheer'
 export default {
   components: {
-    OptieDivider
+    Rollenbeheer
+  },
+  computed: {
+    groepsleider() {
+      return (
+        this.$store.state.gebruiker.user.leider &&
+        (this.$store.state.gebruiker.user.groepsleider ||
+          this.$store.state.gebruiker.user.website)
+      )
+    }
   },
   data() {
     return {}

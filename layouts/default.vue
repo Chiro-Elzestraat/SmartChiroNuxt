@@ -66,9 +66,7 @@
       />
     </v-app-bar>
     <v-content>
-      <v-container>
-        <nuxt />
-      </v-container>
+      <nuxt />
     </v-content>
     <v-overlay
       :value="
@@ -108,25 +106,18 @@ export default {
         .auth()
         .currentUser.getIdTokenResult()
         .then((idTokenResult) => {
-          if (idTokenResult.claims.leider) {
-            this.$store.commit('gebruiker/setLeider', true)
-            // db.collection('extraMenu')
-            //   .doc('leider')
-            //   .get()
-            //   .then((doc) => {
-            //     if (doc.exists) {
-            //       this.$store.commit(
-            //         'menu/setExtraItems',
-            //         doc.data().extraMenus
-            //       )
-            //     }
-            //   })
-          } else if (idTokenResult.claims.ouder) {
-            this.$store.commit('gebruiker/setOuder', true)
-          } else {
+          console.log(idTokenResult.claims)
+          if (!idTokenResult.claims) {
             this.$store.commit('gebruiker/setNieuweGebruiker', true)
             this.$router.push('/account')
-          }
+          } else if(idTokenResult.claims.rollen){
+              for (const claim in idTokenResult.claims.rollen) {
+                console.log(claim)
+                this.$store.commit('gebruiker/setClaim', claim)
+              }
+            }else{
+              this.$store.commit('gebruiker/setOuder', true)
+            }
         })
         .catch((error) => {
           console.log(error)
