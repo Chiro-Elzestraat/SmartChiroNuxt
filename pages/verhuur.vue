@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <h1><v-badge content="Beta">Verhuur</v-badge></h1>
-        <v-dialog v-model="nieuweBoekingDialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+        <v-dialog v-model="nieuweBoekingDialog" fullscreen hide-overlay transition="dialog-bottom-transition" v-if="$store.state.gebruiker.user.verhuur">
           <template v-slot:activator="{on}">
             <v-btn v-on="on" fab fixed bottom right color="primary"><v-icon>mdi-plus</v-icon></v-btn>
           </template>
@@ -89,7 +89,7 @@
             <v-btn v-if="bewerken" @click="opslaan" icon>
               <v-icon>mdi-content-save</v-icon>
             </v-btn>
-            <v-btn @click="toggleBewerken" icon>
+            <v-btn @click="toggleBewerken" icon v-if="$store.state.gebruiker.user.verhuur">
               <v-icon>{{bewerken ? 'mdi-close' : 'mdi-pencil'}}</v-icon>
             </v-btn>
           </v-toolbar>
