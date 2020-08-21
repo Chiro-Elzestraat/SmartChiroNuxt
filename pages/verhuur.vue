@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <h1>Verhuur</h1>
+        <h1><v-badge content="Beta">Verhuur</v-badge></h1>
         <v-dialog v-model="nieuweBoekingDialog" fullscreen hide-overlay transition="dialog-bottom-transition">
           <template v-slot:activator="{on}">
             <v-btn v-on="on" fab fixed bottom right color="primary"><v-icon>mdi-plus</v-icon></v-btn>
@@ -86,10 +86,10 @@
           >
             <v-toolbar-title>{{selectedEvent.huurder ? selectedEvent.huurder.vereniging : ""}}</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn v-if="bewerken" icon>
+            <v-btn v-if="bewerken" @click="opslaan" icon>
               <v-icon>mdi-content-save</v-icon>
             </v-btn>
-            <v-btn @click="bewerken = !bewerken" icon>
+            <v-btn @click="toggleBewerken" icon>
               <v-icon>{{bewerken ? 'mdi-close' : 'mdi-pencil'}}</v-icon>
             </v-btn>
           </v-toolbar>
@@ -143,6 +143,7 @@ export default {
       bewerken: false,
       infoLaden: false,
       selectedEvent: {},
+      selectedEventBackup: {},
       selectedElement: null,
       selectedOpen: false,
       start: '',
@@ -201,6 +202,12 @@ export default {
     this.$refs.calendar.checkChange()
   },
   methods: {
+    opslaan(){
+      db.collection('verhuur').doc(this.selectedEvent.id).collection('huurder').doc('info').update({...this.selectedEvent.huurder}).then(() => {
+        this.bewerken = false
+      }
+      )
+    },
     showEvent ({ nativeEvent, event }) {
       const open = () => {
         this.selectedEvent = event
@@ -221,6 +228,13 @@ export default {
       }
 
       nativeEvent.stopPropagation()
+    },
+    toggleBewerken(){
+      if(!this.bewerken)
+        this.selectedEventBackup = {...this.selectedEvent.huurder}
+      else
+        this.selectedEvent.huurder = {...this.selectedEventBackup}
+      this.bewerken = !this.bewerken
     },
     voegVerhuurToe() {
       db.collection('verhuur').add({datumAanvraag: new Date(this.boeking.datumAanvraag), beginDatum: new Date(this.beginDatum), eindDatum: new Date(this.eindDatum)}).then(ref => {
