@@ -10,27 +10,7 @@
       v-else-if="!inschrijven && this.$store.state.gebruiker.user.ouder"
       class="text-center"
     >
-      <div v-if="leden.length === 0">
-        <img src="../assets/geenleden.svg" alt="Geen leden" class="geenleden" />
-        <h1 class="headline">Hier is niets te zien</h1>
-        <p>Ingeschreven leden verschijnen hier.</p>
-        <p>
-          Waren je leden al ingeschreven in het vorige systeem?
-          <a @click="$router.push('overzetten')">Klik dan hier</a> om de
-          gegevens over te zetten.
-        </p>
-      </div>
-      <div v-else>
-        <v-expansion-panels>
-          <v-expansion-panel v-for="(lid, index) in leden" :key="index">
-            <v-expansion-panel-header>{{ lid.naam }}</v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <BewerkLidInfo :lidProp="lid" />
-              <LidInfo :lid="lid" />
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </div>
+      <DashboardOuders :leden="leden"/>
     </div>
 
     <div v-else-if="!inschrijven && this.$store.state.gebruiker.user.leider">
@@ -60,19 +40,17 @@
 </template>
 
 <script>
-import firebase from 'firebase'
-import Inschrijven from '@/components/Inschrijven'
-import LidInfo from '@/components/LidInfo'
-import BewerkLidInfo from '@/components/BewerkLidInfo'
-import DashboardLeider from '@/components/DashboardLeider'
-import { db } from '@/plugins/firebase'
+  import firebase from 'firebase'
+  import Inschrijven from '@/components/Inschrijven'
+  import DashboardLeider from '@/components/DashboardLeider'
+  import { db } from '@/plugins/firebase'
+  import DashboardOuders from '~/pages/DashboardOuders'
 
-export default {
+  export default {
   components: {
+    DashboardOuders,
     Inschrijven,
-    LidInfo,
-    DashboardLeider,
-    BewerkLidInfo
+    DashboardLeider
   },
   data() {
     return {
@@ -129,10 +107,3 @@ export default {
 }
 </script>
 
-<style scoped>
-.geenleden {
-  display: block;
-  margin: 0 auto;
-  max-width: 40%;
-}
-</style>
