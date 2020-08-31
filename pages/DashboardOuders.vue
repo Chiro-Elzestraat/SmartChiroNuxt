@@ -44,27 +44,145 @@
             </v-list>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary">Bevestigen</v-btn>
+            <v-btn color="primary" :loading="laden" @click="betalen">Bevestigen</v-btn>
             <v-btn text @click="herinschrijvenDialog = false">Annuleren</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-dialog
+        v-model="betalenDialog"
+        fullscreen
+        hide-overlay
+        transition="dialog-bottom-transition"
+      >
+        <v-card>
+          <v-toolbar dark color="primary">
+            <v-toolbar-title>Betaling</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+              <v-btn
+                dark
+                text
+                @click="
+                () => {
+                  betalenDialog = false
+                  $emit('ingeschreven')
+                }
+              "
+              >Klaar</v-btn
+              >
+            </v-toolbar-items>
+          </v-toolbar>
+          <v-list three-line subheader>
+            <v-subheader>Opnieuw ingeschreven leden</v-subheader>
+            <v-list-item v-for="(lid, index) in leden" :key="index" v-if="herinschrijvenIds.includes(lid.lidId)">
+              <v-list-item-content>
+                <v-list-item-title>{{ lid.naam }}</v-list-item-title>
+                <v-list-item-subtitle>{{
+                  lid.geboortedatum
+                  }}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-divider></v-divider>
+          <v-list three-line subheader>
+            <v-subheader>Informatie overschrijving</v-subheader>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>Rekeningnummer</v-list-item-title>
+                <v-list-item-subtitle>BE97 8601 0855 9449</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>Mededeling</v-list-item-title>
+                <v-list-item-subtitle>{{ betalingsId }}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>Bedrag</v-list-item-title>
+                <v-list-item-subtitle>{{
+                  `€ ${teBetalen.toFixed(2)}`
+                  }}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-card-text class="text-center"
+          >Gelieve deze betaling zo snel mogelijk in orde te brengen zodat wij
+            uw leden correct kunnen verzekeren.</v-card-text
+          >
+        </v-card></v-dialog
+      >
+      <v-overlay v-if="laden">
+        <p>Jouw inschrijving wordt vervolledigd. Sluit deze pagina niet. Neem contact op met <a href="mailto:smart@chiroelzestraat.be">smart@chiroelzestraat.be</a> als dit langer dan een minuut duurt.</p>
+        <v-progress-circular
+          indeterminate
+          size="64"
+          style="margin: 0 auto; display:block;"
+        ></v-progress-circular>
+      </v-overlay>
     </div>
 </template>
 <script>
   import BewerkLidInfo from '@/components/BewerkLidInfo'
   import LidInfo from '@/components/LidInfo'
+  import { db } from '~/plugins/firebase'
 
   export default {
     name: 'DashboardOuders',
     components: { BewerkLidInfo, LidInfo },
     props: {
-      leden: {}
+      leden: []
     },
     data() {
       return {
-        herinschrijven: {},
+        herinschrijven: [],
         herinschrijvenDialog: false,
+        teBetalen: 0,
+        betalingsId: '',
+        laden: false,
+        betalenDialog: false,
+      }
+    },
+    computed: {
+      herinschrijvenIds() {
+        const ids = []
+        this.herinschrijven.forEach(lidNummer => {
+          ids.push(this.leden[lidNummer].lidId)
+        })
+        return ids
+      }
+    },
+    methods: {
+      betalen() {
+        this.laden = true
+        this.herinschrijvenDialog = false
+        const betaling = db.collection('startbetaling').doc()
+        const batch = db.batch()
+        batch.set(betaling, { leden: this.herinschrijvenIds })
+        batch
+          .commit()
+          .then((result) => {
+            this.herinschrijvenIds.forEach((lidId) => {
+              db.collection('leden')
+                .doc(lidId)
+                .collection('betaling')
+                .onSnapshot((snapshot) => {
+                  if(!snapshot.metadata.fromCache)
+                  snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added') {
+                      this.teBetalen += change.doc.data().bedrag
+                      this.betalingsId = change.doc.data().betalingsnummer
+                      this.laden = false
+                      this.betalenDialog = true
+                      // this.$emit('ingeschreven')
+                    }
+                  })
+                })
+            })
+          })
+          .catch((err) => console.log(err))
       }
     }
   }
