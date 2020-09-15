@@ -106,8 +106,8 @@ export default {
         .auth()
         .currentUser.getIdTokenResult()
         .then((idTokenResult) => {
-          console.log(idTokenResult.claims)
-          if (!idTokenResult.claims) {
+          console.log(idTokenResult.claims.rollen === undefined)
+          if (idTokenResult.claims.rollen === undefined) {
             this.$store.commit('gebruiker/setNieuweGebruiker', true)
             this.$router.push('/account')
           } else if(idTokenResult.claims.rollen){
@@ -115,7 +115,7 @@ export default {
                 console.log(claim)
                 this.$store.commit('gebruiker/setClaim', claim)
               }
-            }else{
+            }if(idTokenResult.claims.ouder){
               this.$store.commit('gebruiker/setOuder', true)
             }
         })
