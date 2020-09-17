@@ -287,7 +287,7 @@ export default {
           console.log('test')
           console.log(idTokenResult.claims)
           console.log(idTokenResult.claims.ouder)
-          if (idTokenResult.claims.ouder
+          if (idTokenResult.claims.ouder || idTokenResult.claims.rollen
           ) {
             console.log('test')
             this.$store.commit('gebruiker/setNieuweGebruiker', false)
