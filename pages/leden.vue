@@ -118,8 +118,8 @@ export default {
         const vandaag = new Date()
         const maand = vandaag.getMonth()
         const vergelijkDatum =
-          maand < 0
-            ? new Date(vandaag.getFullYear() - 1, 0, 0)
+          maand > 7
+            ? new Date(vandaag.getFullYear() + 1, 0, 0)
             : new Date(vandaag.getFullYear(), 0, 0)
         this.groepen.forEach((groep) => {
           /* misschien deze loop omdraaien, dat eerst over de leden wordt geloopt, en daarna
