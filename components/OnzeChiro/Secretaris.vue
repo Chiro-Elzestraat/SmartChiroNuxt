@@ -1,8 +1,9 @@
 <template>
     <v-dialog v-model="dialog" fullscreen>
         <template v-slot:activator="{ on }">
-            <v-card><v-img src="/static/secretaris_myfiles.svg" height="200px" width="400px" contain></v-img><v-card-title>Secretaris</v-card-title><v-card-subtitle>Inschrijven leden GAP</v-card-subtitle><v-card-actions>
-        <v-btn v-on="on">Secretaris</v-btn></v-card-actions></v-card>
+            <v-card @click="dialog=true" class="mx-auto"
+          max-width="400" ><div class='pt-md-4'><v-img src="/secretaris_myfiles.svg" height="200px" width="400px" contain></v-img></div><v-card-title>Secretaris</v-card-title><v-card-subtitle>Inschrijven leden GAP</v-card-subtitle><v-card-actions class="justify-center">
+        <v-btn v-on="on" outlined color='primary' text>Ga naar</v-btn></v-card-actions></v-card>
         </template>
         <v-card>
             <v-toolbar>
@@ -39,7 +40,12 @@ export default {
     },
     created(){
         // TODO: 2020 nog veranderen naar een berekende waarde
-        db.collectionGroup('betaling').where('jaar', '==', '2020')
+        const betalingen = db.collectionGroup('betaling').where('jaar', '==', '2021')
+        betalingen.get().then(snapshot => {
+            snapshot.forEach(doc => {
+                console.log(doc.ref.parent.get())
+            })
+        })
     }
 }
 </script>
