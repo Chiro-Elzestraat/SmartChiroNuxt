@@ -112,13 +112,14 @@ export default {
   data() {
     return {
       rollen: {
-        naam: ['Groepsleider', 'Website', 'Kas', 'Verhuur', 'Leider'],
+        naam: ['Groepsleider', 'Website', 'Kas', 'Verhuur', 'Leider', 'Secretaris'],
         icon: [
           'mdi-account',
           'mdi-laptop',
           'mdi-cash-register',
           'mdi-home',
-          'mdi-whistle'
+          'mdi-whistle',
+          'mdi-account-edit'
         ]
       },
       rolDialog: false,
