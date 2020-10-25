@@ -36,11 +36,11 @@
                 <v-text-field
                   v-model="groep.aantal"
                   width="40"
-                  v-mask="'###'"
+                  v-mask="'##'"
                 ></v-text-field>
                 <v-btn
                   text
-                  :disabled="groep.aantal >= 999"
+                  :disabled="groep.aantal >= 99"
                   @click="groep.aantal++"
                 >
                   <v-icon>mdi-plus</v-icon>
