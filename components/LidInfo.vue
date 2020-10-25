@@ -168,7 +168,7 @@
           <v-card-subtitle>{{
             lid.medischeFiche.tetanus.jaar
               ? `In het jaar ${lid.medischeFiche.tetanus.jaar}`
-              : `Jaar onbekend`
+              : (lid.medischeFiche.tetanus.gevaccineerd ? `Jaar onbekend` : '')
           }}</v-card-subtitle>
         </v-card>
         <v-card class="medischeKaart" outlined>
