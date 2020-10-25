@@ -2,10 +2,11 @@
 <div>
   <v-row>
     <v-col cols="4">
-      <ledenaantallen />
+      <Ledenaantallen />
     </v-col>
   </v-row>
     <v-row>
+      <v-col><Secretaris /></v-col>
       <v-col v-for="(card, index) in cardsFiltered" :key="index">
         <v-card
           class="mx-auto"
@@ -26,11 +27,13 @@
 </template>
 
 <script>
-import firebase from 'firebase'
-import ledenaantallen from '@/components/ledenaantallen'
+// import firebase from 'firebase'
+import Secretaris from '@/components/onzeChiro/Secretaris'
+import Ledenaantallen from '@/components/onzeChiro/Ledenaantallen'
 export default {
   components: {
-    ledenaantallen
+    Ledenaantallen,
+    Secretaris
   },
   data() {
     return {
@@ -61,17 +64,17 @@ export default {
     }
   },
   created() {
-    firebase
-      .auth()
-      .currentUser.getIdTokenResult()
-      .then((idTokenResult) => {
-        for (const rol in idTokenResult.claims.rollen) {
-          this.rollen.push(rol)
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    // firebase
+    //   .auth()
+    //   .currentUser.getIdTokenResult()
+    //   .then((idTokenResult) => {
+    //     for (const rol in idTokenResult.claims.rollen) {
+    //       this.rollen.push(rol)
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error)
+    //   })
 }
 }
 </script>
