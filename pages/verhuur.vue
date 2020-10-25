@@ -182,7 +182,6 @@ export default {
     events(){
       const events = []
        this.opkomendeVerhuur.forEach(verhuur => {
-         console.log(verhuur)
          if(verhuur.beginDatum)
            events.push({id: verhuur.id, name: 'Verhuurd', start: new Date(verhuur.beginDatum.seconds * 1000), end: new Date(verhuur.eindDatum.seconds * 1000)})
        })
