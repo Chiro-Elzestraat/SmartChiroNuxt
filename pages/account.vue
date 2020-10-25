@@ -284,9 +284,10 @@ export default {
         .auth()
         .currentUser.getIdTokenResult()
         .then((idTokenResult) => {
-          if (
-            idTokenResult.claims.rollen.leider ||
-            idTokenResult.claims.rollen.ouder
+          console.log('test')
+          console.log(idTokenResult.claims)
+          console.log(idTokenResult.claims.ouder)
+          if (idTokenResult.claims.ouder || idTokenResult.claims.rollen
           ) {
             console.log('test')
             this.$store.commit('gebruiker/setNieuweGebruiker', false)
@@ -296,7 +297,7 @@ export default {
         })
         .catch((error) => {
           console.log(error)
-          this.$store.commit('gebruiker/setNieuweGebruiker', false)
+          // this.$store.commit('gebruiker/setNieuweGebruiker', false)
           // this.$router.push('/geeninternet')
         })
     }
