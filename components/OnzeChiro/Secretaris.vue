@@ -17,13 +17,6 @@
           <v-toolbar-title>Secretaris</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn
-              @click="dialog = false"
-              dark
-              text
-            >
-              Save
-            </v-btn>
           </v-toolbar-items>
             </v-toolbar>
         <v-card flat>
@@ -68,8 +61,9 @@
                     </v-col>
                     <v-col cols="12">
                       <v-checkbox
+                      @click="schrijfIn(gapLid)"
                       v-model="gapLid.gap[jaar]"
-                      label="Ingeschreven"></v-checkbox>
+                      label="Ingeschreven op GAP"></v-checkbox>
                     </v-col>
                     </v-row>
                 </v-expansion-panel-content>
@@ -96,13 +90,23 @@ export default {
         const betalingen = db.collectionGroup('betaling').where('jaar', '==', this.jaar).where('betaald', '==', true)
         betalingen.get().then(snapshot => {
          snapshot.forEach(doc => {
-           doc.ref.parent.parent.get().then(doc1 => this.$set(this.gapLeden, teller++, {...doc1.data(), gap: doc1.data().gap != null ? doc1.data().gap : {[this.jaar]: false}}))
+           doc.ref.parent.parent.get().then(doc1 => this.$set(this.gapLeden, teller++, {...doc1.data(), gap: doc1.data().gap != null ? doc1.data().gap : {[this.jaar]: false}, id: doc1.id}))
          })
         })
     },
     methods: {
-      schrijfIn() {
-        
+      
+      schrijfIn(gapLid) {
+        console.log(gapLid)
+        // delete gapLid.id
+        const gapLid2 = {...gapLid}
+        delete gapLid2.id
+        console.log(gapLid2)
+        db.collection('leden').doc(gapLid.id).set(gapLid2).then(() => {
+          console.log("Opgeslagen")
+        }).catch((err) => {
+          console.log(err)
+        })
       }
     },
 }
