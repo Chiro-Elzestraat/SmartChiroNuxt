@@ -112,12 +112,13 @@ export default {
   data() {
     return {
       rollen: {
-        naam: ['Groepsleider', 'Website', 'Kas', 'Verhuur', 'Leider'],
+        naam: ['Groepsleider', 'Website', 'Kas', 'Verhuur','Secretaris', 'Leider'],
         icon: [
           'mdi-account',
           'mdi-laptop',
           'mdi-cash-register',
           'mdi-home',
+          'mdi-account-edit',
           'mdi-whistle'
         ]
       },

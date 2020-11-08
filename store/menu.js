@@ -8,6 +8,7 @@ const getDefaultState = () => {
         rol: 'leider'
       },
       { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
+      { title: 'Onze Chiro', icon: 'mdi-home-city', to: '/onzeChiro', rol: 'leider' },
       { title: 'Uitstappen', icon: 'mdi-tent', to: '/uitstap' },
       { title: 'Mijn account', icon: 'mdi-account', to: '/account' },
       { title: 'Instellingen', icon: 'mdi-cog', to: '/instellingen' }
