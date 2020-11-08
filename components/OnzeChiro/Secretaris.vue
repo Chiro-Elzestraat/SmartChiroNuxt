@@ -42,30 +42,31 @@
                   }}
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-card>
-                  <v-card
-            v-for="(gapOuder, i) in gapLid.contact.ouders"
-            :key="i"
+                  
+                    <v-row>
+                    <v-col v-for="(gapOuder, ii) in gapLid.contact.ouders"
+            :key="ii"  cols="4" class="my-6">
+                  <v-card           
             outlined
-            class="contactpersoon"
           >
-            <v-card-title class="headline">Ouder {{ i + 1 }}</v-card-title>
+            <v-card-title class="headline">Ouder {{ ii + 1 }}</v-card-title>
             <v-card-subtitle>{{ gapOuder.naam }}</v-card-subtitle>
             <v-card-text class="text--primary">
               <p>{{ gapOuder.gsm }}</p>
               <p>{{ gapOuder.email }}</p>
             </v-card-text>
           </v-card>
-                    <div v-if="gapLid.adres">
-                      <v-card-title>
-                        <h5>adres</h5>
-                      </v-card-title>
+          </v-col>
+          <v-col class="my-6">
+                      <v-card outlined>
+                      <v-card-title>Adres</v-card-title>
                       <v-card-text>
                         {{ gapLid.adres.straat }} {{ gapLid.adres.huisnummer }}
                         {{ gapLid.adres.bus }} {{ gapLid.adres.postcode }} {{ gapLid.adres.plaats }}
                       </v-card-text>
-                    </div>
-                  </v-card>
+                      </v-card>
+                    </v-col>
+                    </v-row>
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
@@ -102,10 +103,6 @@ export default {
 </script>
 
 <style>
-.contactpersoon {
-  margin: 16px auto;
-  min-width: 200px;
-}
 .contact {
   display: flex;
   flex-wrap: wrap;
