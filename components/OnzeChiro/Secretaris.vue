@@ -30,7 +30,7 @@
           <v-card-text>
             <v-expansion-panels focusable popout>
               <v-expansion-panel v-for="(gapLid, i) in gapLeden || 0" :key="i">
-                <v-expansion-panel-header>
+                <v-expansion-panel-header :color="gapLid.gap[jaar] ? 'green': 'red'">
                   {{ gapLid.naam }}
                   <v-spacer />
                   {{
@@ -57,7 +57,7 @@
             </v-card-text>
           </v-card>
           </v-col>
-          <v-col class="my-6">
+          <v-col class="my-6" cols="4">
                       <v-card outlined>
                       <v-card-title>Adres</v-card-title>
                       <v-card-text>
@@ -65,6 +65,11 @@
                         {{ gapLid.adres.bus }} {{ gapLid.adres.postcode }} {{ gapLid.adres.plaats }}
                       </v-card-text>
                       </v-card>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-checkbox
+                      v-model="gapLid.gap[jaar]"
+                      label="Ingeschreven"></v-checkbox>
                     </v-col>
                     </v-row>
                 </v-expansion-panel-content>
@@ -87,15 +92,16 @@ export default {
     },
     created(){
         // TODO: 2020 nog veranderen naar een berekende waarde
+        let teller = 0;
         const betalingen = db.collectionGroup('betaling').where('jaar', '==', this.jaar).where('betaald', '==', true)
         betalingen.get().then(snapshot => {
          snapshot.forEach(doc => {
-           doc.ref.parent.parent.get().then(doc1 => this.gapLeden.push({...doc1.data()}))
+           doc.ref.parent.parent.get().then(doc1 => this.$set(this.gapLeden, teller++, {...doc1.data(), gap: doc1.data().gap != null ? doc1.data().gap : {[this.jaar]: false}}))
          })
         })
     },
     methods: {
-      name() {
+      schrijfIn() {
         
       }
     },
