@@ -4,7 +4,8 @@ export const state = () => ({
     data: {}, // nog een extra property maken voor het bijhouden van welke menutjes zichtbaar zijn voor de gebruiker
     nieuweGebruiker: false,
     ouder: false,
-    leider: false
+    leider: false,
+    secretaris: false,
   }
 })
 
