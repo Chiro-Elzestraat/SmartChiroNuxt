@@ -2,15 +2,18 @@
   <v-container>
     <v-toolbar flat color="primary" dark>
       <v-toolbar-title>Overzicht leden</v-toolbar-title>
-      <v-col class="d-flex" cols="2" >
+      <div class="mt-8 ml-10">
+        <v-col cols xs="8" sm="8" md="8">
         <v-select
-      v-model="standaardJaar"
+        @change="vraagLedenOp"
+      v-model="geselecteerdJaar"
       :items="selectJaren"
-      solo
+      outlined
       ></v-select>
       </v-col>
+      </div>
       <v-spacer />
-      <v-btn @click="krijgMails">Kopier mails</v-btn>
+      <v-btn @click="krijgMails"><v-icon>mdi-content-copy</v-icon> mails</v-btn>
     </v-toolbar>
     <v-tabs :vertical="!this.$device.isMobile" :show-arrows="this.$device.isMobile">
       <v-tab v-for="(groep, i) in groepen" :key="i" class="vtab">
@@ -106,12 +109,12 @@ export default {
       mails: [],
       leiders: [],
       gekopieerd: false,
-      chiroJaar: (new Date().getMonth() < 7 ? -1 : 0) + new Date().getFullYear()
-      
-      
+      chiroJaar: (new Date().getMonth() < 7 ? -1 : 0) + new Date().getFullYear(),
+      geselecteerdJaar: 0,
     }
   },
   mounted() {
+    this.geselecteerdJaar = this.chiroJaar
     db.collection('leiders')
       .doc('leidersdoc')
       .get()
@@ -119,18 +122,46 @@ export default {
         this.leiders = [...doc.data().leiders]
         console.log(this.leiders)
       })
+      this.vraagLedenOp()
 
-    db.collection('leden')
-      .get()
-      .then((snapshot) => {
-        const leden = []
-        snapshot.forEach((doc) => leden.push({ ...doc.data(), lidId: doc.id }))
-        const vandaag = new Date()
+  },
+
+  head() {
+    return {
+      title: 'Leden'
+    }
+  },
+  methods: {
+    krijgMails() {
+      navigator.clipboard.writeText(this.mails.join(';')).then(() => {
+        this.gekopieerd = true
+      })
+    },
+    vraagLedenOp(){
+      this.groepen = [
+        { naam: 'Speelclub', leden: [], minLeeftijd: 0, maxLeeftijd: 9 },
+        { naam: 'Rakkers', leden: [], minLeeftijd: 9, maxLeeftijd: 12 },
+        { naam: 'Toppers', leden: [], minLeeftijd: 12, maxLeeftijd: 14 },
+        { naam: 'Kerels', leden: [], minLeeftijd: 14, maxLeeftijd: 16 },
+        { naam: `Aspi's`, leden: [], minLeeftijd: 16, maxLeeftijd: 18 }
+      ]
+      const betalingen = db.collectionGroup('betaling').where('jaar', '==', this.geselecteerdJaar).where('betaald', '==', true)
+        betalingen.get().then(async snapshot => {
+          const leden = []
+          const promises = []
+         snapshot.forEach(async doc => {
+           const doc2 = doc.ref.parent.parent.get()
+           promises.push(doc2)
+           const doc1 = await doc2
+           leden.push( {...doc1.data(), lidId: doc1.id})
+         })
+         await Promise.all(promises)
+         const vandaag = new Date()
         const maand = vandaag.getMonth()
         const vergelijkDatum =
-          maand < 0
-            ? new Date(vandaag.getFullYear() - 1, 0, 0)
-            : new Date(vandaag.getFullYear(), 0, 0)
+          maand < 8
+            ? new Date(this.geselecteerdJaar, 8, 0)
+            : new Date(vandaag.getFullYear(), 8, 0)
         this.groepen.forEach((groep) => {
           /* misschien deze loop omdraaien, dat eerst over de leden wordt geloopt, en daarna
           pas over de groepen om deze in de juiste groep te plaatsen, ik denk dat dat
@@ -152,60 +183,17 @@ export default {
           }
           this.mails = [...new Set(this.mails)]
         })
-      })
+        })
       .catch((err) => {
         console.log(err)
         if (this.$store.state.gebruiker.user.isLoggedIn) this.$router.push('/')
-      })
-    // const getAlleLeden = functions.httpsCallable('getAlleLeden') // TODO: rechtsreekse call naar database, zodat offline functionaliteit van firestore kan worden benut
-    // getAlleLeden().then((result) => {
-    //   if (
-    //     result.data.error === 'unauthorized' &&
-    //     this.$store.state.gebruiker.user.isLoggedIn
-    //   ) {
-    //     this.$router.push('/')
-    //   } else {
-    //     const vandaag = new Date()
-    //     const maand = vandaag.getMonth()
-    //     const vergelijkDatum =
-    //       maand < 9
-    //         ? new Date(vandaag.getFullYear() - 1, 9, 0)
-    //         : new Date(vandaag.getFullYear(), 9, 0)
-    //     this.groepen.forEach((groep) => {
-    //       /* misschien deze loop omdraaien, dat eerst over de leden wordt geloopt, en daarna
-    //       pas over de groepen om deze in de juiste groep te plaatsen, ik denk dat dat
-    //       efficiënter is, maar nog niet zeker */
-    //       for (const lid of result.data) {
-    //         const leeftijd =
-    //           (vergelijkDatum - new Date(lid.geboortedatum)) /
-    //           (1000 * 3600 * 24 * 365)
-    //         console.log(leeftijd)
-    //         if (leeftijd <= groep.maxLeeftijd && leeftijd > groep.minLeeftijd) {
-    //           groep.leden.push(lid)
-    //           continue
-    //         }
-    //       }
-    //     })
-    //   }
-    // })
-  },
-
-  head() {
-    return {
-      title: 'Leden'
-    }
-  },
-  methods: {
-    krijgMails() {
-      navigator.clipboard.writeText(this.mails.join(';')).then(() => {
-        this.gekopieerd = true
       })
     }
   },
   computed: {
     selectJaren(){
     return [this.chiroJaar, this.chiroJaar-1, this.chiroJaar-2]
-    
+
     }
   }
 }
