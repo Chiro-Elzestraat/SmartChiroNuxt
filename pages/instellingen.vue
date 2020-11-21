@@ -1,16 +1,20 @@
 <template>
   <div>
+    <ContactLeider />
     <Rollenbeheer v-if="groepsleider" />
+    
 
     <p v-else class="text-center">Het is hier voorlopig leeg.</p>
   </div>
 </template>
 
 <script>
+import ContactLeider from '@/components/ContactLeider'
 import Rollenbeheer from '@/components/Rollenbeheer'
 export default {
   components: {
-    Rollenbeheer
+    Rollenbeheer,
+    ContactLeider
   },
   computed: {
     groepsleider() {
