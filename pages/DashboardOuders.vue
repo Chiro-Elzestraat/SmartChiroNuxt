@@ -30,7 +30,7 @@
           <v-card-text>
             <v-list>
               <v-list-item-group multiple v-model="herinschrijven">
-                <v-list-item v-for="lid in leden">
+                <v-list-item v-for="lid in leden" :key="lid.lidId">
                   <template v-slot:default="{active}">
                     <v-list-item-action>
                       <v-checkbox :input-value="active" color="primary"></v-checkbox>
@@ -133,7 +133,10 @@
     name: 'DashboardOuders',
     components: { BewerkLidInfo, LidInfo },
     props: {
-      leden: []
+      leden: {
+        type: Array,
+        default: () => []
+      }
     },
     data() {
       return {
