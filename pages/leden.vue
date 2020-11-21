@@ -2,6 +2,13 @@
   <v-container>
     <v-toolbar flat color="primary" dark>
       <v-toolbar-title>Overzicht leden</v-toolbar-title>
+      <v-col class="d-flex" cols="2" >
+        <v-select
+      v-model="standaardJaar"
+      :items="selectJaren"
+      solo
+      ></v-select>
+      </v-col>
       <v-spacer />
       <v-btn @click="krijgMails">Kopier mails</v-btn>
     </v-toolbar>
@@ -98,7 +105,10 @@ export default {
       ],
       mails: [],
       leiders: [],
-      gekopieerd: false
+      gekopieerd: false,
+      chiroJaar: (new Date().getMonth() < 7 ? -1 : 0) + new Date().getFullYear()
+      
+      
     }
   },
   mounted() {
@@ -118,8 +128,8 @@ export default {
         const vandaag = new Date()
         const maand = vandaag.getMonth()
         const vergelijkDatum =
-          maand > 7
-            ? new Date(vandaag.getFullYear() + 1, 0, 0)
+          maand < 0
+            ? new Date(vandaag.getFullYear() - 1, 0, 0)
             : new Date(vandaag.getFullYear(), 0, 0)
         this.groepen.forEach((groep) => {
           /* misschien deze loop omdraaien, dat eerst over de leden wordt geloopt, en daarna
@@ -190,6 +200,12 @@ export default {
       navigator.clipboard.writeText(this.mails.join(';')).then(() => {
         this.gekopieerd = true
       })
+    }
+  },
+  computed: {
+    selectJaren(){
+    return [this.chiroJaar, this.chiroJaar-1, this.chiroJaar-2]
+    
     }
   }
 }
