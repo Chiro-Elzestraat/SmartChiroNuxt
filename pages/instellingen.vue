@@ -1,8 +1,9 @@
 <template>
   <div>
-    <ContactLeider />
     <Rollenbeheer v-if="groepsleider" />
-    
+    <div v-if="leider">
+      <ContactLeider/>
+    </div>
 
     <p v-else class="text-center">Het is hier voorlopig leeg.</p>
   </div>
@@ -23,6 +24,9 @@ export default {
         (this.$store.state.gebruiker.user.groepsleider ||
           this.$store.state.gebruiker.user.website)
       )
+    },
+    leider(){
+      return this.$store.state.gebruiker.user.leider
     }
   },
   data() {
