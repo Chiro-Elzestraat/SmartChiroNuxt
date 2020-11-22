@@ -60,19 +60,13 @@
               <v-expansion-panel v-for="(leider, ii) in leiders" :key="ii">
                 <v-expansion-panel-header>{{ leider.naam }}</v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-card>
-                    <v-card-title>
-                      <h5>gsm</h5>
-                    </v-card-title>
-                    <v-card-text>
+                  <v-card><v-card-text>
+                    <a :href="'tel:'+ leider.gsm">
                       {{
                       leider.gsm
                       }}
-                    </v-card-text>
+                    </a></v-card-text>
                     <div v-if="leider.adres">
-                      <v-card-title>
-                        <h5>adres</h5>
-                      </v-card-title>
                       <v-card-text>
                         {{ leider.adres.straat }} {{ leider.adres.huisnummer }}
                         {{ leider.adres.bus }} {{ leider.adres.postcode }} {{ leider.adres.plaats }}
