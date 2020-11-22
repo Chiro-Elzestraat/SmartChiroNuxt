@@ -194,7 +194,7 @@ export default {
     voegRolToe(gebruiker) {
       const rol = this.huidigeRol.toLowerCase()
       if (this.huidigeRol === 'Leider') {
-        this.updateContactLeiding()
+        this.updateContactLeiding(gebruiker)
       }
       db.collection('gebruikers')
         .doc(gebruiker.id)
@@ -235,13 +235,16 @@ export default {
           )
         )
     },
-    updateContactLeiding() {
-      db.collection('leiders')
+    updateContactLeiding(gebruiker) {
+      const ref = db.collection('leiders')
         .doc('leidersdoc')
+
+        ref
         .get()
-        .then((doc) => (this.contactLeiders = [...doc.data().leiders]))
+        .then((doc) => (ref.set({leiders: [...doc.data().leiders, gebruiker]})))
 
       console.log('updating')
+      console.log(gebruiker)
     }
   }
 }
