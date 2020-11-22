@@ -27,8 +27,9 @@
           <v-card-text>
             <v-expansion-panels focusable popout>
               <v-expansion-panel v-for="(lid, i) in groep.leden || 0" :key="i">
-                <v-expansion-panel-header>
-                  {{ lid.naam }}
+                <v-expansion-panel-header :color="lid.betaald ? '' : 'red'">
+                  <v-badge icon="mdi-alert" left v-if="lid.waarschuwing">{{ lid.naam }}</v-badge>
+                  <div v-else>{{lid.naam}}</div>
                   <v-spacer />
                   {{
                   new Date(lid.geboortedatum).toLocaleDateString('nl-NL', {
@@ -145,15 +146,29 @@ export default {
         { naam: 'Kerels', leden: [], minLeeftijd: 14, maxLeeftijd: 16 },
         { naam: `Aspi's`, leden: [], minLeeftijd: 16, maxLeeftijd: 18 }
       ]
-      const betalingen = db.collectionGroup('betaling').where('jaar', '==', this.geselecteerdJaar).where('betaald', '==', true)
+      const betalingen = db.collectionGroup('betaling').where('jaar', '==', this.geselecteerdJaar)
         betalingen.get().then(async snapshot => {
           const leden = []
           const promises = []
+          const lidIds = []
          snapshot.forEach(async doc => {
-           const doc2 = doc.ref.parent.parent.get()
-           promises.push(doc2)
-           const doc1 = await doc2
-           leden.push( {...doc1.data(), lidId: doc1.id})
+           if(!lidIds.includes(doc.ref.parent.parent.id)){
+             lidIds.push(doc.ref.parent.parent.id)
+             const doc2 = doc.ref.parent.parent.get()
+             promises.push(doc2)
+             const doc1 = await doc2
+             leden.push( {...doc1.data(), lidId: doc1.id, betaald: doc.data().betaald})
+           }else{
+             await Promise.all(promises)
+             const index = leden.findIndex(lid => {
+               return lid.lidId === doc.ref.parent.parent.id
+             })
+             console.log(index)
+             if(doc.data().betaald){
+               leden[index].betaald = true
+             }
+           leden[index].waarschuwing = true
+           }
          })
          await Promise.all(promises)
          const vandaag = new Date()
