@@ -122,7 +122,8 @@
           Wil je leden inschrijven? Dat kan via het
           <a @click="$router.push('/')">dashboard</a>.
         </p>
-      </div>
+        </div>
+        <ContactLeider v-if="leider"/>
       <v-btn @click="loguit()" bottom right absolute>
         <v-icon>mdi-logout</v-icon>
       </v-btn>
@@ -152,9 +153,11 @@
 <script>
 import firebase from 'firebase'
 import NieuweGebruiker from '../components/NieuweGebruiker'
+import ContactLeider from '@/components/ContactLeider'
 export default {
   components: {
-    NieuweGebruiker
+    NieuweGebruiker,
+    ContactLeider
   },
   data() {
     return {
@@ -175,6 +178,9 @@ export default {
   computed: {
     displayName() {
       return this.$store.state.gebruiker.user.data.displayName
+    },
+    leider() {
+      return this.$store.state.gebruiker.user.leider
     }
   },
   mounted() {

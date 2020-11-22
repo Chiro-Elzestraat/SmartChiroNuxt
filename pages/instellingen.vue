@@ -1,7 +1,6 @@
 <template>
   <div>
     <div v-if="leider">
-      <ContactLeider/>
       <Rollenbeheer v-if="groepsleider" />
     </div>
 
@@ -10,12 +9,10 @@
 </template>
 
 <script>
-import ContactLeider from '@/components/ContactLeider'
 import Rollenbeheer from '@/components/Rollenbeheer'
 export default {
   components: {
     Rollenbeheer,
-    ContactLeider
   },
   computed: {
     groepsleider() {
