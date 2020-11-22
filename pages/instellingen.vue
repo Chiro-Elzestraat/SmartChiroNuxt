@@ -1,8 +1,8 @@
 <template>
   <div>
-    <Rollenbeheer v-if="groepsleider" />
     <div v-if="leider">
       <ContactLeider/>
+      <Rollenbeheer v-if="groepsleider" />
     </div>
 
     <p v-else class="text-center">Het is hier voorlopig leeg.</p>
