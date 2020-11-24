@@ -110,14 +110,8 @@ export default {
   },
   mounted() {
     this.geselecteerdJaar = this.chiroJaar
-    db.collection('leiders')
-      .doc('leidersdoc')
-      .get()
-      .then((doc) => {
-        this.leiders = [...doc.data().leiders]
-        console.log(this.leiders)
-      })
       this.vraagLedenOp()
+      this.vraagLeidersOp()
 
   },
 
@@ -131,6 +125,23 @@ export default {
       navigator.clipboard.writeText(this.mails.join(';')).then(() => {
         this.gekopieerd = true
       })
+    },
+    vraagLeidersOp (){
+      const toegang = db.collectionGroup('toegang').where("heeft", "array-contains", "leider")
+        toegang.get().then(snapshot => {
+          const leiding = []
+          const leidingIds = []
+         snapshot.forEach(async doc => {
+          if(!leidingIds.includes(doc.ref.parent.parent.id)){
+             leidingIds.push(doc.ref.parent.parent.id)
+             const docleiding2 = doc.ref.parent.parent.get()
+             // promises.push(docleiding2)
+             const docleiding1 = await docleiding2
+             leiding.push( {...docleiding1.data(), leidingId: docleiding1.id})
+           }
+           this.leiders = leiding
+        })
+        })
     },
     vraagLedenOp(){
       this.groepen = [
@@ -157,7 +168,7 @@ export default {
              const index = leden.findIndex(lid => {
                return lid.lidId === doc.ref.parent.parent.id
              })
-             console.log(index)
+             // console.log(index)
              if(doc.data().betaald){
                leden[index].betaald = true
              }
