@@ -138,6 +138,7 @@ export default {
              // promises.push(docleiding2)
              const docleiding1 = await docleiding2
              leiding.push( {...docleiding1.data(), leidingId: docleiding1.id})
+          // TO DO:   leiding.sort((a,b) => (a.naam > b.naam) ? 1 : -1)   // sorteren op naam en gelijk stellen
            }
            this.leiders = leiding
         })
@@ -163,6 +164,7 @@ export default {
              promises.push(doc2)
              const doc1 = await doc2
              leden.push( {...doc1.data(), lidId: doc1.id, betaald: doc.data().betaald})
+           // TO DO:  leden.sort((a,b) => (a.naam > b.naam) ? 1 : -1)    // sorteren op naam
            }else{
              await Promise.all(promises)
              const index = leden.findIndex(lid => {
