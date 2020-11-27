@@ -44,7 +44,7 @@
             </v-list>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" :loading="laden" @click="betalen">Bevestigen</v-btn>
+            <v-btn color="primary" :loading="laden" @click="betalen" :disabled="herinschrijvenIds.length <= 0">Bevestigen</v-btn>
             <v-btn text @click="herinschrijvenDialog = false">Annuleren</v-btn>
           </v-card-actions>
         </v-card>
