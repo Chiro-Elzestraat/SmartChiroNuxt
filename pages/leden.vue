@@ -128,20 +128,22 @@ export default {
     },
     vraagLeidersOp (){
       const toegang = db.collectionGroup('toegang').where("heeft", "array-contains", "leider")
-        toegang.get().then(snapshot => {
+        toegang.get().then(async snapshot => {
           const leiding = []
           const leidingIds = []
+          const promises = []
          snapshot.forEach(async doc => {
           if(!leidingIds.includes(doc.ref.parent.parent.id)){
              leidingIds.push(doc.ref.parent.parent.id)
              const docleiding2 = doc.ref.parent.parent.get()
-             // promises.push(docleiding2)
+             promises.push(docleiding2)
              const docleiding1 = await docleiding2
              leiding.push( {...docleiding1.data(), leidingId: docleiding1.id})
-          // TO DO:   leiding.sort((a,b) => (a.naam > b.naam) ? 1 : -1)   // sorteren op naam en gelijk stellen
            }
            this.leiders = leiding
         })
+          await Promise.all(promises)
+          leiding.sort((a,b) => (a.naam > b.naam) ? 1 : -1)   // sorteren op naam en gelijk stellen
         })
     },
     vraagLedenOp(){
@@ -164,7 +166,6 @@ export default {
              promises.push(doc2)
              const doc1 = await doc2
              leden.push( {...doc1.data(), lidId: doc1.id, betaald: doc.data().betaald})
-           // TO DO:  leden.sort((a,b) => (a.naam > b.naam) ? 1 : -1)    // sorteren op naam
            }else{
              await Promise.all(promises)
              const index = leden.findIndex(lid => {
@@ -178,7 +179,8 @@ export default {
            }
          })
          await Promise.all(promises)
-         const vandaag = new Date()
+          leden.sort((a,b) => (a.naam > b.naam) ? 1 : -1)    // sorteren op naam
+          const vandaag = new Date()
         const maand = vandaag.getMonth()
         const vergelijkDatum =
           maand < 8
