@@ -21,7 +21,7 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </div>
-      <v-dialog width="500" v-model="herinschrijvenDialog">
+      <v-dialog width="500" v-model="herinschrijvenDialog" v-if="leden.length > 0">
         <template v-slot:activator="{on}">
           <v-btn v-on="on" class="ma-5" color="primary">Opnieuw inschrijven</v-btn>
         </template>
