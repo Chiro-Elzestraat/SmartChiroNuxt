@@ -31,6 +31,7 @@
                   <v-row>
                     <v-col>
                       <v-text-field
+                        type="number"
                         v-model="opdracht.naam"
                         outlined
                         label="Naam"
@@ -83,7 +84,7 @@ export default {
     return {
       toevoegen: false,
       opdracht: {
-        naam: '',
+        naam: null,
         omschrijving: '',
         punten: 1
       }
@@ -91,12 +92,13 @@ export default {
   },
   methods: {
     aanmaken() {
+      const naam = Number(this.opdracht.naam)
       db.collection('opdrachten')
-        .add(this.opdracht)
+        .add({naam, omschrijving: this.opdracht.omschrijving, punten: this.opdracht.punten})
         .then(() => {
           this.toevoegen = false
           this.opdracht = {
-            naam: '',
+            naam: null,
             omschrijving: '',
             punten: 1
           }

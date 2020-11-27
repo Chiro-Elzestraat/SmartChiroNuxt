@@ -1,6 +1,8 @@
 <template>
   <div>
-    <Rollenbeheer v-if="groepsleider" />
+    <div v-if="leider">
+      <Rollenbeheer v-if="groepsleider" />
+    </div>
 
     <p v-else class="text-center">Het is hier voorlopig leeg.</p>
   </div>
@@ -10,7 +12,7 @@
 import Rollenbeheer from '@/components/Rollenbeheer'
 export default {
   components: {
-    Rollenbeheer
+    Rollenbeheer,
   },
   computed: {
     groepsleider() {
@@ -19,6 +21,9 @@ export default {
         (this.$store.state.gebruiker.user.groepsleider ||
           this.$store.state.gebruiker.user.website)
       )
+    },
+    leider(){
+      return this.$store.state.gebruiker.user.leider
     }
   },
   data() {

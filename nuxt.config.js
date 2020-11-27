@@ -40,7 +40,7 @@ export default {
       cert: fs.readFileSync('./server.crt')
     }
   },
-  mode: 'spa',
+  ssr: false,
   /*
    ** Headers of the page
    */
