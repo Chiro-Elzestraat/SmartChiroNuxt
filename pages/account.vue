@@ -152,8 +152,8 @@
 
 <script>
 import firebase from 'firebase'
-import NieuweGebruiker from '../components/NieuweGebruiker'
 import ContactLeider from '@/components/ContactLeider'
+import NieuweGebruiker from '../components/NieuweGebruiker'
 export default {
   components: {
     NieuweGebruiker,
