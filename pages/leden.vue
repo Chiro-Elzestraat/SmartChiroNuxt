@@ -182,10 +182,16 @@ export default {
           leden.sort((a,b) => (a.naam > b.naam) ? 1 : -1)    // sorteren op naam
           const vandaag = new Date()
         const maand = vandaag.getMonth()
-        const vergelijkDatum =
-          maand < 8
-            ? new Date(this.geselecteerdJaar, 8, 0)
-            : new Date(vandaag.getFullYear(), 8, 0)
+          let vergelijkDatum
+          if(vandaag.getFullYear() === this.geselecteerdJaar){
+            vergelijkDatum = maand < 8
+              ? new Date(vandaag.getFullYear() - 1, 8, 0)
+              : new Date(vandaag.getFullYear(), 8, 0)
+          }else{
+            vergelijkDatum = new Date(this.geselecteerdJaar, 8, 0)
+          }
+
+
         this.groepen.forEach((groep) => {
           /* misschien deze loop omdraaien, dat eerst over de leden wordt geloopt, en daarna
           pas over de groepen om deze in de juiste groep te plaatsen, ik denk dat dat
@@ -195,8 +201,11 @@ export default {
               if (ouder.email.includes('@')) this.mails.push(ouder.email)
             })
             const chiroLeeftijd = lid.chiroLeeftijd || 0
+            let lidGeboortedatum = new Date(lid.geboortedatum)
+            if(this.geselecteerdJaar !== this.chiroJaar)
+              lidGeboortedatum = lidGeboortedatum.setMonth(0)
             const leeftijd =
-              (vergelijkDatum - new Date(lid.geboortedatum)) /
+              (vergelijkDatum - lidGeboortedatum) /
                 (1000 * 3600 * 24 * 365) +
               chiroLeeftijd
 
