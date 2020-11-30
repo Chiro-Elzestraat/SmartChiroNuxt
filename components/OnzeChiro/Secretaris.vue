@@ -35,11 +35,11 @@
                   }}
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  
+
                     <v-row>
                     <v-col v-for="(gapOuder, ii) in gapLid.contact.ouders"
             :key="ii"  cols="4" class="my-6">
-                  <v-card           
+                  <v-card
             outlined
           >
             <v-card-title class="headline">Ouder {{ ii + 1 }}</v-card-title>
@@ -88,14 +88,21 @@ export default {
         // TODO: 2020 nog veranderen naar een berekende waarde
         let teller = 0;
         const betalingen = db.collectionGroup('betaling').where('jaar', '==', this.jaar).where('betaald', '==', true)
-        betalingen.get().then(snapshot => {
+        betalingen.get().then(async snapshot => {
+          const promises = []
          snapshot.forEach(doc => {
-           doc.ref.parent.parent.get().then(doc1 => this.$set(this.gapLeden, teller++, {...doc1.data(), gap: doc1.data().gap != null ? doc1.data().gap : {[this.jaar]: false}, id: doc1.id}))
+           const lidDoc = doc.ref.parent.parent.get()
+           promises.push(lidDoc)
+           lidDoc.then(doc1 => this.$set(this.gapLeden, teller++, {...doc1.data(), gap: doc1.data().gap != null ? doc1.data().gap : {[this.jaar]: false}, id: doc1.id}))
          })
+          await Promise.all(promises)
+          this.gapLeden.sort((a, b) => a.naam.localeCompare(b.naam))
+          this.gapLeden.reverse()
+           this.gapLeden.sort((a, b) => !a.gap[this.jaar] ? 0 : 1)
         })
     },
     methods: {
-      
+
       schrijfIn(gapLid) {
         console.log(gapLid)
         // delete gapLid.id
