@@ -32,6 +32,26 @@
             Al betaald
           </p>
         </form>
+        <div v-for="(betaling) in betalingen" :key="betaling.betalingsnummer">
+          <v-list-item v-if="betaling.jaar">
+            <v-list-item-content>
+              <v-list-item-title>Chirojaar: {{betaling.jaar}} - {{betaling.jaar + 1}}</v-list-item-title>
+              <v-list-item-subtitle>Betaling €{{betaling.bedrag}} {{betaling.betaald ? "in orde" : "nog niet ontvangen"}}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-card v-if="betaling.email && betaling.tshirts">
+            <v-card-title><v-icon>mdi-email</v-icon>&nbsp;<a :href="`mailto:${betaling.email}`">{{betaling.email}}</a></v-card-title>
+            <v-card-subtitle>Bestelling T-shirts</v-card-subtitle>
+            <v-card-text>
+              <v-list-item v-for="(tshirt, index) in betaling.tshirts" :key="index">
+                <v-list-item-content>
+                  <v-list-item-title>Naam: {{tshirt.naam}}</v-list-item-title>
+                  <v-list-item-subtitle>Maat: {{maten[tshirt.maat]}}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-card-text>
+          </v-card>
+        </div>
       </v-card-text>
     </v-card>
   </v-container>
@@ -48,7 +68,9 @@ export default {
       bedrag: '',
       laden: false,
       betaald: true,
-      bestaatNiet: false
+      bestaatNiet: false,
+      betalingen: [],
+      maten: ["XS", "S", "M", "L", "XL", "XXL"]
     }
   },
   methods: {
@@ -81,6 +103,7 @@ export default {
       })
     },
     search() {
+      this.betalingen = []
       db.collectionGroup('betaling')
         .where('betalingsnummer', '==', this.transactieId)
         .get()
@@ -91,6 +114,7 @@ export default {
               this.totaalPrijs += doc.data().bedrag
               this.betaald = false
             }
+            this.betalingen.push(doc.data())
             console.log(doc.data())
           })
           this.bestaatNiet = snap.docs.length === 0
