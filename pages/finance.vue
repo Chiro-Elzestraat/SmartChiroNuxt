@@ -70,7 +70,7 @@ export default {
       betaald: true,
       bestaatNiet: false,
       betalingen: [],
-      maten: ["XS", "S", "M", "L", "XL", "XXL"]
+      maten: ["XS", "S", "M", "L", "XL", "XXL", "Kindermaat 2 jaar", "Kindermaat 4 jaar", "Kindermaat 6 jaar", "Kindermaat 8 jaar", "Kindermaat 10 jaar", "Kindermaat 12 jaar"]
     }
   },
   methods: {
