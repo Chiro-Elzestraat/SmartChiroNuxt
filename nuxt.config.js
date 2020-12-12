@@ -27,6 +27,13 @@ const vuetify = {
     }
   }
 }
+
+require('dotenv').config()
+
+const PRODUCTION_URL = 'https://api.chiroelzestraat.be/'
+const DEV_URL = 'https://localhost:6001/'
+const BASE_URL = process.env.NODE_ENV !== 'production' ? DEV_URL : PRODUCTION_URL
+
 export default {
   generate: {
     fallback: true
@@ -41,6 +48,9 @@ export default {
     }
   },
   ssr: false,
+  env: {
+    DEV: process.env.NODE_ENV !== 'production',
+  },
   /*
    ** Headers of the page
    */
@@ -101,7 +111,9 @@ export default {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    baseURL: BASE_URL,
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
