@@ -33,7 +33,6 @@ export const mutations = {
 export const actions = {
   fetchUser({ commit }, user) {
     commit('setLoggedIn', false)
-    console.log(user)
     if (user !== null) {
       commit('setUserData', user.toJSON())
     } else {

@@ -242,9 +242,6 @@ export default {
         ref
         .get()
         .then((doc) => (ref.set({leiders: [...doc.data().leiders, gebruiker]})))
-
-      console.log('updating')
-      console.log(gebruiker)
     }
   }
 }

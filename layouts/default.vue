@@ -106,13 +106,11 @@ export default {
         .auth()
         .currentUser.getIdTokenResult()
         .then((idTokenResult) => {
-          console.log(idTokenResult.claims.rollen === undefined)
           if (idTokenResult.claims.rollen === undefined) {
             this.$store.commit('gebruiker/setNieuweGebruiker', true)
             this.$router.push('/account')
           } else if(idTokenResult.claims.rollen){
               for (const claim in idTokenResult.claims.rollen) {
-                console.log(claim)
                 this.$store.commit('gebruiker/setClaim', claim)
               }
             }if(idTokenResult.claims.ouder){
@@ -120,7 +118,7 @@ export default {
             }
         })
         .catch((error) => {
-          console.log(error)
+          console.warn(error)
           this.$store.commit('gebruiker/setNieuweGebruiker', false)
           this.$router.push('/account')
         })

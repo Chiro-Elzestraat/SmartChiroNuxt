@@ -454,7 +454,6 @@ export default {
       .get()
       .then((doc) => {
         this.ouders[0].gsm = doc.data().gsm
-        console.log(doc.data())
       })
   },
   computed: {
@@ -576,7 +575,7 @@ export default {
               })
           })
         })
-        .catch((err) => console.log(err))
+        .catch((err) => console.warn(err))
     }
   }
 }

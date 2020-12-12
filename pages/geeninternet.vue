@@ -23,7 +23,6 @@ export default {
           .currentUser.getIdTokenResult()
           .then((idTokenResult) => {
             if (idTokenResult.claims.leider || idTokenResult.claims.ouder) {
-              console.log('test')
               this.$store.commit('gebruiker/setNieuweGebruiker', false)
             } else {
               this.$store.commit('gebruiker/setNieuweGebruiker', true)
@@ -31,7 +30,7 @@ export default {
             this.$router.push('/account')
           })
           .catch((error) => {
-            console.log(error)
+            console.warn(error)
           })
       }
     })
