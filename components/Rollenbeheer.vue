@@ -35,18 +35,21 @@
           <v-list>
             <v-list-item
               v-for="gebruiker in gebruikersMetRol"
-              :key="gebruiker.id"
+              :key="gebruiker.uid"
               two-line
             >
+              <v-list-item-avatar>
+                <v-img :src="gebruiker.photoUrl"></v-img>
+              </v-list-item-avatar>
               <v-list-item-content>
-                <v-list-item-title>{{ gebruiker.naam }}</v-list-item-title>
-                <v-list-item-subtitle>{{ gebruiker.id }}</v-list-item-subtitle>
+                <v-list-item-title>{{ gebruiker.displayName }}</v-list-item-title>
+                <v-list-item-subtitle>{{ gebruiker.uid }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-icon>
                 <v-icon
                   @click="verwijder(gebruiker.id)"
                   :disabled="
-                    $store.state.gebruiker.user.data.uid === gebruiker.id
+                    $store.state.gebruiker.user.data.uid === gebruiker.uid
                   "
                   >mdi-trash-can-outline</v-icon
                 >
@@ -67,9 +70,9 @@
             <v-card-text>
               <v-text-field
                 v-model="zoekOpdracht"
+                @click:append-outer="zoek()"
                 label="Naam"
                 append-outer-icon="mdi-magnify"
-                @click:append-outer="zoek()"
               ></v-text-field>
               <v-list>
                 <v-list-item
@@ -126,11 +129,16 @@ export default {
       voegToeDialog: false,
       verwijderDialog: false,
       huidigeRol: '',
-      gebruikersMetRol: [],
       zoekResultaten: [],
       contactLeiders: [],
       zoekOpdracht: '',
       huidigGebruikerId: '',
+      leiders: []
+    }
+  },
+  computed: {
+    gebruikersMetRol () {
+      return this.leiders.filter(leider => leider.customClaims.rollen[this.huidigeRol.toLowerCase()])
     }
   },
   watch: {
@@ -138,6 +146,11 @@ export default {
       this.zoekResultaten = []
       this.zoekOpdracht = ''
     }
+  },
+  mounted() {
+    this.$axios.get('roles').then(result => {
+      this.leiders = result.data
+    })
   },
   methods: {
     verwijder(id){
@@ -218,22 +231,7 @@ export default {
     },
     haalRolOp(rol) {
       this.huidigeRol = rol
-      rol = rol.toLowerCase()
       this.rolDialog = true
-      this.gebruikersMetRol = []
-      db.collectionGroup('toegang')
-        .where('heeft', 'array-contains', rol)
-        .get()
-        .then((docs) =>
-          docs.forEach((doc) =>
-            doc.ref.parent.parent.get().then((leider) =>
-              this.gebruikersMetRol.push({
-                ...leider.data(),
-                id: leider.ref.id
-              })
-            )
-          )
-        )
     },
     updateContactLeiding(gebruiker) {
       const ref = db.collection('leiders')
