@@ -101,6 +101,10 @@ export default {
   },
   created() {
     firebase.auth().onAuthStateChanged((user) => {
+      const token = `Bearer ${firebase
+        .auth()
+        .currentUser.ya}`
+      this.$axios.setHeader("Authorization", token)
       this.$store.dispatch('gebruiker/fetchUser', user)
       firebase
         .auth()
