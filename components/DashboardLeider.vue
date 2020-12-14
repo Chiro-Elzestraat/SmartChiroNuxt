@@ -34,6 +34,18 @@ export default {
           rol: 'kas'
         },
         {
+          title: 'Uitstappen',
+          icon: 'mdi-dashboard',
+          src: '/uitstap.svg',
+          page: '/uitstap'
+        },
+        {
+          title: 'T-shirts',
+          icon: 'mdi-dashboard',
+          src: '',
+          page: '/bestellingTshirts'
+        },
+        {
           title: 'Verhuur',
           icon: 'mid-account_box',
           src: '/verhuur.svg',
@@ -44,12 +56,6 @@ export default {
           icon: 'mid-gavel',
           src: '/evenementen.svg',
           page: '/events'
-        },
-        {
-          title: 'Uitstappen',
-          icon: 'mdi-dashboard',
-          src: '/uitstap.svg',
-          page: '/uitstap'
         },
         {
           title: 'Quarantainespel',
