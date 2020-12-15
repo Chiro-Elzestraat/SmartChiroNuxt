@@ -11,7 +11,7 @@
                 >
                 <v-list-item-title>{{shirt.naam}}
                    </v-list-item-title>
-                  <v-list-item-subtitle> {{shirt.maatS
+                  <v-list-item-subtitle> {{maatToString(shirt.maat)
                   }}</v-list-item-subtitle>
                 </v-list-item-content>
                 <v-list-item-icon>
@@ -29,7 +29,7 @@
                 </v-list-item-icon>
               </v-list-item>
             </v-list>
-            
+
         </v-card>
         <v-snackbar v-model="gekopieerd">
       Betalingsnummer gekopierd
@@ -61,32 +61,30 @@ export default {
           .doc('tshirt')
           .collection('betaling')
           .get()
-          .then((snap) => {   
+          .then((snap) => {
              snap.forEach((doc) => this.alleBestellingen.push(doc.data()))
        // this.totaalBestellingen = length(this.alleBestellingen)
-        
+
       })
-      .then(() => this.maatToString())
   },
-  maatToString() {
-    console.log(this.alleBestellingen)
-    this.alleBestellingen.forEach((bestelling) => bestelling.tshirts.forEach((shirt) => this.testmaat.push(this.maten[3])) // TO DO: not working ;(
-    )},
+  maatToString(maat) {
+    return this.maten[maat]
+  },
   kopieerNummer(betalingsnummer) {
       navigator.clipboard.writeText(betalingsnummer).then(() => {
         this.gekopieerd = true
       })
     },
     krijgMails() {
-      this.alleBestellingen.forEach((bestelling) => {    
-                // if (bestelling.email.includes('@')) 
+      this.alleBestellingen.forEach((bestelling) => {
+                // if (bestelling.email.includes('@'))
                 this.alleMails += bestelling.email + ';'
         })
         // TODO: mails op clipboard zetten, maar eerst een wachtmanier vinden
-              
-        
+
+
       }
-    }    
+    }
 }
   // computed: {
   //     aantalBestellingen() {
