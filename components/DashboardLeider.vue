@@ -3,9 +3,10 @@
     <v-row>
       <v-col v-for="(card, index) in cardsFiltered" :key="index">
         <v-card
+          :disabled="card.disabled"
           class="mx-auto"
           max-width="400"
-          @click="$router.push(card.page)"
+          @click="go(card)"
         >
           <v-img :src="card.src" height="200px" width="400px" contain></v-img>
           <v-card-title v-text="card.title"></v-card-title>
@@ -42,20 +43,23 @@ export default {
         {
           title: 'T-shirts',
           icon: 'mdi-dashboard',
-          src: '',
+          src: '/tshirt.svg',
           page: '/bestellingTshirts'
         },
         {
           title: 'Verhuur',
           icon: 'mid-account_box',
           src: '/verhuur.svg',
-          page: '/verhuur'
+          page: 'https://verhuur.chiroelzestraat.be/',
+          link: true,
+          disabled: false
         },
         {
-          title: 'Evenementen',
+          title: 'Evenementen (in ontwikkeling)',
           icon: 'mid-gavel',
           src: '/evenementen.svg',
-          page: '/events'
+          page: '/events',
+          disabled: true
         },
         {
           title: 'Quarantainespel',
@@ -65,6 +69,14 @@ export default {
         }
       ],
       rollen: []
+    }
+  },
+  methods: {
+    go(card) {
+      if(card.link)
+        window.location = card.page
+      else
+      this.$router.push(card.page)
     }
   },
   computed: {
