@@ -57,7 +57,7 @@
       <v-progress-linear
         :active="
           !this.$store.state.gebruiker.user.isLoggedIn &&
-            this.$store.state.gebruiker.user.data
+          Object.keys(this.$store.state.gebruiker.user.data).length !== 0
         "
         indeterminate
         absolute
@@ -71,7 +71,7 @@
     <v-overlay
       :value="
         !this.$store.state.gebruiker.user.isLoggedIn &&
-          this.$store.state.gebruiker.user.data
+          Object.keys(this.$store.state.gebruiker.user.data).length !== 0
       "
     >
       <v-progress-circular indeterminate size="64"></v-progress-circular>
@@ -101,31 +101,37 @@ export default {
   },
   created() {
     firebase.auth().onAuthStateChanged((user) => {
-      const token = `Bearer ${firebase
+      if(firebase
         .auth()
-        .currentUser.ya}`
-      this.$axios.setHeader("Authorization", token)
-      this.$store.dispatch('gebruiker/fetchUser', user)
-      firebase
-        .auth()
-        .currentUser.getIdTokenResult()
-        .then((idTokenResult) => {
-          if (idTokenResult.claims.rollen === undefined) {
-            this.$store.commit('gebruiker/setNieuweGebruiker', true)
-            this.$router.push('/account')
-          } else if(idTokenResult.claims.rollen){
+        .currentUser !== null){
+        const token = `Bearer ${firebase
+          .auth()
+          .currentUser.ya}`
+        this.$axios.setHeader("Authorization", token)
+        this.$store.dispatch('gebruiker/fetchUser', user)
+        firebase
+          .auth()
+          .currentUser.getIdTokenResult()
+          .then((idTokenResult) => {
+            if (idTokenResult.claims.rollen === undefined) {
+              this.$store.commit('gebruiker/setNieuweGebruiker', true)
+              this.$router.push('/account')
+            } else if(idTokenResult.claims.rollen){
               for (const claim in idTokenResult.claims.rollen) {
                 this.$store.commit('gebruiker/setClaim', claim)
               }
             }if(idTokenResult.claims.ouder){
               this.$store.commit('gebruiker/setOuder', true)
             }
-        })
-        .catch((error) => {
-          console.warn(error)
-          this.$store.commit('gebruiker/setNieuweGebruiker', false)
-          this.$router.push('/account')
-        })
+          })
+          .catch((error) => {
+            console.warn(error)
+            this.$store.commit('gebruiker/setNieuweGebruiker', false)
+            this.$router.push('/account')
+          })
+      }else{
+        this.$router.push('/account')
+      }
     })
     if (localStorage.getItem('dark') === 'false') this.setTheme(false)
   },
