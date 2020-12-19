@@ -95,7 +95,7 @@
                   <v-list-item-icon
                     ><v-icon
                       @click="voegRolToe(zoekResultaat)"
-                      :disabled="zoekResultaat.heeftRol"
+                      :disabled="heeftRol(zoekResultaat.uid)"
                       >mdi-plus</v-icon
                     ></v-list-item-icon
                   >
@@ -157,6 +157,9 @@ export default {
     })
   },
   methods: {
+    heeftRol(uid){
+      return this.leiders.filter(leider => leider.uid === uid).length > 0
+    },
     verwijder(id){
       this.huidigGebruikerId = id
       this.verwijderDialog = true
