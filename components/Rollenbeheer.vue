@@ -48,7 +48,7 @@
               </v-list-item-content>
               <v-list-item-icon>
                 <v-icon
-                  @click="verwijder(gebruiker.id)"
+                  @click="verwijder(gebruiker.uid)"
                   :disabled="
                     $store.state.gebruiker.user.data.uid === gebruiker.uid
                   "
@@ -187,33 +187,11 @@
       },
       deleteRol(id) {
         const rol = this.huidigeRol.toLowerCase()
-        db.collection('gebruikers')
-          .doc(id)
-          .collection('toegang')
-          .limit(1)
-          .get()
-          .then((docs) => {
-            docs.forEach((doc) => {
-              const data = doc.data()
-              data.heeft = data.heeft.filter((huidigeRol) => huidigeRol !== rol)
-              db.collection('gebruikers')
-                .doc(id)
-                .collection('toegang')
-                .doc(doc.id)
-                .update(data)
-                .then(() => {
-                  this.verwijderDialog = false
-                  this.gebruikersMetRol = this.gebruikersMetRol.filter(
-                    (gebruiker) => gebruiker.id !== id
-                  )
-                  if (rol === 'leider') {
-                    db.collection('leiders')
-                      .doc('leidersdoc')
-
-                  }
-                })
-            })
-          })
+        this.$axios.delete(`roles/${id}/${rol}`).then(() => {
+          this.verwijderDialog = false
+          this.haalLeidersOp()
+          }
+        )
       },
       voegRolToe(gebruiker) {
         const rol = this.huidigeRol.toLowerCase()
