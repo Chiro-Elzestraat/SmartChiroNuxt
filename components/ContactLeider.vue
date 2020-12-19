@@ -57,7 +57,7 @@ export default {
       db.collection('gebruikers')
       .doc(this.$store.state.gebruiker.user.data.uid)
       .get()  // $store staat voor de vuex (kijk in browser na waar id staat bij vuex)
-      .then(doc => {        
+      .then(doc => {       
         this.contactLeider = doc.data() //  { gsm: '+32', adres: { straat: '' } } => contactLeider.gsm is dus ook doc.data().gsm (test eens met console.log in browser)
       }) // doc is een var die benoemt wat ge krijgt van .get(), pijl betekent functie, gebruik {} voor meerdere lijntjes
     },
