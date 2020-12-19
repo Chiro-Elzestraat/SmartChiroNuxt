@@ -308,9 +308,6 @@ export default {
     }
   },
   methods: {
-    drukaf(value) {
-      console.log(value)
-    }
   }
 }
 </script>

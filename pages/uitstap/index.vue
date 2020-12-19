@@ -90,7 +90,7 @@ export default {
           }
         })
         .catch((error) => {
-          console.log(error)
+          console.warn(error)
         })
     })
   },
@@ -103,11 +103,10 @@ export default {
             .ref(`uitstap/${doc.id}`)
             .getDownloadURL()
             .then((url) => {
-              console.log(url)
               this.uitstappen.push({ ...doc.data(), url, id: doc.id })
             })
             .catch(function(error) {
-              console.log(error)
+              console.warn(error)
             })
         })
       })

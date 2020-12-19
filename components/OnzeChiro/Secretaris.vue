@@ -104,15 +104,11 @@ export default {
     methods: {
 
       schrijfIn(gapLid) {
-        console.log(gapLid)
-        // delete gapLid.id
         const gapLid2 = {...gapLid}
         delete gapLid2.id
-        console.log(gapLid2)
         db.collection('leden').doc(gapLid.id).set(gapLid2).then(() => {
-          console.log("Opgeslagen")
         }).catch((err) => {
-          console.log(err)
+          console.warn(err)
         })
       }
     },

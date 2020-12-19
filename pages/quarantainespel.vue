@@ -325,7 +325,6 @@ export default {
               .where('archief', '==', false)
               .get()
               .then((snapshot) => {
-                console.log(snapshot)
                 snapshot.forEach((doc1) => {
                   let url = ''
                   storage

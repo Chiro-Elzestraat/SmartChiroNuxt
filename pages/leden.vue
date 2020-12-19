@@ -171,7 +171,6 @@ export default {
              const index = leden.findIndex(lid => {
                return lid.lidId === doc.ref.parent.parent.id
              })
-             // console.log(index)
              if(doc.data().betaald){
                leden[index].betaald = true
              }
@@ -218,7 +217,7 @@ export default {
         })
         })
       .catch((err) => {
-        console.log(err)
+        console.warn(err)
         if (this.$store.state.gebruiker.user.isLoggedIn) this.$router.push('/')
       })
     }

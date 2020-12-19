@@ -209,7 +209,7 @@ export default {
         // The firebase.auth.AuthCredential type that was used.
         const credential = error.credential
         // ...
-        console.log(errorCode, errorMessage, email, credential)
+        console.warn(errorCode, errorMessage, email, credential)
       })
     firebase.auth().onAuthStateChanged((user) => {
       if (user) this.checkNieuw()
@@ -290,23 +290,19 @@ export default {
         .auth()
         .currentUser.getIdTokenResult()
         .then((idTokenResult) => {
-          console.log('test')
-          console.log(idTokenResult.claims)
-          console.log(idTokenResult.claims.ouder)
           if (idTokenResult.claims.ouder || idTokenResult.claims.rollen
           ) {
-            console.log('test')
             this.$store.commit('gebruiker/setNieuweGebruiker', false)
           } else {
             this.$store.commit('gebruiker/setNieuweGebruiker', true)
           }
         })
         .catch((error) => {
-          console.log(error)
+          console.warn(error)
           // this.$store.commit('gebruiker/setNieuweGebruiker', false)
           // this.$router.push('/geeninternet')
         })
-    }
+    },
   },
   head() {
     return {

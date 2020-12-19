@@ -133,7 +133,6 @@ export default {
           db.collection('gebruikers')
             .doc(this.$store.state.gebruiker.user.data.uid)
             .onSnapshot((doc) => {
-              console.log(doc.data())
               if (doc.data().rollen_ok) {
                 firebase
                   .auth()
@@ -152,7 +151,7 @@ export default {
             })
         })
         .catch((err) => {
-          console.log(err)
+          console.warn(err)
           this.laden = false
         })
       firebase.auth().currentUser.updateProfile({

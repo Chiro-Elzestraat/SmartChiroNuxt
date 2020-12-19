@@ -263,7 +263,7 @@ export default {
               })
             })
         })
-        .catch((err) => console.log(err))
+        .catch((err) => console.warn(err))
     },
     laadIngeschreven() {},
     laadGegevens() {
@@ -276,11 +276,10 @@ export default {
             .ref(`uitstap/${doc.id}`)
             .getDownloadURL()
             .then((url) => {
-              console.log(url)
               this.uitstap = { ...doc.data(), url, id: doc.id }
             })
             .catch(function(error) {
-              console.log(error)
+              console.warn(error)
             })
           if (this.gebruiker.ouder) {
             db.collection('leden')
@@ -303,7 +302,6 @@ export default {
                   .where('leden', 'array-contains-any', this.lidIds)
                   .get()
                   .then((inschrijvingen) => {
-                    console.log(inschrijvingen.docs)
                     inschrijvingen.docs.forEach((doc) => {
                       this.ledenAlles = this.ledenAlles.map((lid) => {
                         if (

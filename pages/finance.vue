@@ -82,12 +82,11 @@ export default {
         .get()
         .then((snap) => {
           snap.forEach(async (doc) => {
-            console.log(doc.data())
             if (doc.data().bedrag <= saldo && !doc.data().betaald) {
               saldo -= doc.data().bedrag
               await doc.ref
                 .update({ betaald: true })
-                .then(() => console.log('betaling geslaagd'))
+                .then()
                 .catch((err) =>
                   console.error('Fout bij verwerken betaling: ', err)
                 )
@@ -99,7 +98,6 @@ export default {
         })
       event.preventDefault()
       auth.currentUser.getIdTokenResult().then((idTokenResult) => {
-        console.log(idTokenResult)
       })
     },
     search() {
@@ -115,7 +113,6 @@ export default {
               this.betaald = false
             }
             this.betalingen.push(doc.data())
-            console.log(doc.data())
           })
           this.bestaatNiet = snap.docs.length === 0
         })

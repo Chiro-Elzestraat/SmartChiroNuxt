@@ -20,7 +20,8 @@
         <v-card-title>Waarschuwing</v-card-title>
         <v-card-text
         >Bent u zeker dat u deze persoon zijn rol als
-          {{ huidigeRol }} wilt verwijderen</v-card-text
+          {{ huidigeRol }} wilt verwijderen
+        </v-card-text
         >
         <v-card-actions>
           <v-btn @click="deleteRol(huidigGebruikerId)" text>Ja</v-btn>
@@ -35,20 +36,24 @@
           <v-list>
             <v-list-item
               v-for="gebruiker in gebruikersMetRol"
-              :key="gebruiker.id"
+              :key="gebruiker.uid"
               two-line
             >
+              <v-list-item-avatar>
+                <v-img :src="gebruiker.photoUrl"></v-img>
+              </v-list-item-avatar>
               <v-list-item-content>
-                <v-list-item-title>{{ gebruiker.naam }}</v-list-item-title>
-                <v-list-item-subtitle>{{ gebruiker.id }}</v-list-item-subtitle>
+                <v-list-item-title>{{ gebruiker.displayName }}</v-list-item-title>
+                <v-list-item-subtitle>{{ gebruiker.uid }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-icon>
                 <v-icon
-                  @click="verwijder(gebruiker.id)"
+                  @click="verwijder(gebruiker.uid)"
                   :disabled="
-                    $store.state.gebruiker.user.data.uid === gebruiker.id
+                    $store.state.gebruiker.user.data.uid === gebruiker.uid
                   "
-                  >mdi-trash-can-outline</v-icon
+                >mdi-trash-can-outline
+                </v-icon
                 >
               </v-list-item-icon>
             </v-list-item>
@@ -63,13 +68,15 @@
             </v-card-actions>
           </template>
           <v-card>
-            <v-card-title>Ken een nieuwe rol aan een leider toe</v-card-title>
+            <v-card-title>Ken een nieuwe rol aan een gebruiker toe</v-card-title>
             <v-card-text>
               <v-text-field
                 v-model="zoekOpdracht"
+                @click:append-outer="zoek()"
+                @keydown.enter="zoek()"
                 label="Naam"
                 append-outer-icon="mdi-magnify"
-                @click:append-outer="zoek()"
+                autofocus
               ></v-text-field>
               <v-list>
                 <v-list-item
@@ -77,20 +84,31 @@
                   :key="zoekResultaat.id"
                   two-line
                 >
+                  <v-list-item-avatar>
+                    <v-img :src="zoekResultaat.photoUrl"></v-img>
+                  </v-list-item-avatar>
                   <v-list-item-content
-                    ><v-list-item-title>{{
-                      zoekResultaat.naam
-                    }}</v-list-item-title
-                    ><v-list-item-subtitle>{{
-                      zoekResultaat.id
-                    }}</v-list-item-subtitle></v-list-item-content
+                  >
+                    <v-list-item-title>{{
+                      zoekResultaat.displayName
+                      }}
+                    </v-list-item-title
+                    >
+                    <v-list-item-subtitle>{{
+                      zoekResultaat.uid
+                      }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content
                   >
                   <v-list-item-icon
-                    ><v-icon
+                  >
+                    <v-icon
                       @click="voegRolToe(zoekResultaat)"
-                      :disabled="zoekResultaat.heeftRol"
-                      >mdi-plus</v-icon
-                    ></v-list-item-icon
+                      :disabled="heeftRol(zoekResultaat.uid)"
+                    >mdi-plus
+                    </v-icon
+                    >
+                  </v-list-item-icon
                   >
                 </v-list-item>
               </v-list>
@@ -103,149 +121,101 @@
   <!-- hier maken -->
 </template>
 <script>
-import { db } from '@/plugins/firebase'
-import OptieDivider from '@/components/OptieDivider'
-export default {
-  components: {
-    OptieDivider
-  },
-  data() {
-    return {
-      rollen: {
-        naam: ['Groepsleider', 'Website', 'Kas', 'Verhuur','Secretaris', 'Leider'],
-        icon: [
-          'mdi-account',
-          'mdi-laptop',
-          'mdi-cash-register',
-          'mdi-home',
-          'mdi-account-edit',
-          'mdi-whistle'
-        ]
-      },
-      rolDialog: false,
-      voegToeDialog: false,
-      verwijderDialog: false,
-      huidigeRol: '',
-      gebruikersMetRol: [],
-      zoekResultaten: [],
-      contactLeiders: [],
-      zoekOpdracht: '',
-      huidigGebruikerId: '',
-    }
-  },
-  watch: {
-    voegToeDialog(newValue, oldValue) {
-      this.zoekResultaten = []
-      this.zoekOpdracht = ''
-    }
-  },
-  methods: {
-    verwijder(id){
-      this.huidigGebruikerId = id
-      this.verwijderDialog = true
-    },
-    zoek() {
-      this.zoekResultaten = []
-      db.collection('gebruikers')
-        .where('naam', '==', this.zoekOpdracht)
-        .get()
-        .then((docs) => {
-          docs.forEach((doc) => {
-            const gebruiker = { ...doc.data(), id: doc.ref.id }
-            if (
-              this.gebruikersMetRol.filter((g) => g.id === doc.ref.id).length >
-              0
-            )
-              gebruiker.heeftRol = true
-            this.zoekResultaten.push(gebruiker)
-          })
-        })
-    },
-    deleteRol(id) {
-      const rol = this.huidigeRol.toLowerCase()
-      db.collection('gebruikers')
-        .doc(id)
-        .collection('toegang')
-        .limit(1)
-        .get()
-        .then((docs) => {
-          docs.forEach((doc) => {
-            const data = doc.data()
-            data.heeft = data.heeft.filter((huidigeRol) => huidigeRol !== rol)
-            db.collection('gebruikers')
-              .doc(id)
-              .collection('toegang')
-              .doc(doc.id)
-              .update(data)
-              .then(() => {
-                this.verwijderDialog = false
-                this.gebruikersMetRol = this.gebruikersMetRol.filter(
-                  (gebruiker) => gebruiker.id !== id
-                )
-                if (rol === 'leider') {
-                  db.collection('leiders')
-                    .doc('leidersdoc')
+  import { db } from '@/plugins/firebase'
+  import OptieDivider from '@/components/OptieDivider'
 
-                }
-              })
-          })
-        })
+  export default {
+    components: {
+      OptieDivider
     },
-    voegRolToe(gebruiker) {
-      const rol = this.huidigeRol.toLowerCase()
-      if (this.huidigeRol === 'Leider') {
-        this.updateContactLeiding(gebruiker)
+    data() {
+      return {
+        rollen: {
+          naam: ['Groepsleider', 'Website', 'Kas', 'Verhuur', 'Secretaris', 'Leider'],
+          icon: [
+            'mdi-account',
+            'mdi-laptop',
+            'mdi-cash-register',
+            'mdi-home',
+            'mdi-account-edit',
+            'mdi-whistle'
+          ]
+        },
+        rolDialog: false,
+        voegToeDialog: false,
+        verwijderDialog: false,
+        huidigeRol: '',
+        zoekResultaten: [],
+        contactLeiders: [],
+        zoekOpdracht: '',
+        huidigGebruikerId: '',
+        leiders: []
       }
-      db.collection('gebruikers')
-        .doc(gebruiker.id)
-        .collection('toegang')
-        .limit(1)
-        .get()
-        .then((docs) => {
-          docs.forEach((doc) => {
-            const data = doc.data()
-            data.heeft.push(rol)
-            data.heeft = [...new Set(data.heeft)]
-            db.collection('gebruikers')
-              .doc(gebruiker.id)
-              .collection('toegang')
-              .doc(doc.id)
-              .update(data)
-            this.gebruikersMetRol.push(gebruiker)
-            this.voegToeDialog = false
-          })
+    },
+    computed: {
+      gebruikersMetRol() {
+        return this.leiders.filter(leider => leider.customClaims.rollen[this.huidigeRol.toLowerCase()])
+      }
+    },
+    watch: {
+      voegToeDialog(newValue, oldValue) {
+        this.zoekResultaten = []
+        this.zoekOpdracht = ''
+      }
+    },
+    mounted() {
+      this.haalLeidersOp()
+    },
+    methods: {
+      haalLeidersOp() {
+        this.$axios.get('roles').then(result => {
+          this.leiders = result.data
         })
-    },
-    haalRolOp(rol) {
-      this.huidigeRol = rol
-      rol = rol.toLowerCase()
-      this.rolDialog = true
-      this.gebruikersMetRol = []
-      db.collectionGroup('toegang')
-        .where('heeft', 'array-contains', rol)
-        .get()
-        .then((docs) =>
-          docs.forEach((doc) =>
-            doc.ref.parent.parent.get().then((leider) =>
-              this.gebruikersMetRol.push({
-                ...leider.data(),
-                id: leider.ref.id
-              })
-            )
-          )
+      },
+      heeftRol(uid) {
+        return this.leiders.filter(leider => (leider.uid === uid && leider.customClaims.rollen[this.huidigeRol.toLowerCase()])).length > 0
+      },
+      verwijder(id) {
+        this.huidigGebruikerId = id
+        this.verwijderDialog = true
+      },
+      zoek() {
+        this.zoekResultaten = []
+        this.$axios.get(`roles/${this.zoekOpdracht}`).then((result) => {
+          this.zoekResultaten = result.data
+        })
+      },
+      deleteRol(id) {
+        const rol = this.huidigeRol.toLowerCase()
+        this.$axios.delete(`roles/${id}/${rol}`).then(() => {
+          this.verwijderDialog = false
+          this.haalLeidersOp()
+          }
         )
-    },
-    updateContactLeiding(gebruiker) {
-      const ref = db.collection('leiders')
-        .doc('leidersdoc')
+      },
+      voegRolToe(gebruiker) {
+        const rol = this.huidigeRol.toLowerCase()
+        if (this.huidigeRol === 'Leider') {
+          this.updateContactLeiding(gebruiker)
+        }
+        this.$axios.post(`roles/${gebruiker.uid}/${rol}`).then(() => {
+            this.voegToeDialog = false
+            this.haalLeidersOp()
+          }
+        )
+      },
+      haalRolOp(rol) {
+        this.huidigeRol = rol
+        this.rolDialog = true
+      },
+      updateContactLeiding(gebruiker) {
+        const ref = db.collection('leiders')
+          .doc('leidersdoc')
 
         ref
-        .get()
-        .then((doc) => (ref.set({leiders: [...doc.data().leiders, gebruiker]})))
-
-      console.log('updating')
-      console.log(gebruiker)
+          .get()
+          .then((doc) => (ref.set({ leiders: [...doc.data().leiders, gebruiker] })))
+      }
     }
   }
-}
 </script>

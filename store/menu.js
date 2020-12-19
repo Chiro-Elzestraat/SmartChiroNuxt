@@ -20,7 +20,6 @@ export const state = getDefaultState()
 
 export const mutations = {
   setExtraItems(state, items) {
-    console.log(items)
     state.items = [...items, ...state.items]
   },
   resetState(state) {
