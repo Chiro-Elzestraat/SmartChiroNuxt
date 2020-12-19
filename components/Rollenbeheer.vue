@@ -74,6 +74,7 @@
                 @keydown.enter="zoek()"
                 label="Naam"
                 append-outer-icon="mdi-magnify"
+                autofocus
               ></v-text-field>
               <v-list>
                 <v-list-item
