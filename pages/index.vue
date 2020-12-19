@@ -65,18 +65,20 @@
   },
   methods: {
     getLeden() {
-      db.collection('leden')
-        .where(
-          'ouderId',
-          'array-contains',
-          this.$store.state.gebruiker.user.data.uid
-        )
-        .get()
-        .then((snap) => {
-          this.leden = snap.docs.map((item) => {
-            return { ...item.data(), lidId: item.id }
+      if(this.$store.state.gebruiker.user.data.uid !== undefined){
+        db.collection('leden')
+          .where(
+            'ouderId',
+            'array-contains',
+            this.$store.state.gebruiker.user.data.uid
+          )
+          .get()
+          .then((snap) => {
+            this.leden = snap.docs.map((item) => {
+              return { ...item.data(), lidId: item.id }
+            })
           })
-        })
+      }
     },
     ingeschrevenHandler() {
       this.inschrijven = false
