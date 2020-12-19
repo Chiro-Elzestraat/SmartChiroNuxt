@@ -284,6 +284,7 @@ export default {
     loguit() {
       firebase.auth().signOut()
       this.$store.commit('menu/resetState')
+      this.$store.commit('gebruiker/loguit')
     },
     checkNieuw() {
       firebase

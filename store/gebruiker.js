@@ -28,6 +28,17 @@ export const mutations = {
   setOuder(state, ouder) {
     state.user.ouder = ouder
   },
+  loguit(state){
+    state.user.isLoggedIn = false
+    state.user = {
+      isLoggedIn: false,
+      data: {},
+      nieuweGebruiker: false,
+      ouder: false,
+      leider: false,
+      secretaris: false,
+    }
+  }
 }
 
 export const actions = {
