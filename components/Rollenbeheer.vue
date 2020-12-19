@@ -66,11 +66,12 @@
             </v-card-actions>
           </template>
           <v-card>
-            <v-card-title>Ken een nieuwe rol aan een leider toe</v-card-title>
+            <v-card-title>Ken een nieuwe rol aan een gebruiker toe</v-card-title>
             <v-card-text>
               <v-text-field
                 v-model="zoekOpdracht"
                 @click:append-outer="zoek()"
+                @keydown.enter="zoek()"
                 label="Naam"
                 append-outer-icon="mdi-magnify"
               ></v-text-field>
@@ -80,12 +81,15 @@
                   :key="zoekResultaat.id"
                   two-line
                 >
+                  <v-list-item-avatar>
+                    <v-img :src="zoekResultaat.photoUrl"></v-img>
+                  </v-list-item-avatar>
                   <v-list-item-content
                     ><v-list-item-title>{{
-                      zoekResultaat.naam
+                      zoekResultaat.displayName
                     }}</v-list-item-title
                     ><v-list-item-subtitle>{{
-                      zoekResultaat.id
+                      zoekResultaat.uid
                     }}</v-list-item-subtitle></v-list-item-content
                   >
                   <v-list-item-icon
@@ -159,20 +163,7 @@ export default {
     },
     zoek() {
       this.zoekResultaten = []
-      db.collection('gebruikers')
-        .where('naam', '==', this.zoekOpdracht)
-        .get()
-        .then((docs) => {
-          docs.forEach((doc) => {
-            const gebruiker = { ...doc.data(), id: doc.ref.id }
-            if (
-              this.gebruikersMetRol.filter((g) => g.id === doc.ref.id).length >
-              0
-            )
-              gebruiker.heeftRol = true
-            this.zoekResultaten.push(gebruiker)
-          })
-        })
+      this.$axios.get(`roles/${this.zoekOpdracht}`).then((result) => {this.zoekResultaten = result.data})
     },
     deleteRol(id) {
       const rol = this.huidigeRol.toLowerCase()
