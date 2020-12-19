@@ -20,7 +20,8 @@
         <v-card-title>Waarschuwing</v-card-title>
         <v-card-text
         >Bent u zeker dat u deze persoon zijn rol als
-          {{ huidigeRol }} wilt verwijderen</v-card-text
+          {{ huidigeRol }} wilt verwijderen
+        </v-card-text
         >
         <v-card-actions>
           <v-btn @click="deleteRol(huidigGebruikerId)" text>Ja</v-btn>
@@ -51,7 +52,8 @@
                   :disabled="
                     $store.state.gebruiker.user.data.uid === gebruiker.uid
                   "
-                  >mdi-trash-can-outline</v-icon
+                >mdi-trash-can-outline
+                </v-icon
                 >
               </v-list-item-icon>
             </v-list-item>
@@ -86,19 +88,27 @@
                     <v-img :src="zoekResultaat.photoUrl"></v-img>
                   </v-list-item-avatar>
                   <v-list-item-content
-                    ><v-list-item-title>{{
+                  >
+                    <v-list-item-title>{{
                       zoekResultaat.displayName
-                    }}</v-list-item-title
-                    ><v-list-item-subtitle>{{
+                      }}
+                    </v-list-item-title
+                    >
+                    <v-list-item-subtitle>{{
                       zoekResultaat.uid
-                    }}</v-list-item-subtitle></v-list-item-content
+                      }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content
                   >
                   <v-list-item-icon
-                    ><v-icon
+                  >
+                    <v-icon
                       @click="voegRolToe(zoekResultaat)"
                       :disabled="heeftRol(zoekResultaat.uid)"
-                      >mdi-plus</v-icon
-                    ></v-list-item-icon
+                    >mdi-plus
+                    </v-icon
+                    >
+                  </v-list-item-icon
                   >
                 </v-list-item>
               </v-list>
@@ -111,131 +121,123 @@
   <!-- hier maken -->
 </template>
 <script>
-import { db } from '@/plugins/firebase'
-import OptieDivider from '@/components/OptieDivider'
-export default {
-  components: {
-    OptieDivider
-  },
-  data() {
-    return {
-      rollen: {
-        naam: ['Groepsleider', 'Website', 'Kas', 'Verhuur','Secretaris', 'Leider'],
-        icon: [
-          'mdi-account',
-          'mdi-laptop',
-          'mdi-cash-register',
-          'mdi-home',
-          'mdi-account-edit',
-          'mdi-whistle'
-        ]
-      },
-      rolDialog: false,
-      voegToeDialog: false,
-      verwijderDialog: false,
-      huidigeRol: '',
-      zoekResultaten: [],
-      contactLeiders: [],
-      zoekOpdracht: '',
-      huidigGebruikerId: '',
-      leiders: []
-    }
-  },
-  computed: {
-    gebruikersMetRol () {
-      return this.leiders.filter(leider => leider.customClaims.rollen[this.huidigeRol.toLowerCase()])
-    }
-  },
-  watch: {
-    voegToeDialog(newValue, oldValue) {
-      this.zoekResultaten = []
-      this.zoekOpdracht = ''
-    }
-  },
-  mounted() {
-    this.$axios.get('roles').then(result => {
-      this.leiders = result.data
-    })
-  },
-  methods: {
-    heeftRol(uid){
-      return this.leiders.filter(leider => leider.uid === uid).length > 0
-    },
-    verwijder(id){
-      this.huidigGebruikerId = id
-      this.verwijderDialog = true
-    },
-    zoek() {
-      this.zoekResultaten = []
-      this.$axios.get(`roles/${this.zoekOpdracht}`).then((result) => {this.zoekResultaten = result.data})
-    },
-    deleteRol(id) {
-      const rol = this.huidigeRol.toLowerCase()
-      db.collection('gebruikers')
-        .doc(id)
-        .collection('toegang')
-        .limit(1)
-        .get()
-        .then((docs) => {
-          docs.forEach((doc) => {
-            const data = doc.data()
-            data.heeft = data.heeft.filter((huidigeRol) => huidigeRol !== rol)
-            db.collection('gebruikers')
-              .doc(id)
-              .collection('toegang')
-              .doc(doc.id)
-              .update(data)
-              .then(() => {
-                this.verwijderDialog = false
-                this.gebruikersMetRol = this.gebruikersMetRol.filter(
-                  (gebruiker) => gebruiker.id !== id
-                )
-                if (rol === 'leider') {
-                  db.collection('leiders')
-                    .doc('leidersdoc')
+  import { db } from '@/plugins/firebase'
+  import OptieDivider from '@/components/OptieDivider'
 
-                }
-              })
-          })
-        })
+  export default {
+    components: {
+      OptieDivider
     },
-    voegRolToe(gebruiker) {
-      const rol = this.huidigeRol.toLowerCase()
-      if (this.huidigeRol === 'Leider') {
-        this.updateContactLeiding(gebruiker)
+    data() {
+      return {
+        rollen: {
+          naam: ['Groepsleider', 'Website', 'Kas', 'Verhuur', 'Secretaris', 'Leider'],
+          icon: [
+            'mdi-account',
+            'mdi-laptop',
+            'mdi-cash-register',
+            'mdi-home',
+            'mdi-account-edit',
+            'mdi-whistle'
+          ]
+        },
+        rolDialog: false,
+        voegToeDialog: false,
+        verwijderDialog: false,
+        huidigeRol: '',
+        zoekResultaten: [],
+        contactLeiders: [],
+        zoekOpdracht: '',
+        huidigGebruikerId: '',
+        leiders: []
       }
-      db.collection('gebruikers')
-        .doc(gebruiker.id)
-        .collection('toegang')
-        .limit(1)
-        .get()
-        .then((docs) => {
-          docs.forEach((doc) => {
-            const data = doc.data()
-            data.heeft.push(rol)
-            data.heeft = [...new Set(data.heeft)]
-            db.collection('gebruikers')
-              .doc(gebruiker.id)
-              .collection('toegang')
-              .doc(doc.id)
-              .update(data)
-            this.gebruikersMetRol.push(gebruiker)
-            this.voegToeDialog = false
-          })
+    },
+    computed: {
+      gebruikersMetRol() {
+        return this.leiders.filter(leider => leider.customClaims.rollen[this.huidigeRol.toLowerCase()])
+      }
+    },
+    watch: {
+      voegToeDialog(newValue, oldValue) {
+        this.zoekResultaten = []
+        this.zoekOpdracht = ''
+      }
+    },
+    mounted() {
+      this.haalLeidersOp()
+    },
+    methods: {
+      haalLeidersOp() {
+        this.$axios.get('roles').then(result => {
+          this.leiders = result.data
         })
-    },
-    haalRolOp(rol) {
-      this.huidigeRol = rol
-      this.rolDialog = true
-    },
-    updateContactLeiding(gebruiker) {
-      const ref = db.collection('leiders')
-        .doc('leidersdoc')
+      },
+      heeftRol(uid) {
+        return this.leiders.filter(leider => (leider.uid === uid && leider.customClaims.rollen[this.huidigeRol.toLowerCase()])).length > 0
+      },
+      verwijder(id) {
+        this.huidigGebruikerId = id
+        this.verwijderDialog = true
+      },
+      zoek() {
+        this.zoekResultaten = []
+        this.$axios.get(`roles/${this.zoekOpdracht}`).then((result) => {
+          this.zoekResultaten = result.data
+        })
+      },
+      deleteRol(id) {
+        const rol = this.huidigeRol.toLowerCase()
+        db.collection('gebruikers')
+          .doc(id)
+          .collection('toegang')
+          .limit(1)
+          .get()
+          .then((docs) => {
+            docs.forEach((doc) => {
+              const data = doc.data()
+              data.heeft = data.heeft.filter((huidigeRol) => huidigeRol !== rol)
+              db.collection('gebruikers')
+                .doc(id)
+                .collection('toegang')
+                .doc(doc.id)
+                .update(data)
+                .then(() => {
+                  this.verwijderDialog = false
+                  this.gebruikersMetRol = this.gebruikersMetRol.filter(
+                    (gebruiker) => gebruiker.id !== id
+                  )
+                  if (rol === 'leider') {
+                    db.collection('leiders')
+                      .doc('leidersdoc')
+
+                  }
+                })
+            })
+          })
+      },
+      voegRolToe(gebruiker) {
+        const rol = this.huidigeRol.toLowerCase()
+        if (this.huidigeRol === 'Leider') {
+          this.updateContactLeiding(gebruiker)
+        }
+        this.$axios.post(`roles/${gebruiker.uid}/${rol}`).then(() => {
+            this.voegToeDialog = false
+            this.haalLeidersOp()
+          }
+        )
+      },
+      haalRolOp(rol) {
+        this.huidigeRol = rol
+        this.rolDialog = true
+      },
+      updateContactLeiding(gebruiker) {
+        const ref = db.collection('leiders')
+          .doc('leidersdoc')
 
         ref
-        .get()
-        .then((doc) => (ref.set({leiders: [...doc.data().leiders, gebruiker]})))
+          .get()
+          .then((doc) => (ref.set({ leiders: [...doc.data().leiders, gebruiker] })))
+      }
     }
   }
-}
 </script>
