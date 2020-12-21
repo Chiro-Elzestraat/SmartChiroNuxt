@@ -33,8 +33,10 @@
 
     </v-card>
     <v-snackbar v-model="gekopieerd">
-      Betalingsnummer gekopierd
-    </v-snackbar>
+      Betalingsnummer gekopieerd
+    </v-snackbar><v-snackbar v-model="mailsGekopieerd">
+    Mails gekopieerd
+  </v-snackbar>
   </div>
 </template>
 <script>
@@ -45,6 +47,7 @@
       return {
         alleBestellingen: [],
         gekopieerd: false,
+        mailsGekopieerd: false,
         alleMails: '',
         maten: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'kindermaat 2 jaar', 'kindermaat 4 jaar', 'kindermaat 6 jaar', 'kindermaat 8 jaar', 'kindermaat 10 jaar', 'kindermaat 12 jaar'],
         aantalTshirts: 0
@@ -82,7 +85,7 @@
             this.alleMails += bestelling.email + ';'
         })
         navigator.clipboard.writeText(this.alleMails).then(() => {
-          this.gekopieerd = true
+          this.mailsGekopieerd = true
         })
 
       }
