@@ -4,7 +4,8 @@
     <v-card>
       <v-card-title>Aantal bestellingen: {{alleBestellingen.length}}</v-card-title>
       <v-card-subtitle>Aantal tshirts: {{aantalTshirts}}</v-card-subtitle>
-      <v-btn @click="krijgMails" :disabled="alleBestellingen.length <= 0">Krijg emails</v-btn>
+      <v-btn class="ml-4" @click="krijgMails" :disabled="alleBestellingen.length <= 0"><v-icon class="mr-2">mdi-content-copy</v-icon> emails</v-btn>
+      <v-btn class="ml-4" @click="exporteerExcel" :disabled="alleBestellingen.length <= 0"><v-icon class="mr-2">mdi-file-excel-outline</v-icon> exporteer</v-btn>
       <v-list>
         <v-list-item v-for="(bestelling) in alleBestellingen" :key="bestelling.betalingsnummer">
           <v-list-item-content v-for="(shirt, index) in bestelling.tshirts" :key="index"
@@ -33,8 +34,10 @@
 
     </v-card>
     <v-snackbar v-model="gekopieerd">
-      Betalingsnummer gekopierd
-    </v-snackbar>
+      Betalingsnummer gekopieerd
+    </v-snackbar><v-snackbar v-model="mailsGekopieerd">
+    Mails gekopieerd
+  </v-snackbar>
   </div>
 </template>
 <script>
@@ -45,6 +48,7 @@
       return {
         alleBestellingen: [],
         gekopieerd: false,
+        mailsGekopieerd: false,
         alleMails: '',
         maten: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'kindermaat 2 jaar', 'kindermaat 4 jaar', 'kindermaat 6 jaar', 'kindermaat 8 jaar', 'kindermaat 10 jaar', 'kindermaat 12 jaar'],
         aantalTshirts: 0
@@ -82,9 +86,25 @@
             this.alleMails += bestelling.email + ';'
         })
         navigator.clipboard.writeText(this.alleMails).then(() => {
-          this.gekopieerd = true
+          this.mailsGekopieerd = true
         })
-
+      },
+      exporteerExcel(){
+        this.$axios.get('shop/export', {responseType: 'blob'}).then((response) => {
+          let fileName = response.headers["content-disposition"].split("filename=")[1]
+          fileName = fileName.substring(0, fileName.indexOf('.'))
+          if (window.navigator && window.navigator.msSaveOrOpenBlob) { // IE variant
+            window.navigator.msSaveOrOpenBlob(new Blob([response.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),
+              fileName);
+          } else {
+            const url = window.URL.createObjectURL(new Blob([response.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}))
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', fileName)
+            document.body.appendChild(link);
+            link.click();
+          }
+        })
       }
     }
   }
