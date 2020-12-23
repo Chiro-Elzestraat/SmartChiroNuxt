@@ -30,7 +30,7 @@
 
 <script>
 // import firebase from 'firebase'
-import Secretaris from '@/components/onzeChiro/Secretaris'
+import Secretaris from '@/components/OnzeChiro/Secretaris'
 // import Ledenaantallen from '@/components/onzeChiro/Ledenaantallen'
 export default {
   components: {
@@ -46,11 +46,11 @@ export default {
           icon: 'mdi-account-group',
           src: '/financien.svg',
           page: '/leden'
-        } 
+        }
         ],
         rollen: []
     }
-    
+
   },
   computed: {
     cardsFiltered() {
