@@ -43,8 +43,8 @@ export default {
   },
   server: {
     https: {
-      key: fs.readFileSync('./server.key'),
-      cert: fs.readFileSync('./server.crt')
+      key: process.env.NODE_ENV !== 'production' ? fs.readFileSync('./server.key') : '',
+      cert: process.env.NODE_ENV !== 'production' ? fs.readFileSync('./server.crt') : ''
     }
   },
   ssr: false,
