@@ -34,5 +34,6 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: 22
-          source: "dist/*"
+          source: "dist/"
           target: "/www/smart"
+          strip_components: 1
