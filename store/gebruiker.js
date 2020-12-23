@@ -6,6 +6,8 @@ export const state = () => ({
     ouder: false,
     leider: false,
     secretaris: false,
+    groepsleider: false,
+    website: false
   }
 })
 

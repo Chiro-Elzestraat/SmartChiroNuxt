@@ -13,8 +13,7 @@
     >
       <v-list>
         <v-list-item
-          v-for="(item, i) in this.$store.state.menu.items"
-          v-if="!item.rol || (item.rol == 'leider' && isLeider)"
+          v-for="(item, i) in menuItems"
           :key="i"
           :to="item.to"
           router
@@ -101,6 +100,14 @@
     computed: {
       isLeider() {
         return this.$store.state.gebruiker.user.leider
+      },
+      isGroepsleiderOfWebsite() {
+        return this.$store.state.gebruiker.user.groepsleider || this.$store.state.gebruiker.user.website
+      },
+      menuItems() {
+        return this.$store.state.menu.items.filter((item) => {
+          return !item.rol || (item.rol === 'leider' && this.isLeider || item.rol === 'groepsleiderOfWebsite' && this.isGroepsleiderOfWebsite)
+        })
       }
     },
     created() {
@@ -125,9 +132,8 @@
                   this.$store.commit('gebruiker/setClaim', claim)
                 }
               }
-              if (idTokenResult.claims.ouder) {
+              if (!idTokenResult.claims.rollen || !idTokenResult.claims.rollen.leider)
                 this.$store.commit('gebruiker/setOuder', true)
-              }
             })
             .catch((error) => {
               console.warn(error)

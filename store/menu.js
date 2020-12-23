@@ -11,7 +11,7 @@ const getDefaultState = () => {
       { title: 'Onze Chiro', icon: 'mdi-home-city', to: '/onzeChiro', rol: 'leider' },
       { title: 'Uitstappen', icon: 'mdi-tent', to: '/uitstap' },
       { title: 'Mijn account', icon: 'mdi-account', to: '/account' },
-      { title: 'Instellingen', icon: 'mdi-cog', to: '/instellingen' }
+      { title: 'Instellingen', icon: 'mdi-cog', to: '/instellingen', rol: "groepsleiderOfWebsite" }
     ]
   }
 }
