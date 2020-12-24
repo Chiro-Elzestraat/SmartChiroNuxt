@@ -111,6 +111,15 @@
       }
     },
     created() {
+      firebase.auth().onIdTokenChanged((user) => {
+          if (firebase.auth().currentUser !== null) {
+            const token = `Bearer ${firebase
+              .auth()
+              .currentUser.ya}`
+            this.$axios.setHeader('Authorization', token)
+          }
+        }
+      )
       firebase.auth().onAuthStateChanged((user) => {
         this.$store.dispatch('gebruiker/fetchUser', user)
         if (firebase
