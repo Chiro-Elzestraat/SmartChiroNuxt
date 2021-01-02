@@ -182,9 +182,9 @@ export default {
           const vandaag = new Date()
         const maand = vandaag.getMonth()
           let vergelijkDatum
-          if(vandaag.getFullYear() === this.geselecteerdJaar){
+          if(vandaag.getFullYear() >= this.geselecteerdJaar){
             vergelijkDatum = maand < 8
-              ? new Date(vandaag.getFullYear() - 1, 8, 0)
+              ? new Date(vandaag.getFullYear() - 1, 12, 0)
               : new Date(vandaag.getFullYear(), 12, 0)
           }else{
             vergelijkDatum = new Date(this.geselecteerdJaar, 8, 0)
