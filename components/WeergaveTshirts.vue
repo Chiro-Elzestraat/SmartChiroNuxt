@@ -4,8 +4,9 @@
     <v-card>
       <v-card-title>Aantal bestellingen: {{alleBestellingen.length}}</v-card-title>
       <v-card-subtitle>Aantal tshirts: {{aantalTshirts}}</v-card-subtitle>
-      <v-btn class="ml-4" @click="krijgMails" :disabled="alleBestellingen.length <= 0"><v-icon class="mr-2">mdi-content-copy</v-icon> emails</v-btn>
-      <v-btn class="ml-4" @click="exporteerExcel" :disabled="alleBestellingen.length <= 0"><v-icon class="mr-2">mdi-file-excel-outline</v-icon> exporteer</v-btn>
+      <v-btn class="ma-4" @click="krijgMails" :disabled="alleBestellingen.length <= 0"><v-icon class="mr-2">mdi-content-copy</v-icon> emails</v-btn>
+      <v-btn class="ma-4" @click="krijgMailsOnbetaald" :disabled="alleBestellingen.length <= 0"><v-icon class="mr-2">mdi-content-copy</v-icon> emails niet betaald</v-btn>
+      <v-btn class="ma-4" @click="exporteerExcel" :disabled="alleBestellingen.length <= 0"><v-icon class="mr-2">mdi-file-excel-outline</v-icon> exporteer</v-btn>
       <v-list>
         <v-list-item v-for="(bestelling) in alleBestellingen" :key="bestelling.betalingsnummer">
           <v-list-item-content v-for="(shirt, index) in bestelling.tshirts" :key="index"
@@ -83,6 +84,16 @@
         this.alleMails = ''
         this.alleBestellingen.forEach((bestelling) => {
           if (bestelling.email.includes('@'))
+            this.alleMails += bestelling.email + ';'
+        })
+        navigator.clipboard.writeText(this.alleMails).then(() => {
+          this.mailsGekopieerd = true
+        })
+      },
+      krijgMailsOnbetaald(){
+        this.alleMails = ''
+        this.alleBestellingen.forEach((bestelling) => {
+          if (bestelling.email.includes('@') && !bestelling.betaald)
             this.alleMails += bestelling.email + ';'
         })
         navigator.clipboard.writeText(this.alleMails).then(() => {
