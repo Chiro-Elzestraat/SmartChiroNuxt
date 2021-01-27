@@ -122,12 +122,20 @@
           style="margin: 0 auto; display:block;"
         ></v-progress-circular>
       </v-overlay>
+      <v-dialog v-model="errorDialog" width="500">
+        <v-card>
+          <v-card-title>Er is iets fout gegaan</v-card-title>
+          <v-card-text>Als deze fout zich blijft voordoen, stuur dan een email naar <a href="mailto:smart@chiroelzestraat.be">smart@chiroelzestraat.be</a> en vermeld zeker volgende fout: {{error}}</v-card-text>
+          <v-card-actions>
+            <v-btn text @click="errorDialog = false">Ok</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
 </template>
 <script>
   import BewerkLidInfo from '~/components/BewerkLidInfo'
   import LidInfo from '~/components/LidInfo'
-  import { db } from '~/plugins/firebase'
 
   export default {
     name: 'DashboardOuders',
@@ -146,6 +154,8 @@
         betalingsId: '',
         laden: false,
         betalenDialog: false,
+        errorDialog: false,
+        error: ''
       }
     },
     computed: {
@@ -161,31 +171,16 @@
       betalen() {
         this.laden = true
         this.herinschrijvenDialog = false
-        const betaling = db.collection('startbetaling').doc()
-        const batch = db.batch()
-        batch.set(betaling, { leden: this.herinschrijvenIds })
-        batch
-          .commit()
-          .then((result) => {
-            this.herinschrijvenIds.forEach((lidId) => {
-              db.collection('leden')
-                .doc(lidId)
-                .collection('betaling')
-                .onSnapshot((snapshot) => {
-                  if(!snapshot.metadata.fromCache)
-                  snapshot.docChanges().forEach((change) => {
-                    if (change.type === 'added') {
-                      this.teBetalen += change.doc.data().bedrag
-                      this.betalingsId = change.doc.data().betalingsnummer
-                      this.laden = false
-                      this.betalenDialog = true
-                      // this.$emit('ingeschreven')
-                    }
-                  })
-                })
-            })
-          })
-          .catch((err) => console.warn(err))
+        this.$axios.post("leden/betaling", { leden: this.herinschrijvenIds }).then(result => {
+          this.teBetalen = result.data.bedrag
+          this.betalingsId = result.data.betalingsnummer
+          this.laden = false
+          this.betalenDialog = true
+        }).catch(err => {
+          this.laden = false
+          this.errorDialog = true
+          this.error = err
+        })
       }
     }
   }
