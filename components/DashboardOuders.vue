@@ -125,8 +125,8 @@
     </div>
 </template>
 <script>
-  import BewerkLidInfo from '@/components/BewerkLidInfo'
-  import LidInfo from '@/components/LidInfo'
+  import BewerkLidInfo from '~/components/BewerkLidInfo'
+  import LidInfo from '~/components/LidInfo'
   import { db } from '~/plugins/firebase'
 
   export default {

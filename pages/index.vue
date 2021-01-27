@@ -44,7 +44,7 @@
   import Inschrijven from '@/components/Inschrijven'
   import DashboardLeider from '@/components/DashboardLeider'
   import { db } from '@/plugins/firebase'
-  import DashboardOuders from '~/pages/DashboardOuders'
+  import DashboardOuders from '@/components/DashboardOuders'
 
   export default {
   components: {
