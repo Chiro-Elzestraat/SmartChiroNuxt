@@ -1,14 +1,9 @@
 <template>
-  <div>
-    <v-card>
-      <v-card-title>Ledenaantallen</v-card-title
-      ><v-dialog v-model="aanpassen" fullscreen hide-overlay>
+    <v-dialog v-model="aanpassen" fullscreen>
         <template v-slot:activator="{ on }">
-          <v-btn v-on="on" fab color="primary" bottom right absolute>
-            <!-- ah das idd echt op die kaart, nice -->
-            <v-icon>mdi-pencil</v-icon>
-            <!-- oke ff teruggegaan want teveel kopiëren is niet goed, dan verliest ge overzicht en weet ge ni waarom da ni werkt -->
-          </v-btn>
+            <v-card @click="aanpassen=true" class="mx-auto"
+          max-width="400" ><div class='pt-md-4'><v-img src="/secretaris_myfiles.svg" height="200px" width="400px" contain></v-img></div><v-card-title>Ledenaantallen</v-card-title><v-card-subtitle>Voer hier wekelijks de ledenaantallen in</v-card-subtitle><v-card-actions class="justify-center">
+        <v-btn v-on="on" outlined color='primary' text>Ga naar</v-btn></v-card-actions></v-card>
         </template>
         <v-card>
           <v-toolbar dark color="primary">
@@ -21,9 +16,8 @@
               <v-btn @click="opslaan" text>Opslaan</v-btn>
             </v-toolbar-items>
           </v-toolbar>
-          <v-card-actions>
-            <v-container>
-            <v-col cols="6" v-for="(groep, index) in groepen" :key="index">
+          <v-card><v-card-title>Geselecteerde zondag: {{afgelopenZondag}}</v-card-title></v-card>
+          <div v-for="(groep, index) in groepen" :key="index">
               <v-row>
                 <v-card-subtitle>{{ groep.naam }}</v-card-subtitle>
                 <v-btn
@@ -35,8 +29,8 @@
                 </v-btn>
                 <v-text-field
                   v-model="groep.aantal"
-                  width="40"
                   v-mask="'##'"
+                  class="shrink"
                 ></v-text-field>
                 <v-btn
                   text
@@ -44,27 +38,67 @@
                   @click="groep.aantal++"
                 >
                   <v-icon>mdi-plus</v-icon>
-                </v-btn></v-row
-              ></v-col
-            >
-            </v-container>
-          </v-card-actions>
+                </v-btn>
+              </v-row>
+          </div>
         </v-card>
       </v-dialog>
-    </v-card>
-  </div>
 </template>
 
 <script>
 // import firebase from 'firebase'
 import { mask } from 'vue-the-mask'
+import { db } from '@/plugins/firebase'
 export default {
   directives: { mask },
   data() {
     return {
+      afgelopenZondag:"",
+      datums: [],
       aanpassen: false,
       groepen: [{naam:'speelclub', aantal: 0},{naam: 'rakkers', aantal: 0},{naam:'toppers', aantal: 0},{naam:'kerels', aantal:0}, {naam:'aspiranten', aantal:0}]
     }
+  },
+  mounted() {
+    this.opvragen()
+    this.huidigeDatumBerekenen()
+  },
+  methods: { 
+    opvragen() {
+      db.collection('ledenaantallen')
+        .get()
+        .then((snap) => {
+          snap.forEach((doc) => {
+            this.datums.push(doc.data())
+          })
+        })
+        console.log(this.datums)
+    },
+    // opslaan() {
+    //   db.collection('ledenaantallen')
+    //   .doc()
+    //   .set(this.contactLeider)  // Welke data ge wilt meegeven met .set()
+    //   .then(() => {               // '()' gebruiken omdat er geen 'doc' fzo moet meegegeven worden
+    //     this.bevestiging = true
+    //     this.editDialog = false
+    //   })
+
+    // },
+    huidigeDatumBerekenen() {
+      const Dag = new Date().getDay()
+      const VandaagTijd = new Date().getTime() - Dag*86400000
+      this.afgelopenZondag = new Date(VandaagTijd)
+    },
+    maakDocNaam() {
+      const str1 = this.afgelopenZondag.getDate()
+      const str2 = this.afgelopenZondag.getMonth()
+      const str3 = this.afgelopenZondag.getFullYear()
+      const docNaam = str1.concat(str2,str3)
+      return  docNaam
+    }
+  },
+  computed: {
+    
   }
 }
 </script>

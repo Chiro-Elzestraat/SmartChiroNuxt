@@ -1,13 +1,8 @@
 <template>
 <div>
-  <v-row>
-    <!-- <v-col cols="4">
+      <v-col><Secretaris v-if="isSecretaris" /></v-col>
+       <v-col>
       <Ledenaantallen />
-    </v-col> -->
-  </v-row>
-    <v-row>
-      <v-col><Secretaris v-if="isSecretaris" />
-      <div v-else>Het is hier voorlopig nog leeg.</div>
       </v-col>
       <!-- <v-col v-for="(card, index) in cardsFiltered" :key="index">
         <v-card
@@ -24,17 +19,17 @@
           </v-card-actions>
         </v-card>
       </v-col> -->
-    </v-row>
   </div>
 </template>
 
 <script>
 // import firebase from 'firebase'
+import Ledenaantallen from '@/components/onzeChiro/Ledenaantallen'
 import Secretaris from '@/components/onzeChiro/Secretaris'
-// import Ledenaantallen from '@/components/onzeChiro/Ledenaantallen'
+
 export default {
   components: {
-    // Ledenaantallen,
+    Ledenaantallen,
     Secretaris
   },
   data() {
