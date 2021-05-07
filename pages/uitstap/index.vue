@@ -1,13 +1,14 @@
 <template>
   <v-container>
     <h1>Uitstappen</h1>
+    <v-switch label="Toon gepasseerde uitstappen" v-model="toonAfgelopen"></v-switch>
     <!-- <v-card>
       <v-card-title></v-card-title>
       <v-card-subtitle></v-card-subtitle>
       <v-img :src="uitstap.url"></v-img>
     </v-card> -->
     <v-row>
-      <v-col v-for="(uitstap, index) in uitstappen" :key="index">
+      <v-col v-for="(uitstap, index) in alleUitstappen" :key="index">
         <v-card class="card" max-width="400">
           <v-img
             :src="uitstap.url"
@@ -77,7 +78,33 @@ export default {
       toevoegen: false,
       leider: false,
       uitstappen: [],
-      nu: new Date()
+      nu: new Date(),
+      toonAfgelopen: false,
+    }
+  },
+  computed: {
+    gepasseerd() {
+      const date = new Date()
+      date.setDate(date.getDate() - 1)
+      let result = this.uitstappen.filter(u => new Date(u.deadline) < date)
+      result = result === undefined ? [] : result
+      return result
+    },
+    opkomend(){
+      const date = new Date()
+      date.setDate(date.getDate() - 1)
+      let result = this.uitstappen.filter(u => new Date(u.deadline) >= date)
+      result = result === undefined ? [] : result
+      return result
+    },
+    alleUitstappen(){
+      const result = []
+      if(this.opkomend.length > 0)
+      result.push(...this.opkomend)
+      if(this.toonAfgelopen && this.gepasseerd.length > 0){
+        result.push(...this.gepasseerd)
+      }
+      return result
     }
   },
   created() {
