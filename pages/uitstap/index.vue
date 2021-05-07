@@ -24,7 +24,7 @@
           >
           <v-card-text class="text--primary">
             {{ uitstap.beschrijving }}
-            <v-row>
+            <v-row style="margin-top: 16px">
               <v-chip
                 :color="groep.geselecteerd ? 'green' : ''"
                 v-for="(groep, index) in uitstap.groepen"
