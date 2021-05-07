@@ -6,8 +6,11 @@
       </v-img>
 
       <v-card-subtitle class="pb-0"
-        ><span v-if="uitstap.isKamp">Speelclub: {{uitstap.datesSpeelclub[0]}} t.e.m. {{uitstap.datesSpeelclub[1]}}<br /></span>{{ uitstap.dates[0] }} t.e.m. {{ uitstap.dates[1] }}<br />Deadline
-        voor inschrijven: {{ uitstap.deadline }}
+        ><span v-if="uitstap.isKamp"
+          >Speelclub: {{ uitstap.datesSpeelclub[0] }} t.e.m.
+          {{ uitstap.datesSpeelclub[1] }}<br /></span
+        >{{ uitstap.dates[0] }} t.e.m. {{ uitstap.dates[1] }}<br />Deadline voor
+        inschrijven: {{ uitstap.deadline }}
       </v-card-subtitle>
 
       <v-card-text class="text--primary">
@@ -38,7 +41,7 @@
           </v-col>
           <v-col>
             Totaalprijs: €
-            {{ (uitstap.kostprijs * geselecteerd.length).toFixed(2) }}
+            {{ (totaalPrijs) }} <!--.toFixed(2)-->
           </v-col>
         </v-row>
         <v-row v-else-if="$store.state.gebruiker.user.leider">
@@ -194,6 +197,24 @@ export default {
     }
   },
   computed: {
+    totaalPrijs() {
+      let result = 0
+      const prices = []
+      this.ledenAlles.forEach((lid) => {
+        if (lid.geselecteerd) {
+          prices.push(this.isSpeelclub(lid)
+            ? parseFloat(this.uitstap.kostprijsSpeelclub)
+            : parseFloat(this.uitstap.kostprijs))
+        }
+      })
+      if(this.uitstap.geefKorting){
+        for (let i = 0; i < prices.length - 2; i += 2){
+          result -= 30
+        }
+      }
+      prices.forEach(p => {result += p})
+      return result
+    },
     deadlineVerlopen() {
       return (
         new Date().getTime() >=
@@ -235,6 +256,26 @@ export default {
     this.laadGegevens()
   },
   methods: {
+    isSpeelclub(lid) {
+      const vandaag = new Date()
+      const maand = vandaag.getMonth()
+      const vergelijkDatum =
+        maand < 8
+          ? new Date(vandaag.getFullYear() - 1, 12, 0)
+          : new Date(vandaag.getFullYear(), 12, 0)
+      const chiroLeeftijd = lid.chiroLeeftijd ?? 0
+      let lidGeboortedatum = new Date(lid.geboortedatum)
+      if (this.geselecteerdJaar !== this.chiroJaar)
+        lidGeboortedatum = lidGeboortedatum.setMonth(0)
+      const leeftijd =
+        (vergelijkDatum - lidGeboortedatum) / (1000 * 3600 * 24 * 365) +
+        chiroLeeftijd
+
+      if (leeftijd <= 9 && leeftijd > 0) {
+        return true
+      }
+      return false
+    },
     kopierNummer(betalingsnummer) {
       navigator.clipboard.writeText(betalingsnummer).then(() => {
         this.gekopieerd = true
@@ -295,7 +336,7 @@ export default {
                   return { ...item.data(), lidId: item.id, geselecteerd: false }
                 })
                 snap.docs.forEach((item) => {
-                  this.lidIds.push({lidId: item.id, naam: item.data().naam})
+                  this.lidIds.push({ lidId: item.id, naam: item.data().naam })
                 })
                 db.collection('uitstap')
                   .doc(doc.id)
