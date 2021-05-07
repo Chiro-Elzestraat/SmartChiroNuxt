@@ -28,7 +28,7 @@
             <v-expansion-panels focusable popout>
               <v-expansion-panel v-for="(lid, i) in groep.leden || 0" :key="i">
                 <v-expansion-panel-header :color="lid.betaald ? '' : 'red'">
-                  <v-badge icon="mdi-alert" left v-if="lid.waarschuwing">{{ lid.naam }}</v-badge>
+                  <v-badge v-if="lid.waarschuwing" icon="mdi-alert" left>{{ lid.naam }}</v-badge>
                   <div v-else>{{lid.naam}}</div>
                   <v-spacer />
                   {{
@@ -106,6 +106,12 @@ export default {
       gekopieerd: false,
       chiroJaar: (new Date().getMonth() < 7 ? -1 : 0) + new Date().getFullYear(),
       geselecteerdJaar: 0,
+    }
+  },
+  computed: {
+    selectJaren(){
+    return [this.chiroJaar, this.chiroJaar-1, this.chiroJaar-2]
+
     }
   },
   mounted() {
@@ -220,12 +226,6 @@ export default {
         console.warn(err)
         if (this.$store.state.gebruiker.user.isLoggedIn) this.$router.push('/')
       })
-    }
-  },
-  computed: {
-    selectJaren(){
-    return [this.chiroJaar, this.chiroJaar-1, this.chiroJaar-2]
-
     }
   }
 }

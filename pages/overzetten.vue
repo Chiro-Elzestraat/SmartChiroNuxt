@@ -27,7 +27,7 @@
                 :label="`Naam lid ${index + 1}`"
                 hint="Voornaam, gevolgd door achternaam"
               ></v-text-field>
-              <v-btn style="margin: auto 8px;" @click="verwijderLid(index)"
+              <v-btn @click="verwijderLid(index)" style="margin: auto 8px;"
                 >Verwijder</v-btn
               >
             </v-row>
@@ -36,11 +36,11 @@
           ><br />
           <div style="width: 100%;">
             <v-btn
-              style="margin: 16px auto; display: block;"
-              color="primary"
               :loading="laden"
               :disabled="leden.length === 0"
               @click="overzetten"
+              style="margin: 16px auto; display: block;"
+              color="primary"
               >Overzetten</v-btn
             >
           </div>

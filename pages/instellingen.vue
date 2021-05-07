@@ -14,6 +14,9 @@ export default {
   components: {
     Rollenbeheer,
   },
+  data() {
+    return {}
+  },
   computed: {
     groepsleider() {
       return (
@@ -25,9 +28,6 @@ export default {
     leider(){
       return this.$store.state.gebruiker.user.leider
     }
-  },
-  data() {
-    return {}
   },
   head() {
     return {

@@ -16,7 +16,7 @@
         <v-container>
           <form autocomplete="off">
             <v-row>
-              <v-col><v-checkbox label="Is kamp" v-model="isKamp"/></v-col>
+              <v-col><v-checkbox v-model="isKamp" label="Is kamp"/></v-col>
             </v-row>
             <v-row>
               <v-col>
@@ -38,7 +38,7 @@
             </v-row>
             <v-row v-if="uitstap.isKamp">
               <v-col>
-                <v-switch label="Geef korting vanaf 3de lid" v-model="uitstap.geefKorting"></v-switch>
+                <v-switch v-model="uitstap.geefKorting" label="Geef korting vanaf 3de lid"></v-switch>
               </v-col>
             </v-row>
             <v-row>
@@ -90,8 +90,8 @@
             <v-col cols="12" sm="6">
               <v-text-field
                 v-model="dateRangeText"
-                label="Begin en einddatum"
                 :hint="uitstap.isKamp ? '' : 'Voor 1-daagse uitstappen, druk 2 keer op de begindatum.'"
+                label="Begin en einddatum"
                 persistent-hint
                 prepend-icon="mdi-event"
                 readonly

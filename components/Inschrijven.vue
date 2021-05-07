@@ -65,8 +65,8 @@
                         <v-text-field
                           v-model="lid.contact.huisarts.gsm"
                           v-mask="mask"
-                          label="Gsm"
                           :rules="gsmRules"
+                          label="Gsm"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -83,16 +83,16 @@
                   ></v-checkbox>
                   &nbsp;
                   <v-text-field
-                    label="In het jaar (optioneel)"
                     v-model="lid.medischeFiche.tetanus.jaar"
                     :disabled="!lid.medischeFiche.tetanus.gevaccineerd"
+                    label="In het jaar (optioneel)"
                   ></v-text-field>
                 </v-row>
                 <v-row>
                   <v-textarea
+                    v-model="lid.medischeFiche.vroegereZiekten"
                     outlined
                     auto-grow
-                    v-model="lid.medischeFiche.vroegereZiekten"
                     label="Vroegere ziekten of heelkundige ingrepen"
                   ></v-textarea>
                 </v-row>
@@ -185,8 +185,8 @@
               </v-card-text>
             </v-card>
             <v-textarea
-              outlined
               v-model="lid.aanvullendeInfo"
+              outlined
               label="Aanvullende opmerkingen (optioneel)"
             ></v-textarea>
           </v-form>
@@ -288,10 +288,10 @@
     </v-card>
     <v-btn
       @click="inschrijven"
-      color="primary"
-      class="inschrijfknop"
       :loading="laden"
       :disabled="!dataInOrde"
+      color="primary"
+      class="inschrijfknop"
     >Inschrijven
     </v-btn
     >
@@ -324,14 +324,14 @@
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
-              dark
-              text
               @click="
                 () => {
                   betalen = false
                   $emit('ingeschreven')
                 }
               "
+              dark
+              text
             >Klaar
             </v-btn
             >
@@ -405,7 +405,7 @@
           href="mailto:smart@chiroelzestraat.be">smart@chiroelzestraat.be</a> en vermeld zeker volgende fout: {{error}}
         </v-card-text>
         <v-card-actions>
-          <v-btn text @click="errorDialog = false">Ok</v-btn>
+          <v-btn @click="errorDialog = false" text>Ok</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -495,19 +495,6 @@
         error: ''
       }
     },
-    watch: {
-      menu(val) {
-        val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
-      }
-    },
-    created() {
-      db.collection('gebruikers')
-        .doc(this.$store.state.gebruiker.user.data.uid)
-        .get()
-        .then((doc) => {
-          this.ouders[0].gsm = doc.data().gsm
-        })
-    },
     computed: {
       betalingQr() {
         return `BCD
@@ -554,6 +541,19 @@ ${this.betalingsId}`
         })
         return valid
       }
+    },
+    watch: {
+      menu(val) {
+        val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
+      }
+    },
+    created() {
+      db.collection('gebruikers')
+        .doc(this.$store.state.gebruiker.user.data.uid)
+        .get()
+        .then((doc) => {
+          this.ouders[0].gsm = doc.data().gsm
+        })
     },
 
     methods: {

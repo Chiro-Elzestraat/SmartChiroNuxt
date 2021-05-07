@@ -4,8 +4,8 @@
       <v-col
         ><v-text-field
           v-model="extra.naam"
-          label="Naam"
           :rules="rules.nietLeeg"
+          label="Naam"
           hint="Eerst voornaam, daarna achternaam"
         ></v-text-field
       ></v-col>
@@ -24,8 +24,8 @@
       <v-col>
         <v-text-field
           v-model="extra.relatie"
-          label="Relatie met deze persoon (oma, nonkel, buur, etc.)"
           :rules="rules.nietLeeg"
+          label="Relatie met deze persoon (oma, nonkel, buur, etc.)"
         ></v-text-field>
       </v-col>
     </v-row>

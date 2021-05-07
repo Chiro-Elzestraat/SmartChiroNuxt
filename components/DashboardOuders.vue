@@ -21,7 +21,7 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </div>
-    <v-dialog width="500" v-model="herinschrijvenDialog" v-if="leden.length > 0">
+    <v-dialog v-model="herinschrijvenDialog" v-if="leden.length > 0" width="500">
       <template v-slot:activator="{on}">
         <v-btn v-on="on" class="ma-5" color="primary">Opnieuw inschrijven</v-btn>
       </template>
@@ -29,7 +29,7 @@
         <v-card-title>Opnieuw inschrijven</v-card-title>
         <v-card-text>
           <v-list>
-            <v-list-item-group multiple v-model="herinschrijven">
+            <v-list-item-group v-model="herinschrijven" multiple>
               <v-list-item v-for="lid in leden" :key="lid.lidId">
                 <template v-slot:default="{active}">
                   <v-list-item-action>
@@ -44,10 +44,10 @@
           </v-list>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="primary" :loading="laden" @click="betalen" :disabled="herinschrijvenIds.length <= 0">
+          <v-btn :loading="laden" @click="betalen" :disabled="herinschrijvenIds.length <= 0" color="primary">
             Bevestigen
           </v-btn>
-          <v-btn text @click="herinschrijvenDialog = false">Annuleren</v-btn>
+          <v-btn @click="herinschrijvenDialog = false" text>Annuleren</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -63,14 +63,14 @@
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
-              dark
-              text
               @click="
                 () => {
                   betalenDialog = false
                   $emit('ingeschreven')
                 }
               "
+              dark
+              text
             >Klaar
             </v-btn
             >
@@ -145,7 +145,7 @@
           href="mailto:smart@chiroelzestraat.be">smart@chiroelzestraat.be</a> en vermeld zeker volgende fout: {{error}}
         </v-card-text>
         <v-card-actions>
-          <v-btn text @click="errorDialog = false">Ok</v-btn>
+          <v-btn @click="errorDialog = false" text>Ok</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

@@ -6,7 +6,8 @@
       </v-img>
 
       <v-card-subtitle class="pb-0"
-        >{{ uitstap.dates[0] }} - {{ uitstap.dates[1] }}
+        ><span v-if="uitstap.isKamp">Speelclub: {{uitstap.datesSpeelclub[0]}} t.e.m. {{uitstap.datesSpeelclub[1]}}<br /></span>{{ uitstap.dates[0] }} t.e.m. {{ uitstap.dates[1] }}<br />Deadline
+        voor inschrijven: {{ uitstap.deadline }}
       </v-card-subtitle>
 
       <v-card-text class="text--primary">
@@ -294,7 +295,7 @@ export default {
                   return { ...item.data(), lidId: item.id, geselecteerd: false }
                 })
                 snap.docs.forEach((item) => {
-                  this.lidIds.push({ lidId: item.id, naam: item.data().naam })
+                  this.lidIds.push({lidId: item.id, naam: item.data().naam})
                 })
                 db.collection('uitstap')
                   .doc(doc.id)
