@@ -59,7 +59,7 @@
       </template>
       <NieuweUitstap
         @sluit="toevoegen = false"
-        @aangemaakt="toevoegen = false"
+        @aangemaakt="aangemaakt"
       />
     </v-dialog>
   </v-container>
@@ -122,26 +122,34 @@ export default {
     })
   },
   mounted() {
-    db.collection('uitstap')
-      .get()
-      .then((snapshot) => {
-        snapshot.forEach((doc) => {
-          storage
-            .ref(`uitstap/${doc.id}`)
-            .getDownloadURL()
-            .then((url) => {
-              this.uitstappen.push({ ...doc.data(), url, id: doc.id })
-            })
-            .catch(function(error) {
-              console.warn(error)
-            })
-        })
-      })
+    this.haalUitstappenOp()
     window.setInterval(() => {
       this.nu = Math.trunc(new Date().getTime() / 1000)
     }, 1000)
   },
   methods: {
+    aangemaakt(){
+      this.toevoegen = false
+      this.haalUitstappenOp()
+    },
+    haalUitstappenOp(){
+      this.uitstappen = []
+      db.collection('uitstap')
+        .get()
+        .then((snapshot) => {
+          snapshot.forEach((doc) => {
+            storage
+              .ref(`uitstap/${doc.id}`)
+              .getDownloadURL()
+              .then((url) => {
+                this.uitstappen.push({ ...doc.data(), url, id: doc.id })
+              })
+              .catch(function(error) {
+                console.warn(error)
+              })
+          })
+        })
+    },
     secondenNaarDhms(seconden) {
       seconden = Number(seconden)
       const d = Math.floor(seconden / (3600 * 24))
