@@ -23,25 +23,25 @@
           </v-toolbar>
           <v-card-actions>
             <v-container>
-            <v-col cols="6" v-for="(groep, index) in groepen" :key="index">
+            <v-col v-for="(groep, index) in groepen" :key="index" cols="6">
               <v-row>
                 <v-card-subtitle>{{ groep.naam }}</v-card-subtitle>
                 <v-btn
-                  text
                   :disabled="groep.aantal <= 0"
                   @click="groep.aantal--"
+                  text
                 >
                   <v-icon>mdi-minus</v-icon>
                 </v-btn>
                 <v-text-field
                   v-model="groep.aantal"
-                  width="40"
                   v-mask="'##'"
+                  width="40"
                 ></v-text-field>
                 <v-btn
-                  text
                   :disabled="groep.aantal >= 99"
                   @click="groep.aantal++"
+                  text
                 >
                   <v-icon>mdi-plus</v-icon>
                 </v-btn></v-row

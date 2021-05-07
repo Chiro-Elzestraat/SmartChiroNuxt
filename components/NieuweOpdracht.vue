@@ -31,8 +31,8 @@
                   <v-row>
                     <v-col>
                       <v-text-field
-                        type="number"
                         v-model="opdracht.naam"
+                        type="number"
                         outlined
                         label="Naam"
                       ></v-text-field>

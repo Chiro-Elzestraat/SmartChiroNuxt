@@ -34,16 +34,16 @@
 
 <script>
 export default {
-  data() {
-    return {
-      tab: 0,
-      types: ['Voedingsmiddelen', 'Geneesmiddelen', 'Stoffen', 'Andere']
-    }
-  },
   props: {
     lidAllergieen: {
       type: Array,
       default: () => [{}]
+    }
+  },
+  data() {
+    return {
+      tab: 0,
+      types: ['Voedingsmiddelen', 'Geneesmiddelen', 'Stoffen', 'Andere']
     }
   },
   computed: {

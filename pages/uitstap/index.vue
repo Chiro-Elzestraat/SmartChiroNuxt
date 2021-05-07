@@ -1,13 +1,14 @@
 <template>
   <v-container>
     <h1>Uitstappen</h1>
+    <v-switch v-model="toonAfgelopen" label="Toon gepasseerde uitstappen"></v-switch>
     <!-- <v-card>
       <v-card-title></v-card-title>
       <v-card-subtitle></v-card-subtitle>
       <v-img :src="uitstap.url"></v-img>
     </v-card> -->
     <v-row>
-      <v-col v-for="(uitstap, index) in uitstappen" :key="index">
+      <v-col v-for="(uitstap, index) in alleUitstappen" :key="index">
         <v-card class="card" max-width="400">
           <v-img
             :src="uitstap.url"
@@ -18,12 +19,12 @@
           </v-img>
 
           <v-card-subtitle class="pb-0"
-            >{{ uitstap.dates[0] }} t.e.m. {{ uitstap.dates[1] }}<br />Deadline
+            ><span v-if="uitstap.isKamp">Speelclub: {{uitstap.datesSpeelclub[0]}} t.e.m. {{uitstap.datesSpeelclub[1]}}<br /></span>{{ uitstap.dates[0] }} t.e.m. {{ uitstap.dates[1] }}<br />Deadline
             voor inschrijven: {{ uitstap.deadline }}</v-card-subtitle
           >
           <v-card-text class="text--primary">
             {{ uitstap.beschrijving }}
-            <v-row>
+            <v-row style="margin-top: 16px">
               <v-chip
                 :color="groep.geselecteerd ? 'green' : ''"
                 v-for="(groep, index) in uitstap.groepen"
@@ -58,7 +59,7 @@
       </template>
       <NieuweUitstap
         @sluit="toevoegen = false"
-        @aangemaakt="toevoegen = false"
+        @aangemaakt="aangemaakt"
       />
     </v-dialog>
   </v-container>
@@ -77,7 +78,33 @@ export default {
       toevoegen: false,
       leider: false,
       uitstappen: [],
-      nu: new Date()
+      nu: new Date(),
+      toonAfgelopen: false,
+    }
+  },
+  computed: {
+    gepasseerd() {
+      const date = new Date()
+      date.setDate(date.getDate() - 1)
+      let result = this.uitstappen.filter(u => new Date(u.deadline) < date)
+      result = result === undefined ? [] : result
+      return result
+    },
+    opkomend(){
+      const date = new Date()
+      date.setDate(date.getDate() - 1)
+      let result = this.uitstappen.filter(u => new Date(u.deadline) >= date)
+      result = result === undefined ? [] : result
+      return result
+    },
+    alleUitstappen(){
+      const result = []
+      if(this.opkomend.length > 0)
+      result.push(...this.opkomend)
+      if(this.toonAfgelopen && this.gepasseerd.length > 0){
+        result.push(...this.gepasseerd)
+      }
+      return result
     }
   },
   created() {
@@ -95,26 +122,34 @@ export default {
     })
   },
   mounted() {
-    db.collection('uitstap')
-      .get()
-      .then((snapshot) => {
-        snapshot.forEach((doc) => {
-          storage
-            .ref(`uitstap/${doc.id}`)
-            .getDownloadURL()
-            .then((url) => {
-              this.uitstappen.push({ ...doc.data(), url, id: doc.id })
-            })
-            .catch(function(error) {
-              console.warn(error)
-            })
-        })
-      })
+    this.haalUitstappenOp()
     window.setInterval(() => {
       this.nu = Math.trunc(new Date().getTime() / 1000)
     }, 1000)
   },
   methods: {
+    aangemaakt(){
+      this.toevoegen = false
+      this.haalUitstappenOp()
+    },
+    haalUitstappenOp(){
+      this.uitstappen = []
+      db.collection('uitstap')
+        .get()
+        .then((snapshot) => {
+          snapshot.forEach((doc) => {
+            storage
+              .ref(`uitstap/${doc.id}`)
+              .getDownloadURL()
+              .then((url) => {
+                this.uitstappen.push({ ...doc.data(), url, id: doc.id })
+              })
+              .catch(function(error) {
+                console.warn(error)
+              })
+          })
+        })
+    },
     secondenNaarDhms(seconden) {
       seconden = Number(seconden)
       const d = Math.floor(seconden / (3600 * 24))

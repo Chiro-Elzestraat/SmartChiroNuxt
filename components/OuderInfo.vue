@@ -4,8 +4,8 @@
       <v-col
         ><v-text-field
           v-model="ouder.naam"
-          label="Naam"
           :rules="rules.nietLeeg"
+          label="Naam"
           hint="Eerst voornaam, daarna achternaam"
         ></v-text-field
       ></v-col>
@@ -39,6 +39,14 @@ export default {
   directives: {
     mask
   },
+  props: {
+    ouderProp: {
+      type: Object,
+      default: () => {
+        return { naam: '', email: '', gsm: '+32' }
+      }
+    }
+  },
   data() {
     return {
       emailRules: [
@@ -55,14 +63,6 @@ export default {
             value === '+32' ||
             'Ongeldig gsm-nummer. Verwacht formaat: +32 123 45 67 89'
         ]
-      }
-    }
-  },
-  props: {
-    ouderProp: {
-      type: Object,
-      default: () => {
-        return { naam: '', email: '', gsm: '+32' }
       }
     }
   },

@@ -4,14 +4,14 @@
       <v-col v-for="(card, index) in cardsFiltered" :key="index">
         <v-card
           :disabled="card.disabled"
+          @click="go(card)"
           class="mx-auto"
           max-width="400"
-          @click="go(card)"
         >
           <v-img :src="card.src" height="200px" width="400px" contain></v-img>
           <v-card-title v-text="card.title"></v-card-title>
           <v-card-actions class="justify-center">
-            <v-btn outlined :color="card.color || 'primary'" text
+            <v-btn :color="card.color || 'primary'" outlined text
               >Ga naar</v-btn
             >
           </v-card-actions>
@@ -71,14 +71,6 @@ export default {
       rollen: []
     }
   },
-  methods: {
-    go(card) {
-      if(card.link)
-        window.location = card.page
-      else
-      this.$router.push(card.page)
-    }
-  },
   computed: {
     cardsFiltered() {
       return this.cards.filter((card) => {
@@ -104,6 +96,14 @@ export default {
       .catch((error) => {
         console.warn(error)
       })
+  },
+  methods: {
+    go(card) {
+      if(card.link)
+        window.location = card.page
+      else
+      this.$router.push(card.page)
+    }
   }
 }
 </script>

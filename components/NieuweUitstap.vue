@@ -16,6 +16,9 @@
         <v-container>
           <form autocomplete="off">
             <v-row>
+              <v-col><v-checkbox v-model="isKamp" label="Is kamp"/></v-col>
+            </v-row>
+            <v-row>
               <v-col>
                 <v-text-field
                   v-model="uitstap.titel"
@@ -33,7 +36,20 @@
                 ></v-textarea>
               </v-col>
             </v-row>
+            <v-row v-if="uitstap.isKamp">
+              <v-col>
+                <v-switch v-model="uitstap.geefKorting" label="Geef korting vanaf 3de lid"></v-switch>
+              </v-col>
+            </v-row>
             <v-row>
+              <v-col v-if="uitstap.isKamp">
+                <v-text-field
+                  v-model="uitstap.kostprijsSpeelclub"
+                  label="Kostprijs speelclub"
+                  outlined
+                  type="number"
+                ></v-text-field>
+              </v-col>
               <v-col>
                 <v-text-field
                   v-model="uitstap.kostprijs"
@@ -74,8 +90,27 @@
             <v-col cols="12" sm="6">
               <v-text-field
                 v-model="dateRangeText"
+                :hint="uitstap.isKamp ? '' : 'Voor 1-daagse uitstappen, druk 2 keer op de begindatum.'"
                 label="Begin en einddatum"
-                hint="Voor 1-daagse uitstappen, druk 2 keer op de begindatum."
+                persistent-hint
+                prepend-icon="mdi-event"
+                readonly
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row v-if="uitstap.isKamp">
+            <v-col cols="12" sm="6">
+              <v-date-picker
+                v-model="uitstap.datesSpeelclub"
+                range
+                locale="nl"
+                first-day-of-week="1"
+              ></v-date-picker>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-text-field
+                v-model="dateRangeTextSpeelclub"
+                label="Begin en einddatum speelclub"
                 persistent-hint
                 prepend-icon="mdi-event"
                 readonly
@@ -158,8 +193,12 @@
 import { db, storage } from '@/plugins/firebase'
 const initialState = () => {
   return {
+    isKamp: false,
     uitstap: {
+      isKamp: false,
       dates: [],
+      datesSpeelclub: [],
+      geefKorting: false,
       groepen: [
         { naam: 'Speelclub', geselecteerd: false },
         { naam: 'Rakkers', geselecteerd: false },
@@ -177,6 +216,16 @@ export default {
   computed: {
     dateRangeText() {
       return this.uitstap.dates.join(' t.e.m. ')
+    },
+    dateRangeTextSpeelclub(){
+      return this.uitstap.datesSpeelclub.join(' t.e.m. ')
+    },
+  },
+  watch: {
+    isKamp(newValue, oldValue) {
+      this.uitstap.isKamp = newValue
+      if(newValue)
+        this.uitstap.groepen = this.uitstap.groepen.map(g => {return {...g, geselecteerd: true}})
     }
   },
   methods: {
