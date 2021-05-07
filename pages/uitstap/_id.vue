@@ -41,7 +41,7 @@
           </v-col>
           <v-col>
             Totaalprijs: €
-            {{ (totaalPrijs) }} <!--.toFixed(2)-->
+            {{ totaalPrijs.toFixed(2) }}
           </v-col>
         </v-row>
         <v-row v-else-if="$store.state.gebruiker.user.leider">
@@ -142,29 +142,41 @@
           </v-list-item>
         </v-list>
         <v-divider></v-divider>
-        <v-list three-line subheader>
-          <v-subheader>Informatie overschrijving</v-subheader>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>Rekeningnummer</v-list-item-title>
-              <v-list-item-subtitle>BE97 8601 0855 9449</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>Mededeling</v-list-item-title>
-              <v-list-item-subtitle>{{ betalingsId }}</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>Bedrag</v-list-item-title>
-              <v-list-item-subtitle
-                >{{ `€ ${teBetalen.toFixed(2)}` }}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
+        <v-row class="pr-0 mr-0">
+          <v-col>
+            <v-list three-line subheader>
+              <v-subheader>Informatie overschrijving</v-subheader>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Rekeningnummer</v-list-item-title>
+                  <v-list-item-subtitle
+                    >BE97 8601 0855 9449</v-list-item-subtitle
+                  >
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Mededeling</v-list-item-title>
+                  <v-list-item-subtitle>{{ betalingsId }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Bedrag</v-list-item-title>
+                  <v-list-item-subtitle
+                    >{{ `€ ${teBetalen.toFixed(2)}` }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-col>
+          <v-col class="pr-0 mr-0 text-center hidden-xs-only">
+            <p>
+              Scan de QR-code met je bankapp om met je smartphone te betalen.
+            </p>
+            <vue-qrcode :value="betalingQr" :options="{ width: 200 }" />
+          </v-col>
+        </v-row>
         <v-card-text class="text-center"
           >Gelieve deze betaling zo snel mogelijk in orde te brengen.
         </v-card-text>
@@ -173,13 +185,31 @@
     <v-snackbar v-model="gekopieerd">
       Betalingsnummer gekopierd
     </v-snackbar>
+    <v-dialog v-model="error" width="500">
+      <v-card
+        ><v-card-title>Er is iets fout gegaan</v-card-title>
+        <v-card-text
+          >De inschrijving kon niet worden voltooid vanwege een probleem met de
+          betalingsserver. Als dit probleem zich blijft aanhouden, gelieve
+          contact op te nemen met
+          <a href="mailto:contact@chiroelzestraat.be"
+            >contact@chiroelzestraat.be</a
+          ></v-card-text
+        ></v-card
+      >
+      <v-btn @click="error = false">Ok</v-btn>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
+import VueQrcode from '@chenfengyuan/vue-qrcode'
 import { db, storage } from '@/plugins/firebase'
 
 export default {
+  components: {
+    VueQrcode
+  },
   data() {
     return {
       uitstap: {
@@ -187,6 +217,7 @@ export default {
       },
       ledenAlles: [],
       laden: false,
+      error: false,
       betalen: false,
       teBetalen: 0,
       betalingsId: '',
@@ -197,22 +228,38 @@ export default {
     }
   },
   computed: {
+    betalingQr() {
+      return `BCD
+002
+2
+SCT
+
+Chirojongens Elzestraat
+BE97860108559449
+EUR${this.teBetalen.toFixed(2)}
+
+${this.betalingsId}`
+    },
     totaalPrijs() {
       let result = 0
       const prices = []
       this.ledenAlles.forEach((lid) => {
         if (lid.geselecteerd) {
-          prices.push(this.isSpeelclub(lid)
-            ? parseFloat(this.uitstap.kostprijsSpeelclub)
-            : parseFloat(this.uitstap.kostprijs))
+          prices.push(
+            this.isSpeelclub(lid)
+              ? parseFloat(this.uitstap.kostprijsSpeelclub)
+              : parseFloat(this.uitstap.kostprijs)
+          )
         }
       })
-      if(this.uitstap.geefKorting){
-        for (let i = 0; i < prices.length - 2; i += 2){
+      if (this.uitstap.geefKorting) {
+        for (let i = 0; i < prices.length - 2; i += 2) {
           result -= 30
         }
       }
-      prices.forEach(p => {result += p})
+      prices.forEach((p) => {
+        result += p
+      })
       return result
     },
     deadlineVerlopen() {
@@ -283,29 +330,22 @@ export default {
     },
     inschrijven() {
       this.laden = true
-      const ref = db
-        .collection('uitstap')
-        .doc(this.uitstap.id)
-        .collection('betaling')
-        .doc()
-      ref
-        .set({ leden: this.geselecteerd })
-        .then((doc) => {
-          db.collection('uitstap')
-            .doc(this.uitstap.id)
-            .collection('betaling')
-            .onSnapshot((snapshot) => {
-              snapshot.docChanges().forEach((change) => {
-                if (change.type === 'modified') {
-                  this.teBetalen = change.doc.data().bedrag
-                  this.betalingsId = change.doc.data().betalingsnummer
-                  this.laden = false
-                  this.betalen = true
-                }
-              })
-            })
+      this.$axios
+        .post('uitstap/betaal', {
+          uitstapId: this.uitstap.id,
+          leden: this.geselecteerd
         })
-        .catch((err) => console.warn(err))
+        .then((response) => {
+          this.betalen = true
+          this.laden = false
+          this.betalingsId = response.data.betalingsnummer
+          this.teBetalen = response.data.bedrag
+        })
+        .catch((err) => {
+          console.error(err)
+          this.error = true
+          this.laden = false
+        })
     },
     laadIngeschreven() {},
     laadGegevens() {
