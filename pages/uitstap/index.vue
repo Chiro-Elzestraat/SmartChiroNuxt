@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <h1>Uitstappen</h1>
-    <v-switch label="Toon gepasseerde uitstappen" v-model="toonAfgelopen"></v-switch>
+    <v-switch v-model="toonAfgelopen" label="Toon gepasseerde uitstappen"></v-switch>
     <!-- <v-card>
       <v-card-title></v-card-title>
       <v-card-subtitle></v-card-subtitle>
@@ -19,7 +19,7 @@
           </v-img>
 
           <v-card-subtitle class="pb-0"
-            >{{ uitstap.dates[0] }} t.e.m. {{ uitstap.dates[1] }}<br />Deadline
+            ><span v-if="uitstap.isKamp">Speelclub: {{uitstap.datesSpeelclub[0]}} t.e.m. {{uitstap.datesSpeelclub[1]}}<br /></span>{{ uitstap.dates[0] }} t.e.m. {{ uitstap.dates[1] }}<br />Deadline
             voor inschrijven: {{ uitstap.deadline }}</v-card-subtitle
           >
           <v-card-text class="text--primary">
