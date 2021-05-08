@@ -92,7 +92,7 @@
       </v-card-text>
       <v-actions>
         <v-btn
-          @click="inschrijven"
+          @click="startInschrijven"
           :loading="laden"
           :disabled="geselecteerd.length == 0 || deadlineVerlopen"
           v-if="gebruiker.ouder"
@@ -199,6 +199,50 @@
       >
       <v-btn @click="error = false">Ok</v-btn>
     </v-dialog>
+    <v-dialog v-model='bbqDialog' width='500'>
+      <v-card>
+        <v-card-title>Bbq inschrijving</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col>Indien u dit wenst, kan u nu al meteen reserveren voor de BBQ.</v-col>
+          </v-row>
+          <v-row>
+            <v-col><v-radio-group v-model="bbqKeuze">
+              <v-radio label='Ja, ik wil reserveren voor de BBQ'></v-radio>
+              <div v-if='bbqKeuze === 0'>
+                <v-text-field
+                  v-model="bbq.naam"
+                  label="Naam"
+                  outlined
+                ></v-text-field>
+                Aantal kinderporties (€{{uitstap.kostprijsKinderportie}} * {{bbq.kinderPorties}} = €{{uitstap.kostprijsKinderportie * bbq.kinderPorties}})
+                <v-row>
+
+                  <v-col><v-slider
+                    v-model="bbq.kinderPorties"
+                    :thumb-label='bbq.kinderPorties > 0 ? "always" : ""'
+                    min='0'
+                    max='15'
+                    ticks="always"
+                  ></v-slider></v-col>
+                </v-row>
+                Aantal volwassenporties (€{{uitstap.kostprijsVolwassenportie}} * {{bbq.volwassenPorties}} = €{{uitstap.kostprijsVolwassenportie * bbq.volwassenPorties}})
+                <v-row><v-col><v-slider
+                  v-model="bbq.volwassenPorties"
+                  :thumb-label='bbq.volwassenPorties > 0 ? "always" : ""'
+                  ticks="always"
+                  min='0'
+                  max='15'
+                ></v-slider></v-col></v-row>
+              </div>
+              <v-radio label='Nee, ik wil niet reserveren'></v-radio>
+            </v-radio-group></v-col>
+          </v-row>
+          Totaalprijs: €{{totaalPrijs.toFixed(2)}}(Kamp) + €{{bbqPrijs.toFixed(2)}}(BBQ) = €{{(totaalPrijs + bbqPrijs).toFixed(2)}}
+        </v-card-text>
+        <v-card-actions><v-btn @click='inschrijven' :loading='laden' text color='primary'>Inschrijving bevestigen</v-btn></v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -215,7 +259,14 @@ export default {
       uitstap: {
         dates: []
       },
+      bbqKeuze: 0,
       ledenAlles: [],
+      bbqDialog: false,
+      bbq: {
+        kinderPorties: 0,
+        volwassenPorties: 0,
+        naam: '',
+      },
       laden: false,
       error: false,
       betalen: false,
@@ -228,6 +279,19 @@ export default {
     }
   },
   computed: {
+    bbqPrijs(){
+      return this.bbqBestelling.kinderPorties * this.uitstap.kostprijsKinderportie + this.bbqBestelling.volwassenPorties * this.uitstap.kostprijsVolwassenportie
+    },
+    bbqBestelling(){
+      if(this.bbqKeuze === 0){
+        return this.bbq
+      }else{
+        return {
+          kinderPorties: 0,
+          volwassenPorties: 0,
+        }
+      }
+    },
     betalingQr() {
       return `BCD
 002
@@ -301,6 +365,7 @@ ${this.betalingsId}`
   },
   mounted() {
     this.laadGegevens()
+    this.bbq.naam = this.$store.state.gebruiker.user.data.displayName
   },
   methods: {
     isSpeelclub(lid) {
@@ -328,18 +393,27 @@ ${this.betalingsId}`
         this.gekopieerd = true
       })
     },
+    startInschrijven(){
+      if(!this.uitstap.heeftBbq){
+        this.inschrijven()
+      }else{
+        this.bbqDialog = true
+      }
+    },
     inschrijven() {
       this.laden = true
       this.$axios
         .post('uitstap/betaal', {
           uitstapId: this.uitstap.id,
-          leden: this.geselecteerd
+          leden: this.geselecteerd,
+          bbq: this.bbqBestelling
         })
         .then((response) => {
           this.betalen = true
           this.laden = false
           this.betalingsId = response.data.betalingsnummer
           this.teBetalen = response.data.bedrag
+          this.bbqDialog = false
         })
         .catch((err) => {
           console.error(err)
