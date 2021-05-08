@@ -59,6 +59,25 @@
                 ></v-text-field>
               </v-col>
             </v-row>
+            <v-row v-if='uitstap.isKamp'>
+              <v-col>
+                <v-switch v-model='uitstap.heeftBbq' label="Integreer BBQ inschrijving"></v-switch>
+              </v-col>
+            </v-row>
+            <v-row v-if='uitstap.heeftBbq'>
+              <v-col><v-text-field
+                v-model="uitstap.kostprijsKinderportie"
+                label="Kostprijs kinderportie"
+                outlined
+                type="number"
+              ></v-text-field></v-col>
+              <v-col><v-text-field
+                v-model="uitstap.kostprijsVolwassenportie"
+                label="Kostprijs volwassen portie"
+                outlined
+                type="number"
+              ></v-text-field></v-col>
+            </v-row>
             <v-row>
               <v-col>
                 <v-file-input
@@ -196,6 +215,7 @@ const initialState = () => {
     isKamp: false,
     uitstap: {
       isKamp: false,
+      heeftBbq: false,
       dates: [],
       datesSpeelclub: [],
       geefKorting: false,
