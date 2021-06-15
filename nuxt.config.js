@@ -87,7 +87,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/firebase.js'],
+  plugins: [{src: '~/plugins/firebase.js'},  { src: '~/plugins/pwa-update.js', mode: 'client' },],
   /*
    ** Nuxt.js dev-modules
    */
