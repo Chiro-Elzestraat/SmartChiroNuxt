@@ -68,9 +68,9 @@
         color="primary"
       />
     </v-app-bar>
-    <v-content>
+    <v-main>
       <nuxt/>
-    </v-content>
+    </v-main>
     <v-overlay
       :value="
         !this.$store.state.gebruiker.user.isLoggedIn &&
