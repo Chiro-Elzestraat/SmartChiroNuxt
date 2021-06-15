@@ -4,24 +4,17 @@
     <v-snackbar v-model="gekopieerd">
       Rekeningnummer gekopieerd
     </v-snackbar>
-    <v-row>
-      <v-col v-for="(card, index) in cardsFiltered" :key="index">
-        <v-card
-          :disabled="card.disabled"
+    <div class='dashboard-grid'>
+        <div
+          v-for="(card, index) in cardsFiltered" :key="index"
           @click="go(card)"
-          class="mx-auto"
-          max-width="400"
+          :class='card.disabled ? "disabled": "enabled"'
+          class='dashboard-card'
         >
-          <v-img :src="card.src" height="200px" width="400px" contain></v-img>
-          <v-card-title v-text="card.title"></v-card-title>
-          <v-card-actions class="justify-center">
-            <v-btn :color="card.color || 'primary'" outlined text
-              >Ga naar</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+          <img :src="card.src" style='width: 100%; object-fit: contain; height: 200px'>
+          <span v-text="card.title" class='card-title'></span>
+        </div>
+    </div>
   </div>
 </template>
 <script>
@@ -119,6 +112,40 @@ export default {
 </script>
 
 <style>
+.dashboard-grid{
+  padding: 16px;
+  width: 100%;
+  grid-gap: 4em;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+@media (min-width: 500px){
+  .dashboard-grid{
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  }
+}
+.dashboard-card{
+  display: flex;
+  flex-direction: column;
+}
+.dashboard-card.disabled{
+  opacity: 0.5;
+}
+.dashboard-card.enabled{
+  transition: 0.5s;
+  cursor: pointer;
+  border-radius: 15px;
+}
+.dashboard-card.enabled:hover, .dashboard-card.enabled:focus{
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.2);
+}
+.card-title{
+  margin-top: 1em;
+  font-size: 1.5rem;
+  align-self: center;
+  font-weight: bold;
+}
 .rekeningnummer-wrap{
   background: white;
   display: block;
