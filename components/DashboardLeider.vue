@@ -1,5 +1,9 @@
 <template>
-  <div>
+  <div style='display: flex; flex-direction: column; align-items: center'>
+    <div class='rekeningnummer-wrap'>Rekeningnummer Chiro: <span @click="kopierRekeningnummer" class='rekeningnummer'>BE97 8601 0855 9449</span></div>
+    <v-snackbar v-model="gekopieerd">
+      Rekeningnummer gekopieerd
+    </v-snackbar>
     <v-row>
       <v-col v-for="(card, index) in cardsFiltered" :key="index">
         <v-card
@@ -25,6 +29,7 @@ import firebase from 'firebase'
 export default {
   data() {
     return {
+      gekopieerd: false,
       cards: [
         {
           // top || zorgt ervoor dat als card.color undefined is, dat die de waarde erachter pakt (primary) --> dus als card.color gevuld is, pakt die da, anders primary
@@ -103,7 +108,31 @@ export default {
         window.location = card.page
       else
       this.$router.push(card.page)
+    },
+    kopierRekeningnummer(){
+      navigator.clipboard.writeText("BE97 8601 0855 9449").then(() => {
+        this.gekopieerd = true
+      })
     }
   }
 }
 </script>
+
+<style>
+.rekeningnummer-wrap{
+  background: white;
+  display: block;
+  color: #8bc34a;
+  border-radius: 15px;
+  padding: 10px;
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+.rekeningnummer{
+  cursor: pointer;
+}
+.rekeningnummer:focus, .rekeningnummer:hover{
+  text-decoration: underline;
+  color: black;
+}
+</style>
