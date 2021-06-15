@@ -127,6 +127,7 @@ export default {
 .dashboard-card{
   display: flex;
   flex-direction: column;
+  text-align: center;
 }
 .dashboard-card.disabled{
   opacity: 0.5;
