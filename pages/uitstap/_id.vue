@@ -15,7 +15,7 @@
 
       <v-card-text class="text--primary">
         {{ uitstap.beschrijving }}
-        <v-row>
+        <v-row style='margin-top: 16px'>
           <v-chip
             :color="groep.geselecteerd ? 'green' : ''"
             v-for="(groep, index) in uitstap.groepen"
@@ -62,7 +62,7 @@
               </v-card>
             </v-dialog>
             <v-list>
-              <v-list-item v-for="(lid, index) in ledenAlles" :key="index">
+              <v-list-item v-for="(lid, index) in ledenAlles" :key="index" v-if='lid.leden.length > 0'>
                 <v-list-item-content
                   v-for="(lidGegevens, index) in lid.leden"
                   :key="index"
@@ -91,11 +91,11 @@
         </v-row>
       </v-card-text>
       <v-actions>
-        <v-btn
-          @click="startInschrijven"
+        <button @click="startInschrijven"
           :loading="laden"
           :disabled="geselecteerd.length == 0 || deadlineVerlopen"
           v-if="gebruiker.ouder"
+          class='inschrijf-knop'
           text
           color="primary"
           >{{
@@ -103,7 +103,16 @@
               ? 'Inschrijvingen afgelopen'
               : 'Inschrijving vervolledigen'
           }}
-        </v-btn>
+        </button>
+        <button @click="startInschrijven"
+                :loading="laden"
+                v-if="gebruiker.ouder && !deadlineVerlopen && uitstap.heeftBbq"
+                class='inschrijf-knop bbq'
+                text
+                color="primary"
+        >
+          Extra BBQ bestelling
+        </button>
       </v-actions>
     </v-card>
     <v-dialog
@@ -208,8 +217,8 @@
           </v-row>
           <v-row>
             <v-col><v-radio-group v-model="bbqKeuze">
-              <v-radio label='Ja, ik wil reserveren voor de BBQ'></v-radio>
-              <div v-if='bbqKeuze === 0'>
+              <v-radio  v-if='geselecteerd.length > 0' label='Ja, ik wil reserveren voor de BBQ'></v-radio>
+              <div v-if='bbqKeuze === 0 || geselecteerd.length < 1'>
                 <v-text-field
                   v-model="bbq.naam"
                   label="Naam"
@@ -235,7 +244,7 @@
                   max='15'
                 ></v-slider></v-col></v-row>
               </div>
-              <v-radio label='Nee, ik wil niet reserveren'></v-radio>
+              <v-radio v-if='geselecteerd.length > 0' label='Nee, ik wil niet reserveren'></v-radio>
             </v-radio-group></v-col>
           </v-row>
           Totaalprijs: €{{totaalPrijs.toFixed(2)}}(Kamp) + €{{bbqPrijs.toFixed(2)}}(BBQ) = €{{(totaalPrijs + bbqPrijs).toFixed(2)}}
@@ -283,7 +292,7 @@ export default {
       return this.bbqBestelling.kinderPorties * this.uitstap.kostprijsKinderportie + this.bbqBestelling.volwassenPorties * this.uitstap.kostprijsVolwassenportie
     },
     bbqBestelling(){
-      if(this.bbqKeuze === 0){
+      if(this.bbqKeuze === 0 || this.geselecteerd.length === 0){
         return this.bbq
       }else{
         return {
@@ -507,7 +516,32 @@ ${this.betalingsId}`
 </script>
 
 <style>
+*{
+  box-sizing: border-box;
+}
 .groep {
   margin: 8px;
+}
+.inschrijf-knop{
+  padding: 0.75em 1.25em;
+  background: #dd042b;
+  border-radius: 15px;
+  margin: 0 1em 1em 1em;
+  transition: 0.2s;
+}
+.inschrijf-knop:is(:hover, :focus):not(:disabled){
+  background: white;
+  color: black;
+}
+.inschrijf-knop[disabled]{
+  opacity: 50%;
+  background: gray;
+}
+.inschrijf-knop.bbq{
+  background: transparent;
+  border: 2px solid #dd042b;
+}
+.inschrijf-knop.bbq:hover{
+  border: 2px solid transparent;
 }
 </style>
