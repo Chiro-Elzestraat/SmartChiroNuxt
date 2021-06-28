@@ -15,7 +15,7 @@
 
       <v-card-text class="text--primary">
         {{ uitstap.beschrijving }}
-        <v-row>
+        <v-row style='margin-top: 16px'>
           <v-chip
             :color="groep.geselecteerd ? 'green' : ''"
             v-for="(groep, index) in uitstap.groepen"
@@ -91,11 +91,11 @@
         </v-row>
       </v-card-text>
       <v-actions>
-        <v-btn
-          @click="startInschrijven"
+        <button @click="startInschrijven"
           :loading="laden"
           :disabled="geselecteerd.length == 0 || deadlineVerlopen"
           v-if="gebruiker.ouder"
+          class='inschrijf-knop'
           text
           color="primary"
           >{{
@@ -103,7 +103,7 @@
               ? 'Inschrijvingen afgelopen'
               : 'Inschrijving vervolledigen'
           }}
-        </v-btn>
+        </button>
       </v-actions>
     </v-card>
     <v-dialog
@@ -509,5 +509,16 @@ ${this.betalingsId}`
 <style>
 .groep {
   margin: 8px;
+}
+.inschrijf-knop{
+  padding: 0.75em 1.25em;
+  background: #dd042b;
+  border-radius: 15px;
+  margin: 0 1em 1em 1em;
+  transition: 0.2s;
+}
+.inschrijf-knop[disabled]{
+  opacity: 50%;
+  background: gray;
 }
 </style>
