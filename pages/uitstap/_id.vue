@@ -62,7 +62,7 @@
               </v-card>
             </v-dialog>
             <v-list>
-              <v-list-item v-for="(lid, index) in ledenAlles" :key="index">
+              <v-list-item v-for="(lid, index) in ledenAlles" :key="index" v-if='lid.leden.length > 0'>
                 <v-list-item-content
                   v-for="(lidGegevens, index) in lid.leden"
                   :key="index"
