@@ -48,8 +48,11 @@
           <v-col>
             <v-container>
               <v-col
-                ><h1>Totaal: {{ aantalIngeschrevenLeden }}</h1></v-col
+                ><h1>Totaal: {{ aantalIngeschrevenLeden }} leden</h1></v-col
               >
+              <v-col v-if='uitstap.heeftBbq'><h2>BBQ</h2>
+
+              <ul><li>Volwassenporties: {{aantalBbq.volwassenPorties}}</li><li>Kinderporties: {{aantalBbq.kinderPorties}}</li></ul></v-col>
               <v-col><v-btn @click="krijgMails">Krijg emails</v-btn></v-col>
             </v-container>
             <v-dialog v-model="toonMails">
@@ -367,6 +370,14 @@ ${this.betalingsId}`
       let result = 0
       this.ledenAlles.forEach((inschrijving) => {
         result += inschrijving.leden.length
+      })
+      return result
+    },
+    aantalBbq(){
+      const result = {volwassenPorties: 0, kinderPorties: 0}
+      this.ledenAlles.forEach((inschrijving) => {
+        result.volwassenPorties += inschrijving.bbq.volwassenPorties
+        result.kinderPorties += inschrijving.bbq.kinderPorties
       })
       return result
     },
