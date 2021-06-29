@@ -53,7 +53,7 @@
               <v-col v-if='uitstap.heeftBbq'><h2>BBQ</h2>
 
               <ul><li>Volwassenporties: {{aantalBbq.volwassenPorties}}</li><li>Kinderporties: {{aantalBbq.kinderPorties}}</li></ul></v-col>
-              <v-col><v-btn @click="krijgMails">Krijg emails</v-btn></v-col>
+              <v-col><v-btn @click="krijgMails"><v-icon style='margin-right: 10px'>mdi-email</v-icon>Krijg emails</v-btn></v-col>
             </v-container>
             <v-dialog v-model="toonMails">
               <v-card>

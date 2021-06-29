@@ -1,6 +1,9 @@
 <template>
   <v-container>
     <div v-if="!this.$store.state.gebruiker.user.isLoggedIn">
+      <v-alert type="info">
+        Belangrijk: Log steeds in met hetzelfde account om te vermijden dat je opnieuw je leden moet inschrijven. Als het lijkt dat er gegevens ontbreken, probeer dan een andere inlogmethode.
+      </v-alert>
       <img
         class="logo"
         src="/icon.png"
@@ -36,7 +39,7 @@
       <v-dialog v-model="dialog" width="500">
         <template v-slot:activator="{ on }">
           <v-btn v-on="on" style="margin: 0 auto; display: block;"
-            >Login met e-mail</v-btn
+            ><v-icon style='margin-right: 10px'>mdi-email</v-icon>Login met e-mail</v-btn
           >
         </template>
         <v-card outlined>
