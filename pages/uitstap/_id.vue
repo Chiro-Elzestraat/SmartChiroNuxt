@@ -231,6 +231,7 @@
           <v-row>
             <v-col>Indien u dit wenst, kan u nu al meteen reserveren voor de BBQ.</v-col>
           </v-row>
+          <v-alert v-if='bbqKeuze === 0 || geselecteerd.length < 1' color='green' icon='mdi-food-drumstick-off'>Liever een vegan alternatief? Zet dit dan mee in het invoerveld voor uw naam. Bijvoorbeeld: <span style='font-style: italic'>Voornaam Achternaam één volwassenportie is vegan</span></v-alert>
           <v-row>
             <v-col><v-radio-group v-model="bbqKeuze">
               <v-radio  v-if='geselecteerd.length > 0' label='Ja, ik wil reserveren voor de BBQ'></v-radio>
