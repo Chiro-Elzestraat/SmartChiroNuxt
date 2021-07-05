@@ -292,7 +292,7 @@ export default {
     checkNieuw() {
       firebase
         .auth()
-        .currentUser.getIdTokenResult()
+        .currentUser.getIdTokenResult(true)
         .then((idTokenResult) => {
           if (idTokenResult.claims.ouder || idTokenResult.claims.rollen
           ) {
