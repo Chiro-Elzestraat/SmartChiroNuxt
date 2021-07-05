@@ -130,25 +130,15 @@ export default {
           rollen: ['ouder']
         })
         .then(() => {
-          db.collection('gebruikers')
-            .doc(this.$store.state.gebruiker.user.data.uid)
-            .onSnapshot((doc) => {
-              if (doc.data().rollen_ok) {
-                firebase
-                  .auth()
-                  .currentUser.getIdToken(true)
-                  .then(() => {
-                    this.laden = false
-                    this.$store.commit('gebruiker/setNieuweGebruiker', false)
-                    this.$store.commit('gebruiker/setOuder', true)
-                  })
-                  .catch((error) => {
-                    window.alert(
-                      `Er is iets fout gegaan. Foutcode: ${error.code}. Foutmelding: ${error.message}`
-                    )
-                  })
-              }
-            })
+          this.$axios.post("maakaccount/maakouder").then(() => {
+            this.laden = false
+            this.$store.commit('gebruiker/setNieuweGebruiker', false)
+            this.$store.commit('gebruiker/setOuder', true)
+          }).catch((error) => {
+            window.alert(
+              `Er is iets fout gegaan. Foutcode: ${error.code}. Foutmelding: ${error.message}`
+            )
+          })
         })
         .catch((err) => {
           console.warn(err)
