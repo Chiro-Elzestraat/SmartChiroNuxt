@@ -24,7 +24,7 @@
             >{{ groep.naam }}
           </v-chip>
         </v-row>
-        <v-row v-if="$store.state.gebruiker.user.ouder">
+        <v-row v-if="$store.state.gebruiker.user.ouder || !$store.state.gebruiker.user.leider">
           <v-col>
             <v-chip
               :color="lid.geselecteerd || lid.ingeschreven ? 'primary' : ''"
@@ -120,9 +120,12 @@
               : 'Inschrijving vervolledigen'
           }}
         </button>
+        <v-alert v-if='gebruiker.data === null' type='warning'>
+          U bent momenteel niet ingelogd, waardoor u enkel BBQ bestellingen kunt plaatsen. Als u leden wilt inschrijven, gelieve dan eerst <NuxtLink to='/account'>in te loggen</NuxtLink>
+        </v-alert>
         <button @click="startInschrijven"
                 :loading="laden"
-                v-if="gebruiker.ouder && !deadlineVerlopen && uitstap.heeftBbq"
+                v-if="(gebruiker.ouder || !gebruiker.leider) && !deadlineVerlopen && uitstap.heeftBbq"
                 class='inschrijf-knop bbq'
                 text
                 color="primary"
@@ -399,7 +402,7 @@ ${this.betalingsId}`
   },
   mounted() {
     this.laadGegevens()
-    this.bbq.naam = this.$store.state.gebruiker.user.data.displayName
+    this.bbq.naam = this.$store.state.gebruiker.user.data?.displayName
   },
   methods: {
     isSpeelclub(lid) {

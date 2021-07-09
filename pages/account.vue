@@ -261,6 +261,8 @@ export default {
           this.email = ''
           this.wachtwoord = ''
           this.laden = false
+          this.$router.push(localStorage.getItem('openPath'))
+          localStorage.setItem('openPath', '/account')
         })
         .catch((error) => {
           this.errorDialog = true
@@ -297,6 +299,8 @@ export default {
           if (idTokenResult.claims.ouder || idTokenResult.claims.rollen
           ) {
             this.$store.commit('gebruiker/setNieuweGebruiker', false)
+            this.$router.push(localStorage.getItem('openPath'))
+            localStorage.setItem('openPath', '/account')
           } else {
             this.$store.commit('gebruiker/setNieuweGebruiker', true)
           }

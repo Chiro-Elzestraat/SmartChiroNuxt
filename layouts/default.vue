@@ -121,36 +121,38 @@
         }
       )
       firebase.auth().onAuthStateChanged((user) => {
-        this.$store.dispatch('gebruiker/fetchUser', user)
-        if (firebase
-          .auth()
-          .currentUser !== null) {
-          const token = `Bearer ${firebase
+        this.$store.dispatch('gebruiker/fetchUser', user, this.$route.path)
+        if(!this.$route.path.startsWith('/uitstap')) {
+          if (firebase
             .auth()
-            .currentUser.ya}`
-          this.$axios.setHeader('Authorization', token)
-          firebase
-            .auth()
-            .currentUser.getIdTokenResult()
-            .then((idTokenResult) => {
-              if (idTokenResult.claims.rollen === undefined) {
-                this.$store.commit('gebruiker/setNieuweGebruiker', true)
-                this.$router.push('/account')
-              } else if (idTokenResult.claims.rollen) {
-                for (const claim in idTokenResult.claims.rollen) {
-                  this.$store.commit('gebruiker/setClaim', claim)
+            .currentUser !== null) {
+            const token = `Bearer ${firebase
+              .auth()
+              .currentUser.ya}`
+            this.$axios.setHeader('Authorization', token)
+            firebase
+              .auth()
+              .currentUser.getIdTokenResult()
+              .then((idTokenResult) => {
+                if (idTokenResult.claims.rollen === undefined) {
+                  this.$store.commit('gebruiker/setNieuweGebruiker', true)
+                  this.$router.push('/account')
+                } else if (idTokenResult.claims.rollen) {
+                  for (const claim in idTokenResult.claims.rollen) {
+                    this.$store.commit('gebruiker/setClaim', claim)
+                  }
                 }
-              }
-              if (!idTokenResult.claims.rollen || !idTokenResult.claims.rollen.leider)
-                this.$store.commit('gebruiker/setOuder', true)
-            })
-            .catch((error) => {
-              console.warn(error)
-              this.$store.commit('gebruiker/setNieuweGebruiker', false)
-              this.$router.push('/account')
-            })
-        } else {
-          this.$router.push('/account')
+                if (!idTokenResult.claims.rollen || !idTokenResult.claims.rollen.leider)
+                  this.$store.commit('gebruiker/setOuder', true)
+              })
+              .catch((error) => {
+                console.warn(error)
+                this.$store.commit('gebruiker/setNieuweGebruiker', false)
+                this.$router.push('/account')
+              })
+          } else {
+            this.$router.push('/account')
+          }
         }
       })
       if (localStorage.getItem('dark') === 'false') this.setTheme(false)

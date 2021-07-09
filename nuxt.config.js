@@ -39,7 +39,8 @@ export default {
     fallback: true
   },
   router: {
-    mode: 'hash'
+    mode: 'hash',
+    middleware: ['check-auth'],
   },
   server: {
     https: {
@@ -87,7 +88,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [{src: '~/plugins/firebase.js'},  { src: '~/plugins/pwa-update.js', mode: 'client' },],
+  plugins: [{src: '~/plugins/firebase.js'},  { src: '~/plugins/pwa-update.js', mode: 'client' }, {src: '~/plugins/open-path.js', mode: 'client'}],
   /*
    ** Nuxt.js dev-modules
    */
