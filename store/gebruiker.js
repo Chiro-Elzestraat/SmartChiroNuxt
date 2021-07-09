@@ -50,6 +50,7 @@ export const actions = {
       commit('setUserData', user.toJSON())
     } else {
       commit('setUserData', null)
+      if(!this.$router.currentRoute.path.startsWith('/uitstap'))
       this.$router.push('/account')
     }
   }

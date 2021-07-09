@@ -399,7 +399,7 @@ ${this.betalingsId}`
   },
   mounted() {
     this.laadGegevens()
-    this.bbq.naam = this.$store.state.gebruiker.user.data.displayName
+    this.bbq.naam = this.$store.state.gebruiker.user.data?.displayName
   },
   methods: {
     isSpeelclub(lid) {

@@ -39,7 +39,8 @@ export default {
     fallback: true
   },
   router: {
-    mode: 'hash'
+    mode: 'hash',
+    middleware: ['check-auth'],
   },
   server: {
     https: {
