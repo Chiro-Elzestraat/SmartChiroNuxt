@@ -4,7 +4,6 @@ export default function ({ store, route, redirect }) {
     route.path !== '/account' &&
     !route.path.startsWith('/uitstap')
   ) {
-    if (process.browser) localStorage.setItem('openPath', route.path)
     return redirect('/account')
   }
 }
