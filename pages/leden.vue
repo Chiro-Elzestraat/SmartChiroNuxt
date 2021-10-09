@@ -216,6 +216,7 @@ export default {
             vergelijkDatum = new Date(this.geselecteerdJaar, 8, 0)
           }
 
+          this.mails = []
           this.groepen.forEach((groep) => {
             /* misschien deze loop omdraaien, dat eerst over de leden wordt geloopt, en daarna
           pas over de groepen om deze in de juiste groep te plaatsen, ik denk dat dat
