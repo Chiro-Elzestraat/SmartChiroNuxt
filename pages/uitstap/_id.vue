@@ -121,7 +121,7 @@
           }}
         </button>
         <v-alert v-if='gebruiker.data === null' type='warning'>
-          U bent momenteel niet ingelogd, waardoor u enkel BBQ bestellingen kunt plaatsen. Als u leden wilt inschrijven, gelieve dan eerst <NuxtLink to='/account'>in te loggen</NuxtLink>
+          U bent momenteel niet ingelogd. Als u leden wilt inschrijven, gelieve dan eerst <NuxtLink to='/account'>in te loggen</NuxtLink>
         </v-alert>
         <button @click="startInschrijven"
                 :loading="laden"
