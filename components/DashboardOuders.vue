@@ -96,7 +96,7 @@
               <v-list-item>
                 <v-list-item-content>
                   <v-list-item-title>Rekeningnummer</v-list-item-title>
-                  <v-list-item-subtitle>BE97 8601 0855 9449</v-list-item-subtitle>
+                  <v-list-item-subtitle>BE87 7350 6146 9894</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
               <v-list-item>
@@ -192,7 +192,7 @@
 SCT
 
 Chirojongens Elzestraat
-BE97860108559449
+BE87735061469894
 EUR${this.teBetalen.toFixed(2)}
 
 ${this.betalingsId}`
