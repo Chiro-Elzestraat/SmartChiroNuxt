@@ -1,6 +1,6 @@
 <template>
   <div style='display: flex; flex-direction: column; align-items: center'>
-    <div class='rekeningnummer-wrap'>Rekeningnummer Chiro: <span @click="kopierRekeningnummer" class='rekeningnummer'>BE97 8601 0855 9449</span></div>
+    <div class='rekeningnummer-wrap'>Rekeningnummer Chiro: <span @click="kopierRekeningnummer" class='rekeningnummer'>BE87 7350 6146 9894</span></div>
     <v-snackbar v-model="gekopieerd">
       Rekeningnummer gekopieerd
     </v-snackbar>
@@ -103,7 +103,7 @@ export default {
       this.$router.push(card.page)
     },
     kopierRekeningnummer(){
-      navigator.clipboard.writeText("BE97 8601 0855 9449").then(() => {
+      navigator.clipboard.writeText("BE87 7350 6146 9894").then(() => {
         this.gekopieerd = true
       })
     }
