@@ -21,7 +21,7 @@
     "@nuxtjs/pwa": "^3.3.4",
     "fibers": "^4.0.3",
     "firebase": "^7.24.0",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "nuxt": "^2.14.12",
     "qrcode.vue": "^1.7.0",
     "vue": "^2.6.12",
