@@ -158,6 +158,9 @@
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
+        <v-alert type='warning'>
+          Let op: ons rekeningnummer is onlangs gewijzigd. Zorg ervoor dat je het rekeningnummer juist invult en niet het oude gebruikt.
+        </v-alert>
         <v-list three-line subheader>
           <v-subheader>Ingeschreven leden</v-subheader>
           <v-list-item v-for="(lid, index) in geselecteerd" :key="index">
@@ -234,7 +237,7 @@
           <v-row>
             <v-col>Indien u dit wenst, kan u nu al meteen reserveren voor de BBQ.</v-col>
           </v-row>
-          <v-alert v-if='bbqKeuze === 0 || geselecteerd.length < 1' color='green' icon='mdi-food-drumstick-off'>Liever een vegan alternatief? Zet dit dan mee in het invoerveld voor uw naam. Bijvoorbeeld: <span style='font-style: italic'>Voornaam Achternaam één volwassenportie is vegan</span></v-alert>
+          <v-alert v-if='bbqKeuze === 0 || geselecteerd.length < 1' color='green' icon='mdi-food-drumstick-off'>Liever een vega(n) alternatief? Zet dit dan mee in het invoerveld voor uw naam. Bijvoorbeeld: <span style='font-style: italic'>Voornaam Achternaam één volwassenportie is vega</span></v-alert>
           <v-row>
             <v-col><v-radio-group v-model="bbqKeuze">
               <v-radio  v-if='geselecteerd.length > 0' label='Ja, ik wil reserveren voor de BBQ'></v-radio>
