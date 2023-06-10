@@ -187,9 +187,18 @@ export default {
     }
   },
   mounted() {
-    firebase
-      .auth()
-      .getRedirectResult()
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) this.checkNieuw()
+    })
+  },
+  methods: {
+    login(provider) {
+      if (provider === 'google') {
+        provider = new firebase.auth.GoogleAuthProvider()
+      } else if (provider === 'facebook') {
+        provider = new firebase.auth.FacebookAuthProvider()
+      }
+      firebase.auth().signInWithPopup(provider)
       .then(function(result) {
         if (result.credential) {
           // This gives you a Google Access Token. You can use it to access the Google API.
@@ -214,18 +223,6 @@ export default {
         // ...
         console.warn(errorCode, errorMessage, email, credential)
       })
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) this.checkNieuw()
-    })
-  },
-  methods: {
-    login(provider) {
-      if (provider === 'google') {
-        provider = new firebase.auth.GoogleAuthProvider()
-      } else if (provider === 'facebook') {
-        provider = new firebase.auth.FacebookAuthProvider()
-      }
-      firebase.auth().signInWithRedirect(provider)
     },
     maakAccount(email, password) {
       if (this.wachtwoordr === this.herhaalwachtwoordr) {
