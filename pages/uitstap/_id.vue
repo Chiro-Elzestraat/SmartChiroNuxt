@@ -240,7 +240,7 @@
           <v-alert v-if='bbqKeuze === 0 || geselecteerd.length < 1' color='green' icon='mdi-food-drumstick-off'>Liever een vega(n) alternatief? Zet dit dan mee in het invoerveld voor uw naam. Bijvoorbeeld: <span style='font-style: italic'>Voornaam Achternaam één volwassenportie is vega</span></v-alert>
           <v-row>
             <v-col><v-radio-group v-model="bbqKeuze">
-              <v-radio  v-if='geselecteerd.length > 0' label='Ja, ik wil reserveren voor de BBQ'></v-radio>
+              <v-radio  v-if='geselecteerd.length > 0' label='Ja, ik wil reserveren voor de BBQ' :value="0"></v-radio>
               <div v-if='bbqKeuze === 0 || geselecteerd.length < 1'>
                 <v-text-field
                   v-model="bbq.naam"
@@ -267,7 +267,7 @@
                   max='15'
                 ></v-slider></v-col></v-row>
               </div>
-              <v-radio v-if='geselecteerd.length > 0' label='Nee, ik wil niet reserveren'></v-radio>
+              <v-radio v-if='geselecteerd.length > 0' label='Nee, ik wil niet reserveren' :value="1"></v-radio>
             </v-radio-group></v-col>
           </v-row>
           Totaalprijs: €{{totaalPrijs.toFixed(2)}}(Kamp) + €{{bbqPrijs.toFixed(2)}}(BBQ) = €{{(totaalPrijs + bbqPrijs).toFixed(2)}}
