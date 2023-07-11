@@ -93,7 +93,7 @@ export default {
     opkomend(){
       const date = new Date()
       date.setDate(date.getDate() - 1)
-      let result = this.uitstappen.filter(u => new Date(u.deadline) >= date)
+      let result = this.uitstappen.filter(u => (this.leider ? new Date(u.dates[1]) : new Date(u.deadline)) >= date)
       result = result === undefined ? [] : result
       return result
     },

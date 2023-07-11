@@ -64,16 +64,12 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
-            <v-list>
+            <v-tabs>
+              <v-tab key="leden">Leden</v-tab>
+              <v-tab key="bbq">Extra BBQ</v-tab>
+              <v-tab-item key="leden">
+                <v-list>
               <v-list-item v-for="(lid, index) in ledenAlles" :key="index">
-                <v-list-item-content v-if='lid.leden.length === 0'>
-                  <div v-if='lid.bbq' class='bbq-bestelling'>
-                    <h3 class='extra-bbq'>Extra BBQ bestelling</h3>
-                    <p>BBQ naam: {{lid.bbq.naam}}</p>
-                    <p>Volwassenporties: {{lid.bbq.volwassenPorties}}</p>
-                    <p>Kinderporties: {{lid.bbq.kinderPorties}}</p>
-                  </div>
-                </v-list-item-content>
                 <v-list-item-content
                   v-for="(lidGegevens, index) in lid.leden"
                   :key="index"
@@ -103,6 +99,17 @@
                 </v-list-item-icon>
               </v-list-item>
             </v-list>
+            </v-tab-item>
+            <v-tab-item key="bbq">
+                <div class="bbq-bestellingen">
+                  <div v-for="(lid, index) in ledenBBQ" :key="index" class='bbq-bestelling'>
+                    <p>BBQ naam: {{lid.bbq.naam}}</p>
+                    <p>Volwassenporties: {{lid.bbq.volwassenPorties}}</p>
+                    <p>Kinderporties: {{lid.bbq.kinderPorties}}</p>
+                  </div>
+                </div>
+            </v-tab-item>
+            </v-tabs>
           </v-col>
         </v-row>
       </v-card-text>
@@ -293,6 +300,7 @@ export default {
       },
       bbqKeuze: 0,
       ledenAlles: [],
+      ledenBBQ: [],
       bbqDialog: false,
       bbq: {
         kinderPorties: 0,
@@ -383,6 +391,10 @@ ${this.betalingsId}`
     aantalBbq(){
       const result = {volwassenPorties: 0, kinderPorties: 0}
       this.ledenAlles.forEach((inschrijving) => {
+        result.volwassenPorties += inschrijving.bbq.volwassenPorties
+        result.kinderPorties += inschrijving.bbq.kinderPorties
+      })
+      this.ledenBBQ.forEach((inschrijving) => {
         result.volwassenPorties += inschrijving.bbq.volwassenPorties
         result.kinderPorties += inschrijving.bbq.kinderPorties
       })
@@ -521,7 +533,10 @@ ${this.betalingsId}`
               .collection('betaling')
             ref.get().then((inschrijvingen) => {
               inschrijvingen.docs.forEach((doc) => {
-                this.ledenAlles.push(doc.data())
+                if(doc.data().leden.length > 0)
+                  this.ledenAlles.push(doc.data())
+                else
+                  this.ledenBBQ.push(doc.data())
               })
             })
           }
@@ -547,10 +562,24 @@ ${this.betalingsId}`
 </script>
 
 <style>
+.bbq-bestellingen{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
 .bbq-bestelling{
   display: flex;
   flex-direction: column;
 }
+
+.bbq-bestellingen > .bbq-bestelling{
+  margin: 1em;
+  padding: 1em;
+  background-color: green;
+  border-radius: 15px;
+  width: max-content;
+}
+
 .extra-bbq{
   margin-bottom: 1em;
   border-radius: 15px;
