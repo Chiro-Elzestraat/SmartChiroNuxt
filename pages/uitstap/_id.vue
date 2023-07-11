@@ -52,7 +52,7 @@
               >
               <v-col v-if='uitstap.heeftBbq'><h2>BBQ</h2>
 
-              <ul><li>Volwassenporties: {{aantalBbq.volwassenPorties}}</li><li>Kinderporties: {{aantalBbq.kinderPorties}}</li></ul></v-col>
+              <ul><li>Volwassenporties: {{aantalBbq.volwassenPorties}}, waarvan betaald: {{aantalBbqBetaald.volwassenPorties}}</li><li>Kinderporties: {{aantalBbq.kinderPorties}}, waarvan betaald: {{aantalBbqBetaald.kinderPorties}}</li></ul></v-col>
               <v-col><v-btn @click="krijgMails"><v-icon style='margin-right: 10px'>mdi-email</v-icon>Krijg emails</v-btn></v-col>
             </v-container>
             <v-dialog v-model="toonMails">
@@ -102,7 +102,7 @@
             </v-tab-item>
             <v-tab-item key="bbq">
                 <div class="bbq-bestellingen">
-                  <div v-for="(lid, index) in ledenBBQ" :key="index" class='bbq-bestelling'>
+                  <div v-for="(lid, index) in ledenBBQ" :key="index" :class='lid.betaald ? "bbq-bestelling-betaald" : "bbq-bestelling"'>
                     <p>BBQ naam: {{lid.bbq.naam}}</p>
                     <p>Volwassenporties: {{lid.bbq.volwassenPorties}}</p>
                     <p>Kinderporties: {{lid.bbq.kinderPorties}}</p>
@@ -400,6 +400,22 @@ ${this.betalingsId}`
       })
       return result
     },
+    aantalBbqBetaald(){
+      const result = {volwassenPorties: 0, kinderPorties: 0}
+      this.ledenAlles.forEach((inschrijving) => {
+        if(inschrijving.betaald){
+          result.volwassenPorties += inschrijving.bbq.volwassenPorties
+          result.kinderPorties += inschrijving.bbq.kinderPorties
+        }
+      })
+      this.ledenBBQ.forEach((inschrijving) => {
+        if(inschrijving.betaald){
+          result.volwassenPorties += inschrijving.bbq.volwassenPorties
+          result.kinderPorties += inschrijving.bbq.kinderPorties
+        }
+      })
+      return result
+    },
     geselecteerd() {
       const geselecteerd = this.leden.filter((lid) => {
         if (lid.geselecteerd) return true
@@ -572,12 +588,16 @@ ${this.betalingsId}`
   flex-direction: column;
 }
 
-.bbq-bestellingen > .bbq-bestelling{
+.bbq-bestellingen > .bbq-bestelling, .bbq-bestelling-betaald{
   margin: 1em;
   padding: 1em;
-  background-color: green;
+  background-color: red;
   border-radius: 15px;
   width: max-content;
+}
+
+.bbq-bestelling-betaald{
+  background-color: green;
 }
 
 .extra-bbq{
