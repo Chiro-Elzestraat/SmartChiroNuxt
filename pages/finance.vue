@@ -32,13 +32,52 @@
             Al betaald
           </p>
         </form>
-        <div v-for="(betaling) in betalingen" :key="betaling.betalingsnummer">
+        <v-card v-for="(betaling) in betalingen" :key="betaling.betalingsnummer" class="ma-6"> 
           <v-list-item v-if="betaling.jaar">
             <v-list-item-content>
               <v-list-item-title>Chirojaar: {{betaling.jaar}} - {{betaling.jaar + 1}}</v-list-item-title>
               <v-list-item-subtitle>Betaling €{{betaling.bedrag}} {{betaling.betaald ? "in orde" : "nog niet ontvangen"}}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
+          <v-card v-if="betaling.bbq">
+            <v-card-title>BBQ</v-card-title>
+            <v-card-text>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Volwassenporties</v-list-item-title>
+                  <v-list-item-subtitle>{{betaling.bbq.volwassenPorties}} porties</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Kinderporties</v-list-item-title>
+                  <v-list-item-subtitle>{{betaling.bbq.kinderPorties}} porties</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-card-text>
+          </v-card>
+          <v-card v-if="betaling.lid">
+            <v-card-title>{{ betaling.lid.naam }}</v-card-title>
+            <v-card-text>
+              <v-list-item v-for="ouder in betaling.lid.contact.ouders">
+                <v-list-item-content>
+                  <v-list-item-title>{{ouder.naam}}</v-list-item-title>
+                  <v-list-item-subtitle><a :href="`mailto:${ouder.email}`">{{ouder.email}}</a></v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-card-text>
+          </v-card>
+          <v-card v-if="betaling.leden">
+            <v-card-title>Leden</v-card-title>
+            <v-card-text>
+              <v-list-item v-for="(lid, index) in betaling.leden" :key="index">
+                <v-list-item-content>
+                  <v-list-item-title>{{lid.naam}}</v-list-item-title>
+                  <v-list-item-subtitle>{{lid.lidId}}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-card-text>
+          </v-card>
           <v-card v-if="betaling.email && betaling.tshirts">
             <v-card-title><v-icon>mdi-email</v-icon>&nbsp;<a :href="`mailto:${betaling.email}`">{{betaling.email}}</a></v-card-title>
             <v-card-subtitle>Bestelling T-shirts</v-card-subtitle>
@@ -51,7 +90,7 @@
               </v-list-item>
             </v-card-text>
           </v-card>
-        </div>
+        </v-card>
       </v-card-text>
     </v-card>
   </v-container>
@@ -112,7 +151,15 @@ export default {
               this.totaalPrijs += doc.data().bedrag
               this.betaald = false
             }
-            this.betalingen.push(doc.data())
+            const data = doc.data()
+            if(data.jaar){
+              doc.ref.parent.parent.get().then((lidDoc) => {
+                this.betalingen.push({...doc.data(), lid: lidDoc.data()})
+              })
+            } else {
+              this.betalingen.push(doc.data())
+            }
+            
           })
           this.bestaatNiet = snap.docs.length === 0
         })
