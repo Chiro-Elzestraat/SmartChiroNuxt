@@ -106,6 +106,7 @@
                     <p>BBQ naam: {{lid.bbq.naam}}</p>
                     <p>Volwassenporties: {{lid.bbq.volwassenPorties}}</p>
                     <p>Kinderporties: {{lid.bbq.kinderPorties}}</p>
+                    <p @click="kopierNummer(lid.betalingsnummer)" style="cursor: pointer;">Betalingsnummer: {{ lid.betalingsnummer }}</p>
                   </div>
                 </div>
             </v-tab-item>
